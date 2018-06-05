@@ -1,0 +1,67 @@
+package com.app.fandirect.global;
+
+public class WebServiceConstants {
+    public static final String SERVICE_URL = "";
+    public static final String Local_SERVICE_URL = "http://fandirect.stagingic.com/api/";
+    public static final String SUCCESS_RESPONSE_CODE = "200";
+
+
+    public static final String UserLogin = "UserLogin";
+    public static final String SPLogin = "SPLogin";
+    public static final String UserLogout = "UserLogout";
+    public static final String RegisterUser = "RegisterUser";
+    public static final String VerifyCode = "VerifyCode";
+    public static final String VerifyCodeForgot = "VerifyCodeForgot";
+    public static final String ResetForgotPassword = "ResetForgotPassword";
+    public static final String ForgotPassword = "ForgotPassword";
+    public static final String UpdateUserProfile = "UpdateUserProfile";
+    public static final String ChangePassword = "ChangePassword";
+    public static final String ResendCode = "ResendCode";
+    public static final String PushOnOff = "PushOnOff";
+    public static final String GetProfile = "GetProfile";
+    public static final String GetProfilePushNotification = "GetProfilePushNotification";
+    public static final String AllServicesCategories = "AllServicesCategories";
+    public static final String getNotification = "getNotification";
+    public static final String SearchUser = "SearchUser";
+    public static final String SearchServiceP = "SearchServiceP";
+    public static final String AddFann = "AddFann";
+    public static final String AlRequests = "AlRequests";
+    public static final String confirmRequest = "confirmRequest";
+    public static final String deleteRequest = "deleteRequest";
+    public static final String getAllPosts = "getAllPosts";
+    public static final String getAllPromotions = "getAllPromotions";
+    public static final String postLike = "postLike";
+    public static final String favoritePost = "favoritePost";
+    public static final String allFavoritePosts = "allFavoritePosts";
+    public static final String allMyPromotionsPosts = "allMyPromotionsPosts";
+    public static final String getMyFanns = "getMyFanns";
+    public static final String getMyPosts = "getMyPosts";
+    public static final String sendMessage = "sendMessage";
+    public static final String getAllMsgThread = "getAllMsgThread";
+    public static final String getConversation = "getConversation";
+    public static final String getConversationFromMsg = "getConversationFromMsg";
+    public static final String getComments = "getComments";
+    public static final String postComments = "postComments";
+    public static final String createPromotionTextPost = "createPromotionTextPost";
+    public static final String createPromotionImagePost = "createImagePost";
+    public static final String createFeedTextPost = "createFeedTextPost";
+    public static final String createFeedImagePost = "createFeedImagePost";
+    public static final String getMyServices = "getMyServices";
+    public static final String registerSP = "registerSP";
+    public static final String getServiceProvider = "getServiceProvider";
+    public static final String SendRequest = "SendRequest";
+    public static final String ServiceHistory = "ServiceHistory";
+    public static final String markRequestService = "markRequestService";
+    public static final String feedback = "feedback";
+    public static final String cancelled= "cancelled";
+    public static final String showProfile= "showProfile";
+    public static final String Unfriend= "unfriend";
+    public static final String terms_condition= "terms_condition";
+    public static final String about_us= "about_us";
+    public static final String AddFannProfile = "AddFannProfile";
+    public static final String cancelledProfile= "cancelledProfile";
+    public static final String UnfriendProfile= "UnfriendProfile";
+    public static final String confirmRequestProfile = "confirmRequestProfile";
+    public static final String postPrivacySetting = "postPrivacySetting";
+    public static final String profilePrivacySetting = "profilePrivacySetting";
+}

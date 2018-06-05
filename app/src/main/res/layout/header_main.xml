@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/header_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/x50"
+    android:background="@color/app_blue">
+
+
+    <ImageView
+        android:id="@+id/btnLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:padding="@dimen/x18"
+        android:scaleType="fitXY"
+        android:src="@drawable/back_arrow"
+        android:visibility="visible" />
+
+
+    <com.app.fandirect.ui.views.AnyTextView
+        android:id="@+id/txt_subHead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="Template"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x18"
+        android:visibility="gone"
+        app:typeface="OpenSans-Regular.ttf" />
+
+    <ImageView
+        android:id="@+id/iv_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:src="@drawable/titlebar_logo"
+        android:visibility="visible" />
+
+    <RelativeLayout
+        android:id="@+id/rl_Right"
+        android:layout_width="@dimen/x35"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:layout_toStartOf="@+id/rl_Right2"
+        android:layout_marginEnd="@dimen/x8"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/btnRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/notification5"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_Right2"
+        android:layout_width="@dimen/x35"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/x8"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/btnRight2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/message"
+            android:visibility="visible" />
+
+    </RelativeLayout>
+
+    <com.app.fandirect.ui.views.AnyTextView
+        android:id="@+id/txt_post"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/x15"
+        android:text="Post"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x14"
+        android:padding="@dimen/x10"
+        android:visibility="gone"
+        app:typeface="OpenSans-Regular.ttf" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/rl_Right2"
+        android:layout_alignEnd="@+id/rl_Right2"
+        android:layout_alignStart="@+id/rl_Right2"
+        android:layout_alignTop="@+id/rl_Right2"
+        android:visibility="gone">
+
+        <com.app.fandirect.ui.views.AnyTextView
+            android:id="@+id/txtBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/badge_drawable"
+            android:gravity="center"
+            android:maxLength="2"
+            android:paddingBottom="@dimen/x3"
+            android:paddingLeft="@dimen/x4"
+            android:paddingRight="@dimen/x4"
+            android:paddingTop="@dimen/x3"
+            android:text="22"
+            android:textColor="@color/black"
+            android:textSize="@dimen/x7"
+            app:typeface="@string/font_bold" />
+    </RelativeLayout>
+
+</RelativeLayout>

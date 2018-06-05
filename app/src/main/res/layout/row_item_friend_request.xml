@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x5"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_image"
+            android:layout_width="@dimen/x45"
+            android:layout_height="@dimen/x45"
+            android:layout_margin="@dimen/x12"
+            android:src="@drawable/placeholder" />
+
+        <com.app.fandirect.ui.views.AnyTextView
+            android:id="@+id/txt_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.6"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/x13"
+            app:typeface="@string/font_normal" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:gravity="center_vertical"
+            android:layout_marginStart="@dimen/x3"
+            android:layout_marginEnd="@dimen/x8"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonOne"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/x25"
+                android:layout_marginEnd="@dimen/x2"
+                android:background="@drawable/rounded_button"
+                android:textColor="@color/white"
+                android:text="Confirm"
+                android:textSize="@dimen/x11"
+                android:textAllCaps="false"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/buttonTwo"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/x25"
+                android:layout_marginStart="@dimen/x2"
+                android:background="@drawable/rounded_button_gray_border"
+                android:textColor="@color/app_blue"
+                android:text="Delete"
+                android:textSize="@dimen/x11"
+                android:textAllCaps="false"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

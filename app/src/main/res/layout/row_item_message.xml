@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainFrameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/x7"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_image"
+            android:layout_width="@dimen/x50"
+            android:layout_height="@dimen/x50"
+            android:layout_marginEnd="@dimen/x10"
+            android:layout_marginTop="@dimen/x10"
+            android:layout_marginBottom="@dimen/x10"
+            android:src="@drawable/placeholder" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="Paola Alteri"
+                android:textColor="@color/app_dark_gray_2"
+                android:textSize="@dimen/x16"
+                android:textStyle="bold"
+                app:typeface="@string/font_bold" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/txt_message"
+                android:layout_alignTop="@+id/txt_name"
+                android:layout_toEndOf="@+id/txt_name"
+                android:ellipsize="end"
+                android:gravity="end|center_vertical"
+                android:maxLines="1"
+                android:text="01:00 am"
+                android:textColor="@color/app_dark_gray_2"
+                android:textSize="@dimen/x13"
+                android:textStyle="normal"
+                app:typeface="@string/font_normal" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_name"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="You there?"
+                android:textColor="@color/app_dark_gray_2"
+                android:textSize="@dimen/x13"
+                android:textStyle="normal"
+                app:typeface="@string/font_normal" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:onClick="onClick"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/x15"
+            android:gravity="top"
+            android:orientation="horizontal">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/iv_image"
+                android:layout_width="@dimen/x45"
+                android:layout_height="@dimen/x45"
+                android:src="@drawable/placeholder" />
+
+             <com.xw.repo.XEditText
+                android:id="@+id/txt_caption"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/x5"
+                android:layout_marginStart="@dimen/x15"
+                android:imeOptions="actionDone"
+                android:layout_toEndOf="@+id/iv_image"
+                android:layout_weight="0.9"
+                android:background="@color/transparent"
+                android:hint="What's on your mind?"
+                android:textColor="@color/app_dark_gray_2"
+                android:textSize="@dimen/x14"
+                 app:x_disableEmoji="true" />
+
+            <ImageView
+                android:id="@+id/iv_upload_photo"
+                android:layout_width="@dimen/x70"
+                android:layout_height="@dimen/x60"
+                android:scaleType="fitXY"
+                android:visibility="gone"
+                android:src="@drawable/image3" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x1"
+            android:background="@color/view_color" />
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x50"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/btn_uploadPhoto"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.9"
+                android:layout_marginEnd="@dimen/x10"
+                android:drawablePadding="@dimen/x10"
+                android:drawableStart="@drawable/camera2"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/x15"
+                android:text="Upload Photo"
+                android:textColor="@color/black"
+                android:alpha="0.6"
+                android:textSize="@dimen/x14"
+                app:typeface="@string/font_normal" />
+
+
+            <ImageView
+                android:layout_width="@dimen/x40"
+                android:layout_height="@dimen/x40"
+                android:src="@drawable/indicator"/>
+
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x1"
+            android:background="@color/view_color" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_add_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/x12"
+                android:gravity="center_vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/x25"
+                    android:layout_height="@dimen/x25"
+                    android:alpha="0.3"
+                    android:src="@drawable/categoryicon"/>
+
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                   android:paddingBottom="@dimen/x15"
+                    android:paddingEnd="@dimen/x10"
+                    android:paddingStart="@dimen/x7"
+                    android:paddingTop="@dimen/x15"
+                    android:text="@string/select_category"
+                    android:textColor="@color/black"
+                    android:alpha="0.6"
+                    android:textSize="@dimen/x14"
+                    app:typeface="@string/font_normal" />
+
+                <ImageView
+                    android:layout_width="@dimen/x40"
+                    android:layout_height="@dimen/x40"
+                    android:src="@drawable/indicator"/>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_selected_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/x15"
+                android:paddingBottom="@dimen/x15"
+                android:paddingStart="@dimen/x15"
+                android:visibility="gone">
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:id="@+id/txt_category_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginStart="@dimen/x10"
+                    android:layout_toEndOf="@+id/iv_location_category"
+                    android:layout_toStartOf="@+id/ll_cross_category"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:alpha="0.8"
+                    android:text="Karachi"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/x13"
+                    app:typeface="@string/font_normal" />
+
+
+                <ImageView
+                    android:id="@+id/iv_location_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/location2" />
+
+                <LinearLayout
+                    android:id="@+id/ll_cross_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/x15"
+                    android:padding="@dimen/x5">
+
+                    <ImageView
+                        android:layout_width="@dimen/x12"
+                        android:layout_height="@dimen/x12"
+                        android:src="@drawable/cross_icon" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x1"
+            android:background="@color/view_color" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/ll_add_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/x13"
+                android:visibility="visible">
+
+                <ImageView
+                    android:layout_width="@dimen/x25"
+                    android:layout_height="@dimen/x25"
+                    android:alpha="0.4"
+                    android:src="@drawable/location4"/>
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:paddingBottom="@dimen/x15"
+                    android:paddingEnd="@dimen/x10"
+                    android:paddingStart="@dimen/x7"
+                    android:paddingTop="@dimen/x15"
+                    android:text="@string/add_location"
+                    android:textColor="@color/black"
+                    android:alpha="0.6"
+                    android:textSize="@dimen/x14"
+                    app:typeface="@string/font_normal" />
+
+                <ImageView
+                    android:layout_width="@dimen/x40"
+                    android:layout_height="@dimen/x40"
+                    android:src="@drawable/indicator"/>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_selected_place"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/x15"
+                android:paddingTop="@dimen/x15"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/x15"
+                android:visibility="gone">
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:id="@+id/txt_location_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/x10"
+                    android:layout_toEndOf="@+id/iv_location"
+                    android:layout_toStartOf="@+id/ll_cross"
+                    android:alpha="0.8"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:text="Karachi"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/x15"
+                    app:typeface="@string/font_normal" />
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:id="@+id/txt_location_vacinity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_location_name"
+                    android:layout_marginStart="@dimen/x10"
+                    android:layout_toEndOf="@+id/iv_location"
+                    android:layout_toStartOf="@+id/ll_cross"
+                    android:alpha="0.8"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:text="@string/add_location"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/x13"
+                    app:typeface="@string/font_normal"
+                    android:visibility="visible"/>
+
+                <ImageView
+                    android:id="@+id/iv_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/location2" />
+
+                <LinearLayout
+                    android:id="@+id/ll_cross"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/x15"
+                    android:padding="@dimen/x5">
+
+                    <ImageView
+                        android:layout_width="@dimen/x12"
+                        android:layout_height="@dimen/x12"
+                        android:src="@drawable/cross_icon" />
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x1"
+            android:background="@color/view_color" />
+
+
+
+
+    </LinearLayout>
+
+</ScrollView>

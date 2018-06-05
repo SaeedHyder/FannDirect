@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x50"
+        android:orientation="horizontal"
+       >
+
+        <Button
+            android:id="@+id/btn_searchUser"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/app_blue_dark_2"
+            android:textColor="@color/white"
+            android:textSize="@dimen/x14"
+            android:textAllCaps="false"
+            android:text="Search By Fann"/>
+
+        <Button
+            android:id="@+id/btn_searchService"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:textColor="@color/gray_dark"
+            android:textSize="@dimen/x14"
+            android:textAllCaps="false"
+            android:text="Search By Service"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/x10"
+        android:paddingEnd="@dimen/x10"
+        android:paddingTop="@dimen/x10"
+        android:paddingBottom="@dimen/x10"
+        android:background="#ECECEC">
+
+        <LinearLayout
+            android:id="@+id/ll_searchBox"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x40"
+            android:background="@drawable/rounded_white_button"
+            android:orientation="horizontal">
+
+            <com.app.fandirect.ui.views.AnyEditTextView
+                android:id="@+id/txt_searchBox"
+                app:typeface="@string/font_normal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.8"
+                android:background="@color/transparent"
+                android:hint="Search..."
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingStart="@dimen/x10"
+                android:textColor="@color/text_black_color"
+                android:textSize="@dimen/x14" />
+
+            <LinearLayout
+                android:id="@+id/ll_search_btn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.15"
+                android:background="@drawable/rounder_button_gray"
+                android:gravity="center">
+
+                <ImageView
+                    android:layout_width="@dimen/x20"
+                    android:layout_height="@dimen/x20"
+                    android:src="@drawable/search_icon1" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.app.fandirect.ui.views.AnyTextView
+        android:id="@+id/txt_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:gravity="center"
+        android:text="No Data To Show"
+        android:textColor="@color/dark_grey"
+        android:layout_gravity="center"
+        app:typeface="Roboto-Regular.ttf"
+        android:textSize="@dimen/x15"
+
+        />
+
+    <GridView
+        android:id="@+id/gv_home_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/x15"
+        android:layout_marginTop="@dimen/x25"
+        android:scrollbars="none"
+        android:numColumns="1" />
+
+</LinearLayout>

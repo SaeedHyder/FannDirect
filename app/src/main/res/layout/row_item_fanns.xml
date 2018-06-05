@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/x10">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_image"
+            android:layout_width="@dimen/x70"
+            android:layout_height="@dimen/x70"
+            android:src="@drawable/placeholder"/>
+
+        <com.app.fandirect.ui.views.AnyTextView
+            android:id="@+id/txt_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.7"
+            android:gravity="center_vertical"
+
+            android:textColor="@color/app_dark_gray_2"
+            android:textSize="@dimen/x15"
+            android:layout_marginStart="@dimen/x10"
+            app:typeface="@string/font_normal"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical|end">
+
+        <com.app.fandirect.ui.views.AnyTextView
+            android:id="@+id/btn_add_fann"
+            android:layout_width="@dimen/x110"
+            android:layout_height="@dimen/x35"
+            android:background="@drawable/rounder_button_white"
+            android:text="@string/add_fann"
+            android:paddingStart="@dimen/x5"
+            android:gravity="center"
+            android:paddingEnd="@dimen/x5"
+            android:textAllCaps="false"
+            android:textColor="@color/app_blue"
+            app:typeface="@string/font_normal"
+            android:textSize="@dimen/x12" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x1"
+        android:background="@color/view_color"/>
+</LinearLayout>

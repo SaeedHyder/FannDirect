@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:id="@+id/mainFrameLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="vertical"
+        android:background="@color/white"
+        android:onClick="onClick">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/x15"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_profile_image"
+                    android:layout_width="@dimen/x90"
+                    android:layout_height="@dimen/x90"
+                    android:src="@drawable/placeholder" />
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:id="@+id/txt_profileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/x10"
+                    android:layout_marginTop="@dimen/x20"
+                    android:layout_toEndOf="@+id/iv_profile_image"
+                    android:hint="Name"
+                    android:textColor="@color/app_blue"
+                    android:textSize="@dimen/x18"
+                    android:textStyle="bold"
+                    app:typeface="@string/font_bold" />
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:id="@+id/txt_work_at"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txt_profileName"
+                    android:layout_marginStart="@dimen/x10"
+                    android:layout_marginTop="@dimen/x3"
+                    android:layout_toEndOf="@+id/iv_profile_image"
+                    android:maxLines="1"
+                    android:hint="Works at"
+                    android:textColor="@color/app_dark_gray"
+                    android:textSize="@dimen/x13"
+                    app:typeface="@string/font_normal" />
+
+            </RelativeLayout>
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x10"
+                android:text="@string/about"
+                android:textColor="@color/app_blue"
+                android:textSize="@dimen/x16"
+                android:textStyle="bold"
+                app:typeface="@string/font_bold" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_about"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x3"
+                android:hint="@string/about"
+                android:textColor="@color/app_dark_gray_2"
+                android:textSize="@dimen/x13"
+                app:typeface="@string/font_normal" />
+
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x10"
+                android:text="@string/birthday"
+                android:textColor="@color/app_blue"
+                android:textSize="@dimen/x16"
+                android:textStyle="bold"
+                app:typeface="@string/font_bold" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_birthday"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x3"
+                android:hint="@string/birthday"
+                android:textColor="@color/app_dark_gray_2"
+                android:textSize="@dimen/x13"
+                app:typeface="@string/font_normal" />
+
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x10"
+                android:text="@string/location"
+                android:textColor="@color/app_blue"
+                android:textSize="@dimen/x16"
+                android:textStyle="bold"
+                app:typeface="@string/font_bold" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x3"
+                android:hint="@string/location"
+                android:textColor="@color/app_dark_gray_2"
+                android:textSize="@dimen/x13"
+                app:typeface="@string/font_normal" />
+
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x10"
+                android:text="@string/profession"
+                android:textColor="@color/app_blue"
+                android:textSize="@dimen/x16"
+                android:textStyle="bold"
+                app:typeface="@string/font_bold" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_profession"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x3"
+                android:hint="@string/profession"
+                android:textColor="@color/app_dark_gray_2"
+                android:textSize="@dimen/x13"
+                app:typeface="@string/font_normal" />
+
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x10"
+                android:text="@string/hobbies"
+                android:textColor="@color/app_blue"
+                android:textSize="@dimen/x16"
+                android:textStyle="bold"
+                app:typeface="@string/font_bold" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_hobbies"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x3"
+               android:hint="@string/hobbies"
+                android:textColor="@color/app_dark_gray_2"
+                android:textSize="@dimen/x13"
+                app:typeface="@string/font_normal" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x1"
+                android:background="@color/app_light_gray" />
+
+            <Button
+                android:id="@+id/btn_edit_profile"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x35"
+                android:layout_marginBottom="@dimen/x15"
+                android:layout_marginEnd="@dimen/x45"
+                android:layout_marginStart="@dimen/x45"
+                android:layout_marginTop="@dimen/x15"
+                android:background="@drawable/rectangle_box_white"
+                android:text="@string/edit_profile"
+                android:textAllCaps="false"
+                android:textColor="@color/app_blue"
+                android:textSize="@dimen/x16"
+                android:visibility="visible" />
+
+            <LinearLayout
+                android:id="@+id/ll_two_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/x45"
+                android:layout_marginStart="@dimen/x45"
+                android:layout_marginTop="@dimen/x15"
+                android:layout_marginBottom="@dimen/x15"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:id="@+id/btn_request"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/x35"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="@dimen/x5"
+                    android:layout_marginStart="@dimen/x2"
+                    android:background="@drawable/rectangle_box_white"
+                    android:textColor="@color/app_blue"
+                    android:text="@string/add_fann"
+                    android:textSize="@dimen/x14"
+                    app:typeface="@string/font_normal"
+                    android:textAllCaps="false"
+                   />
+
+                <RelativeLayout
+                    android:id="@+id/rl_fann"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/x35"
+                    android:layout_marginEnd="@dimen/x5"
+                    android:layout_weight="1"
+                    android:background="@drawable/rectangular_box_blue"
+                    android:gravity="start|center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+
+                    <com.app.fandirect.ui.views.AnyTextView
+                        android:id="@+id/btn_fanns"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:background="@color/transparent"
+                        android:gravity="center_vertical"
+                        android:text="Fann"
+                        android:enabled="false"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/x14"
+                        app:typeface="@string/font_normal"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/x5"
+                        android:layout_toStartOf="@+id/btn_fanns"
+                        android:src="@drawable/fan_highlihted" />
+
+                </RelativeLayout>
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:id="@+id/btn_send_message"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/x35"
+                    android:layout_marginStart="@dimen/x5"
+                    android:layout_weight="1"
+                    android:background="@drawable/rectangle_box_white"
+                    android:gravity="center"
+                    android:text="Send Message"
+                    android:textAllCaps="false"
+                    android:textColor="@color/app_blue"
+                    android:textSize="@dimen/x14"
+                    app:typeface="@string/font_normal"/>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x1"
+                android:background="@color/app_light_gray" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x45"
+            android:orientation="horizontal">
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_posts"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Posts"
+                android:textColor="@color/gray_dark"
+                android:textSize="@dimen/x15"
+                app:typeface="@string/font_normal" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_pictures"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Pictures"
+                android:textColor="@color/gray_dark"
+                android:textSize="@dimen/x15"
+                app:typeface="@string/font_normal" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_fanns"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Fanns"
+                android:textColor="@color/gray_dark"
+                android:textSize="@dimen/x15"
+                app:typeface="@string/font_normal" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x1"
+            android:background="@color/app_light_gray" />
+
+        <com.app.fandirect.ui.views.AnyTextView
+            android:id="@+id/txt_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x150"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="No data to show"
+            android:textColor="@color/dark_grey"
+            android:textSize="@dimen/x15"
+            android:visibility="gone"
+            app:typeface="Roboto-Regular.ttf"
+
+            />
+
+        <com.app.fandirect.ui.views.ExpandedListView
+            android:id="@+id/lv_posts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FAFAFA"
+            android:layout_marginBottom="@dimen/x15"
+            android:divider="@null" />
+
+
+        <com.app.fandirect.ui.views.ExpandableGridView
+            android:id="@+id/gv_pictures"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="3"
+            android:visibility="gone" />
+
+        <com.app.fandirect.ui.views.ExpandedListView
+            android:id="@+id/lv_fanns"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@null"
+            android:visibility="gone" />
+
+
+    </LinearLayout>
+
+</ScrollView>
+

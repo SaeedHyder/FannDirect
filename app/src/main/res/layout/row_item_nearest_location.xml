@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/x5"
+        android:layout_marginStart="@dimen/x5"
+        android:layout_marginTop="@dimen/x5"
+        android:layout_marginEnd="@dimen/x5"
+        android:background="@drawable/retangular_box_grey"
+        android:padding="@dimen/x2"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/x3">
+
+        <com.app.fandirect.ui.views.AnyTextView
+            android:id="@+id/serviceType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="Selicon Tower"
+            android:paddingStart="@dimen/x3"
+            android:paddingEnd="@dimen/x3"
+            android:textAllCaps="false"
+            android:textColor="@color/app_dark_gray_2"
+            android:textSize="@dimen/x11"
+            app:typeface="@string/font_normal" />
+
+
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "979639302066",
+    "firebase_url": "https://fandirect-201811.firebaseio.com",
+    "project_id": "fandirect-201811",
+    "storage_bucket": "fandirect-201811.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979639302066:android:f689a0f625a371bf",
+        "android_client_info": {
+          "package_name": "com.app.fandirect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "979639302066-3b1lag98k2bdn1vnmskd0unrqlao7el9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.fandirect",
+            "certificate_hash": "d3b45d4958b305c928fc34c7f1facd13048c5c25"
+          }
+        },
+        {
+          "client_id": "979639302066-eruf2pcfekp65d48ev5l7halt5b7dmpn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAvTl7E2U64zgi0d2fOdmbuP6XXpyCLA6A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "979639302066-eruf2pcfekp65d48ev5l7halt5b7dmpn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

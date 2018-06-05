@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/x15"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/iv_image"
+            android:layout_width="@dimen/x50"
+            android:layout_height="@dimen/x50"
+            android:src="@drawable/placeholder" />
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/x8"
+            android:orientation="vertical">
+
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/tv_NameCommentor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/name"
+                android:textColor="#393939"
+                android:textSize="@dimen/x16"
+                app:typeface="Roboto-Regular.ttf" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/tv_CommentBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.6"
+                android:text="Comments"
+                android:textColor="@color/black"
+                android:textSize="@dimen/x14"
+                app:typeface="Roboto-Regular.ttf" />
+
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x3"
+                android:text="12-12-2018"
+                android:textColor="#938B8B"
+                android:textSize="@dimen/x10"
+                app:typeface="Roboto-Regular.ttf" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x1"
+        android:alpha="0.2"
+        android:background="@color/black" />
+
+</LinearLayout>

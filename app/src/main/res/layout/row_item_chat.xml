@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mainFrameLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/leftLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/x12"
+        android:paddingEnd="@dimen/x10"
+        android:paddingStart="@dimen/x10"
+        android:visibility="visible">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageViewLeft"
+            android:layout_width="@dimen/x40"
+            android:layout_height="@dimen/x40"
+            android:layout_alignParentStart="true"
+            android:layout_alignBottom="@+id/leftLayoutChild"
+            android:layout_marginEnd="@dimen/x5"
+            android:src="@drawable/placeholder" />
+
+
+        <LinearLayout
+            android:id="@+id/leftLayoutChild"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/imageViewLeft"
+            android:background="@drawable/message_left"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:padding="@dimen/x10"
+            android:visibility="visible">
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txtSenderChatLeft"
+                app:typeface="Roboto-Regular.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
+                android:text="@string/lorem_ipsum_small"
+                android:textColor="@color/black"
+                android:textSize="@dimen/x12" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txtSenderDateLeft"
+                app:typeface="Roboto-Regular.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
+                android:text="10-12-2018"
+                android:textColor="@color/black"
+                android:textSize="@dimen/x10" />
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/RightLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/x10"
+        android:padding="@dimen/x10"
+        android:visibility="visible">
+
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imageViewRight"
+                android:layout_width="@dimen/x40"
+                android:layout_height="@dimen/x40"
+                android:layout_alignParentEnd="true"
+                android:layout_alignBottom="@+id/rightLayout"
+                android:layout_marginStart="@dimen/x5"
+                android:src="@drawable/placeholder" />
+
+
+
+
+        <LinearLayout
+            android:id="@+id/rightLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@id/imageViewRight"
+            android:background="@drawable/message_right"
+            android:gravity="start"
+            android:orientation="vertical"
+            android:padding="@dimen/x10"
+            android:visibility="visible"
+
+            >
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txtReceiverChatRight"
+                app:typeface="Roboto-Regular.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
+                android:text="@string/lorem_ipsum_small"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x12" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txtReceiverDatetRight"
+                app:typeface="Roboto-Regular.ttf"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
+                android:text="10-2-12-2018"
+                android:layout_gravity="end"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x10" />
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</LinearLayout>

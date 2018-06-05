@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_search_box"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x40"
+        android:layout_margin="@dimen/x15"
+        android:background="@drawable/searchbox2"
+        android:orientation="horizontal">
+
+
+
+        <com.app.fandirect.ui.views.AnyEditTextView
+            android:id="@+id/txt_search"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.9"
+            android:background="@color/transparent"
+            android:gravity="center_vertical"
+            android:hint="Search"
+            android:inputType="text"
+            android:paddingStart="@dimen/x15"
+            android:textColor="@color/text_color"
+            android:textSize="@dimen/x15"
+            app:typeface="@string/font_normal" />
+
+        <LinearLayout
+            android:id="@+id/ll_search"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/x5"
+            android:layout_weight="0.1"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/iv_search_icon"
+                android:layout_width="@dimen/x18"
+                android:layout_height="@dimen/x18"
+                android:src="@drawable/search" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.app.fandirect.ui.views.AnyTextView
+        android:id="@+id/txt_no_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="No data to show"
+        android:textColor="@color/dark_grey"
+        android:textSize="@dimen/x15"
+        android:visibility="gone"
+        app:typeface="Roboto-Regular.ttf"
+
+        />
+
+    <ListView
+        android:id="@+id/lv_message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/x15"
+        android:layout_marginStart="@dimen/x15"
+        android:scrollbars="none"
+
+        android:divider="@color/transparent" />
+
+</LinearLayout>

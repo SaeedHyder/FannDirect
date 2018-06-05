@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x50"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/logo" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/x15"
+            android:orientation="vertical">
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="@string/enter_your_email_address"
+                android:textColor="@color/black"
+                android:textSize="@dimen/x19"
+                android:textStyle="normal"
+                app:typeface="@string/font_normal" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x5"
+                android:gravity="center_horizontal"
+                android:text="@string/to_reset_your_password_please_enter_the_n_email_address_you_provided_in_the_sign_up_process"
+                android:textColor="@color/app_dark_gray"
+                android:textSize="@dimen/x11"
+                android:textStyle="normal"
+                app:typeface="@string/font_normal" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/x35"
+            android:layout_marginStart="@dimen/x35"
+            android:orientation="vertical">
+
+            <com.app.fandirect.ui.views.AnyEditTextView
+                android:id="@+id/txt_email"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x40"
+                android:background="@color/transparent"
+                android:drawablePadding="@dimen/x10"
+                android:drawableStart="@drawable/email"
+                android:hint="@string/email_address"
+                android:imeOptions="actionDone"
+                android:inputType="textEmailAddress"
+                android:maxLength="50"
+                android:maxLines="1"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
+                android:textColor="@color/text_black_color"
+                android:textSize="@dimen/x14"
+                app:typeface="@string/font_normal" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x1"
+                android:background="@color/view_color" />
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x45"
+                android:layout_marginTop="@dimen/x25"
+                android:background="@drawable/rounded_button"
+                android:text="@string/submit"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x16" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

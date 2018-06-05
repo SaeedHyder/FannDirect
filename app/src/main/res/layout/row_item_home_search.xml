@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:id="@+id/rl_home_search"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x130"
+
+        android:layout_marginStart="@dimen/x15"
+        android:layout_marginBottom="@dimen/x10">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x130"
+            app:cardCornerRadius="@dimen/x5">
+
+            <ImageView
+                android:id="@+id/iv_category"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:src="@drawable/image3" />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:paddingBottom="@dimen/x10"
+                android:paddingStart="@dimen/x10"
+                android:text="Auto Mobiles"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x18"
+                android:textStyle="bold"
+                app:typeface="@string/font_normal" />
+        </android.support.v7.widget.CardView>
+
+    </RelativeLayout>
+
+
+</LinearLayout>
