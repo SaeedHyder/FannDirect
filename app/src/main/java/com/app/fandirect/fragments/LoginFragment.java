@@ -11,6 +11,7 @@ import android.widget.RadioButton;
 import com.app.fandirect.R;
 import com.app.fandirect.entities.UserEnt;
 import com.app.fandirect.fragments.abstracts.BaseFragment;
+import com.app.fandirect.helpers.DialogHelper;
 import com.app.fandirect.ui.views.AnyEditTextView;
 import com.app.fandirect.ui.views.AnyTextView;
 import com.app.fandirect.ui.views.TitleBar;
@@ -148,11 +149,22 @@ public class LoginFragment extends BaseFragment {
                 prefHelper.setUserType(getString(R.string.user));
                 prefHelper.set_TOKEN(entity.getToken());
 
-                if (entity.getIsVerified().equals("1")) {
-                    getMainActivity().popBackStackTillEntry(0);
-                    getDockActivity().replaceDockableFragment(HomeFragment.newInstance(), "HomeFragment");
+                if (entity.getStatus().equals("1")) {
+                    if (entity.getIsVerified().equals("1")) {
+                        getMainActivity().popBackStackTillEntry(0);
+                        getDockActivity().replaceDockableFragment(HomeFragment.newInstance(), "HomeFragment");
+                    } else {
+                        getDockActivity().replaceDockableFragment(CodeVerificationFragment.newInstance(false, entity.getId() + "", entity.getEmail()), "CodeVerificationFragment");
+                    }
                 } else {
-                    getDockActivity().replaceDockableFragment(CodeVerificationFragment.newInstance(false, entity.getId() + "", entity.getEmail()), "CodeVerificationFragment");
+                    final DialogHelper dialogHelper = new DialogHelper(getDockActivity());
+                    dialogHelper.alertDialoge(R.layout.alert_dialoge, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialogHelper.hideDialog();
+                        }
+                    }, getDockActivity().getResources().getString(R.string.blocked_by_admin));
+                    dialogHelper.showDialog();
                 }
 
                 break;
@@ -163,12 +175,23 @@ public class LoginFragment extends BaseFragment {
                 prefHelper.setUserType(getString(R.string.technician));
                 prefHelper.set_TOKEN(ent.getToken());
 
-
-                if (ent.getIsVerified().equals("1")) {
-                    getMainActivity().popBackStackTillEntry(0);
-                    getDockActivity().replaceDockableFragment(HomeFragment.newInstance(), "HomeFragment");
+                if (ent.getStatus().equals("1")) {
+                    if (ent.getIsVerified().equals("1")) {
+                        getMainActivity().popBackStackTillEntry(0);
+                        getDockActivity().replaceDockableFragment(HomeFragment.newInstance(), "HomeFragment");
+                    } else {
+                        getDockActivity().replaceDockableFragment(CodeVerificationFragment.newInstance(false, ent.getId() + "", ent.getEmail()), "CodeVerificationFragment");
+                    }
                 } else {
-                    getDockActivity().replaceDockableFragment(CodeVerificationFragment.newInstance(false, ent.getId() + "", ent.getEmail()), "CodeVerificationFragment");
+                    final DialogHelper dialogHelper = new DialogHelper(getDockActivity());
+                    dialogHelper.alertDialoge(R.layout.alert_dialoge, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialogHelper.hideDialog();
+                        }
+                    }, getDockActivity().getResources().getString(R.string.blocked_by_admin));
+
+                    dialogHelper.showDialog();
                 }
 
                 break;

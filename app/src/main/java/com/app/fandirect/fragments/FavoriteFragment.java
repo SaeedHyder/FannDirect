@@ -15,6 +15,7 @@ import com.app.fandirect.helpers.ShareIntentHelper;
 import com.app.fandirect.helpers.UIHelper;
 import com.app.fandirect.interfaces.PostClicksInterface;
 import com.app.fandirect.interfaces.RecyclerViewItemListener;
+import com.app.fandirect.interfaces.ReportPostIntetface;
 import com.app.fandirect.ui.adapters.ArrayListAdapter;
 import com.app.fandirect.ui.binders.FeedsBinder;
 import com.app.fandirect.ui.views.AnyTextView;
@@ -27,13 +28,17 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 import static com.app.fandirect.global.WebServiceConstants.allFavoritePosts;
+import static com.app.fandirect.global.WebServiceConstants.deletePost;
 import static com.app.fandirect.global.WebServiceConstants.favoritePost;
+import static com.app.fandirect.global.WebServiceConstants.getAllPosts;
 import static com.app.fandirect.global.WebServiceConstants.postLike;
+import static com.app.fandirect.global.WebServiceConstants.reportPost;
+import static com.app.fandirect.global.WebServiceConstants.reportUser;
 
 /**
  * Created by saeedhyder on 3/14/2018.
  */
-public class FavoriteFragment extends BaseFragment implements RecyclerViewItemListener,PostClicksInterface {
+public class FavoriteFragment extends BaseFragment implements RecyclerViewItemListener, PostClicksInterface, ReportPostIntetface {
     @BindView(R.id.txt_no_data)
     AnyTextView txtNoData;
     @BindView(R.id.lv_favorite)
@@ -53,7 +58,7 @@ public class FavoriteFragment extends BaseFragment implements RecyclerViewItemLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Adapter = new ArrayListAdapter<Post>(getDockActivity(), new FeedsBinder(getDockActivity(), prefHelper, this,this));
+        Adapter = new ArrayListAdapter<Post>(getDockActivity(), new FeedsBinder(getDockActivity(), prefHelper, this, this, this));
 
         if (getArguments() != null) {
         }
@@ -72,7 +77,7 @@ public class FavoriteFragment extends BaseFragment implements RecyclerViewItemLi
         super.onViewCreated(view, savedInstanceState);
 
         getMainActivity().showBottomBar(AppConstants.favorite);
-        serviceHelper.enqueueCall(headerWebService.getFavoritePosts(),allFavoritePosts);
+        serviceHelper.enqueueCall(headerWebService.getFavoritePosts(), allFavoritePosts);
     }
 
     @Override
@@ -81,17 +86,30 @@ public class FavoriteFragment extends BaseFragment implements RecyclerViewItemLi
         switch (Tag) {
 
             case allFavoritePosts:
-                ArrayList<Post> entity=(ArrayList<Post>)result;
+                ArrayList<Post> entity = (ArrayList<Post>) result;
                 setFavoriteListData(entity);
                 break;
 
             case postLike:
-                UIHelper.showShortToastInCenter(getDockActivity(),message);
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
                 break;
 
             case favoritePost:
-                UIHelper.showShortToastInCenter(getDockActivity(),message);
-                serviceHelper.enqueueCall(headerWebService.getFavoritePosts(),allFavoritePosts);
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                serviceHelper.enqueueCall(headerWebService.getFavoritePosts(), allFavoritePosts);
+                break;
+
+            case deletePost:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                serviceHelper.enqueueCall(headerWebService.getFavoritePosts(), allFavoritePosts);
+                break;
+
+            case reportPost:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                break;
+
+            case reportUser:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
                 break;
 
         }
@@ -99,14 +117,13 @@ public class FavoriteFragment extends BaseFragment implements RecyclerViewItemLi
 
     private void setFavoriteListData(ArrayList<Post> entity) {
 
-       if(entity.size()>0){
-           lvFavorite.setVisibility(View.VISIBLE);
-           txtNoData.setVisibility(View.GONE);
-       }
-       else {
-           lvFavorite.setVisibility(View.GONE);
-           txtNoData.setVisibility(View.VISIBLE);
-       }
+        if (entity.size() > 0) {
+            lvFavorite.setVisibility(View.VISIBLE);
+            txtNoData.setVisibility(View.GONE);
+        } else {
+            lvFavorite.setVisibility(View.GONE);
+            txtNoData.setVisibility(View.VISIBLE);
+        }
         Adapter.clearList();
         lvFavorite.setAdapter(Adapter);
         Adapter.addAll(entity);
@@ -119,7 +136,6 @@ public class FavoriteFragment extends BaseFragment implements RecyclerViewItemLi
         titleBar.showBackButton();
         titleBar.setSubHeading(getString(R.string.favorite));
     }
-
 
 
     @Override
@@ -146,6 +162,9 @@ public class FavoriteFragment extends BaseFragment implements RecyclerViewItemLi
 
     @Override
     public void share(Post entity, int position) {
+
+        getDockActivity().onLoadingStarted();
+
         if (entity.getImageUrl() != null && !entity.getImageUrl().equals("") && entity.getDescription() != null && !entity.getDescription().equals("")) {
             ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), entity.getImageUrl(), entity.getDescription());
         } else if (entity.getImageUrl() != null && entity.getDescription() == null) {
@@ -160,12 +179,28 @@ public class FavoriteFragment extends BaseFragment implements RecyclerViewItemLi
     @Override
     public void comment(Post entity, int position) {
 
-        getDockActivity().replaceDockableFragment(CommentFragment.newInstance(entity.getId()+""),"CommentFragment");
+        getDockActivity().replaceDockableFragment(CommentFragment.newInstance(entity.getId() + ""), "CommentFragment");
     }
 
     @Override
     public void onResume() {
         super.onResume();
         getDockActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    @Override
+    public void reportPost(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.reportPost(entity.getId(), entity.getUserId()), reportPost);
+    }
+
+    @Override
+    public void reportUser(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.reportUser(entity.getUserId()), reportUser);
+
+    }
+
+    @Override
+    public void DeletePost(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.deletePost(entity.getId()), deletePost);
     }
 }

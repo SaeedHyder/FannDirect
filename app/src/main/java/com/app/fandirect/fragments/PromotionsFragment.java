@@ -24,6 +24,7 @@ import com.app.fandirect.helpers.UIHelper;
 import com.app.fandirect.interfaces.ImageSetter;
 import com.app.fandirect.interfaces.PostClicksInterface;
 import com.app.fandirect.interfaces.RecyclerViewItemListener;
+import com.app.fandirect.interfaces.ReportPostIntetface;
 import com.app.fandirect.ui.adapters.ArrayListAdapter;
 import com.app.fandirect.ui.binders.CategoryRecyclerBinder;
 import com.app.fandirect.ui.binders.PromotionsBinder;
@@ -44,14 +45,18 @@ import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static com.app.fandirect.global.WebServiceConstants.AllServicesCategories;
+import static com.app.fandirect.global.WebServiceConstants.deletePost;
 import static com.app.fandirect.global.WebServiceConstants.favoritePost;
+import static com.app.fandirect.global.WebServiceConstants.getAllPosts;
 import static com.app.fandirect.global.WebServiceConstants.getAllPromotions;
 import static com.app.fandirect.global.WebServiceConstants.postLike;
+import static com.app.fandirect.global.WebServiceConstants.reportPost;
+import static com.app.fandirect.global.WebServiceConstants.reportUser;
 
 /**
  * Created by saeedhyder on 3/14/2018.
  */
-public class PromotionsFragment extends BaseFragment implements RecyclerViewItemListener, ImageSetter, PostClicksInterface {
+public class PromotionsFragment extends BaseFragment implements RecyclerViewItemListener, ImageSetter, PostClicksInterface ,ReportPostIntetface{
     @BindView(R.id.txt_search)
     AnyEditTextView txtSearch;
     @BindView(R.id.iv_search_icon)
@@ -100,7 +105,7 @@ public class PromotionsFragment extends BaseFragment implements RecyclerViewItem
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Adapter = new ArrayListAdapter<Post>(getDockActivity(), new PromotionsBinder(getDockActivity(), prefHelper, this, this));
+        Adapter = new ArrayListAdapter<Post>(getDockActivity(), new PromotionsBinder(getDockActivity(), prefHelper, this, this,this));
         imageLoader = ImageLoader.getInstance();
         if (getArguments() != null) {
         }
@@ -292,6 +297,9 @@ public class PromotionsFragment extends BaseFragment implements RecyclerViewItem
 
     @Override
     public void share(Post entity, int position) {
+
+        getDockActivity().onLoadingStarted();
+
         if (entity.getImageUrl() != null && !entity.getImageUrl().equals("") && entity.getDescription() != null && !entity.getDescription().equals("")) {
             ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), entity.getImageUrl(), entity.getDescription());
         } else if (entity.getImageUrl() != null && entity.getDescription() == null) {
@@ -332,6 +340,20 @@ public class PromotionsFragment extends BaseFragment implements RecyclerViewItem
                 setPromotionsListData(entity);
                 break;
 
+            case deletePost:
+                serviceHelper.enqueueCall(headerWebService.getServices(), AllServicesCategories);
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+
+                break;
+
+            case reportPost:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                break;
+
+            case reportUser:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                break;
+
         }
     }
 
@@ -345,6 +367,22 @@ public class PromotionsFragment extends BaseFragment implements RecyclerViewItem
     public void onResume() {
         super.onResume();
         getDockActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    @Override
+    public void reportPost(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.reportPost(entity.getId(), entity.getUserId()), reportPost);
+    }
+
+    @Override
+    public void reportUser(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.reportUser(entity.getUserId()), reportUser);
+
+    }
+
+    @Override
+    public void DeletePost(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.deletePost(entity.getId()), deletePost);
     }
 
 

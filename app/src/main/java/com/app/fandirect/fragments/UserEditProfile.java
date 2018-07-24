@@ -236,24 +236,29 @@ public class UserEditProfile extends BaseFragment implements ImageSetter {
             txtPhone.setError(getString(R.string.enter_MobileNum));
             return false;
         }*/ else if (txtBirthday.getText() == null || (txtBirthday.getText().toString().isEmpty())) {
-            txtBirthday.setError("Date of birth cannot be Empty");
+            UIHelper.showShortToastInCenter(getDockActivity(),"Date of birth cannot be Empty");
+           // txtBirthday.setError("Date of birth cannot be Empty");
             return false;
         } else if (txtAutoComplete.getText() == null || (txtAutoComplete.getText().toString().isEmpty())) {
+
             txtAutoComplete.setError("Location cannot be Empty");
             return false;
         } else if (txtProfession.getText() == null || (txtProfession.getText().toString().isEmpty())) {
+
             if (txtProfession.requestFocus()) {
                 setEditTextFocus(txtProfession);
             }
             txtProfession.setError("Profession cannot be Empty");
             return false;
         } else if (txtWorksAt.getText() == null || (txtWorksAt.getText().toString().isEmpty())) {
+
             if (txtWorksAt.requestFocus()) {
                 setEditTextFocus(txtWorksAt);
             }
             txtWorksAt.setError("Workat cannot be Empty");
             return false;
         } else if (txtHobbies.getText() == null || (txtHobbies.getText().toString().isEmpty())) {
+
             if (txtHobbies.requestFocus()) {
                 setEditTextFocus(txtHobbies);
             }
@@ -266,6 +271,7 @@ public class UserEditProfile extends BaseFragment implements ImageSetter {
             txtAboutUs.setError("Aboutus cannot be Empty");
             return false;
         }*/ else {
+         // txtBirthday.setError(null);
             return true;
         }
 

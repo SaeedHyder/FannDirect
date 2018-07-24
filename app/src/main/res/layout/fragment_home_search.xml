@@ -60,6 +60,7 @@
                 android:background="@color/transparent"
                 android:hint="Search..."
                 android:inputType="text"
+                android:imeOptions="actionSearch"
                 android:maxLines="1"
                 android:paddingStart="@dimen/x10"
                 android:textColor="@color/text_black_color"

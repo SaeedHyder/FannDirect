@@ -31,38 +31,66 @@
                     android:layout_height="@dimen/x45"
                     android:src="@drawable/placeholder" />
 
-                <com.app.fandirect.ui.views.AnyTextView
-                    android:id="@+id/txt_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/x15"
-                    android:layout_toEndOf="@+id/iv_image"
-                    android:text="Jonathan Chen"
-                    android:textColor="#383838"
-                    android:textSize="@dimen/x15"
-                    app:typeface="@string/font_normal" />
-
-                <com.app.fandirect.ui.views.AnyTextView
-                    android:id="@+id/txt_date"
+                <LinearLayout
+                    android:id="@+id/ll_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/x15"
                     android:layout_toEndOf="@+id/iv_image"
-                    android:gravity="end"
-                    android:text="22-07-17"
-                    android:textColor="@color/app_light_gray"
-                    android:textSize="@dimen/x12"
-                    app:typeface="@string/font_normal" />
+                    android:orientation="horizontal">
+
+                    <com.app.fandirect.ui.views.AnyTextView
+                        android:id="@+id/txt_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/x15"
+                        android:layout_weight="0.6"
+                        android:text="Olivia Martins"
+                        android:textColor="@color/app_dark_gray_2"
+                        android:textSize="@dimen/x15"
+                        app:typeface="@string/font_normal" />
+
+                    <com.app.fandirect.ui.views.AnyTextView
+                        android:id="@+id/txt_date"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_above="@+id/txt_address"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginEnd="@dimen/x7"
+                        android:layout_marginStart="15dp"
+                        android:layout_toEndOf="@+id/txt_name"
+                        android:layout_weight="0.3"
+                        android:gravity="end|center_vertical"
+                        android:text="22-07-17"
+                        android:textColor="@color/app_dark_gray"
+                        android:textSize="@dimen/x12"
+                        app:typeface="@string/font_normal" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/x20"
+                        android:layout_toEndOf="@+id/txt_date"
+                        android:layout_weight="0.1"
+                        android:gravity="end">
+
+                        <Button
+                            android:id="@+id/menu_btn"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/menu2" />
+                    </LinearLayout>
+
+                </LinearLayout>
 
 
                 <com.app.fandirect.ui.views.AnyTextView
                     android:id="@+id/txt_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/txt_name"
+                    android:layout_below="@+id/ll_name"
                     android:layout_marginStart="@dimen/x15"
                     android:layout_toEndOf="@+id/iv_image"
                     android:gravity="start"
+
                     android:maxLines="1"
                     android:textColor="#3D3D3D"
                     android:textSize="@dimen/x13"

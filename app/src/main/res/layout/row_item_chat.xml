@@ -72,7 +72,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/x10"
-        android:padding="@dimen/x10"
+        android:paddingEnd="@dimen/x10"
+        android:paddingStart="@dimen/x10"
         android:visibility="visible">
 
 

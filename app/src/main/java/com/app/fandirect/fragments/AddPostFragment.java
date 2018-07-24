@@ -133,6 +133,7 @@ public class AddPostFragment extends BaseFragment implements PostInterface, Imag
         }
 
         if (prefHelper.getUser().getImageUrl() != null) {
+
             imageLoader.displayImage(prefHelper.getUser().getImageUrl() + "", ivImage);
         }
 

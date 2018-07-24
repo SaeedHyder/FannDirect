@@ -312,7 +312,8 @@ public class EditProfileSpFragment extends BaseFragment implements ImageSetter, 
             txtPhone.setError(getString(R.string.enter_MobileNum));
             return false;
         }*/ else if (txtBirthday.getText() == null || (txtBirthday.getText().toString().isEmpty())) {
-            txtBirthday.setError("Date of birth cannot be Empty");
+            UIHelper.showShortToastInCenter(getDockActivity(),"Date of birth cannot be Empty");
+           // txtBirthday.setError("Date of birth cannot be Empty");
             return false;
         } else if (txtAutoComplete.getText() == null || (txtAutoComplete.getText().toString().isEmpty())) {
             txtAutoComplete.setError("Location cannot be Empty");
@@ -355,6 +356,7 @@ public class EditProfileSpFragment extends BaseFragment implements ImageSetter, 
             UIHelper.showShortToastInCenter(getDockActivity(), "Select Categories");
             return false;
         } else {
+
             return true;
         }
 

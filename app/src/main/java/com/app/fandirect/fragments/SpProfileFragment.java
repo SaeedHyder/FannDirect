@@ -30,6 +30,7 @@ import com.app.fandirect.helpers.InternetHelper;
 import com.app.fandirect.helpers.ShareIntentHelper;
 import com.app.fandirect.helpers.UIHelper;
 import com.app.fandirect.interfaces.PostClicksInterface;
+import com.app.fandirect.interfaces.ReportPostIntetface;
 import com.app.fandirect.interfaces.UserItemClickInterface;
 import com.app.fandirect.ui.adapters.ArrayListAdapter;
 import com.app.fandirect.ui.binders.PostItemBinder;
@@ -64,21 +65,25 @@ import static com.app.fandirect.global.WebServiceConstants.AddFann;
 import static com.app.fandirect.global.WebServiceConstants.AddFannProfile;
 import static com.app.fandirect.global.WebServiceConstants.GetProfile;
 import static com.app.fandirect.global.WebServiceConstants.GetProfilePushNotification;
+import static com.app.fandirect.global.WebServiceConstants.PostDeleteProfile;
 import static com.app.fandirect.global.WebServiceConstants.Unfriend;
 import static com.app.fandirect.global.WebServiceConstants.UnfriendProfile;
 import static com.app.fandirect.global.WebServiceConstants.cancelled;
 import static com.app.fandirect.global.WebServiceConstants.cancelledProfile;
 import static com.app.fandirect.global.WebServiceConstants.confirmRequest;
 import static com.app.fandirect.global.WebServiceConstants.confirmRequestProfile;
+import static com.app.fandirect.global.WebServiceConstants.deletePost;
 import static com.app.fandirect.global.WebServiceConstants.favoritePost;
 import static com.app.fandirect.global.WebServiceConstants.getMyServices;
 import static com.app.fandirect.global.WebServiceConstants.postLike;
+import static com.app.fandirect.global.WebServiceConstants.reportPost;
+import static com.app.fandirect.global.WebServiceConstants.reportUser;
 import static com.app.fandirect.global.WebServiceConstants.showProfile;
 
 /**
  * Created by saeedhyder on 3/12/2018.
  */
-public class SpProfileFragment extends BaseFragment implements PostClicksInterface, UserItemClickInterface {
+public class SpProfileFragment extends BaseFragment implements PostClicksInterface, UserItemClickInterface ,ReportPostIntetface{
     @BindView(R.id.iv_profile_image)
     CircleImageView ivProfileImage;
     @BindView(R.id.txt_profileName)
@@ -182,7 +187,7 @@ public class SpProfileFragment extends BaseFragment implements PostClicksInterfa
 
         imageLoader = ImageLoader.getInstance();
         pictureAdapter = new ArrayListAdapter<Picture>(getDockActivity(), new ProfilePicturesGridItemBinder(getDockActivity(), prefHelper));
-        postAdapter = new ArrayListAdapter<Post>(getDockActivity(), new PostItemBinder(getDockActivity(), prefHelper, this));
+        postAdapter = new ArrayListAdapter<Post>(getDockActivity(), new PostItemBinder(getDockActivity(), prefHelper, this,this));
 
         if (getArguments() != null) {
 
@@ -544,6 +549,66 @@ public class SpProfileFragment extends BaseFragment implements PostClicksInterfa
 
                 break;
 
+            case deletePost:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                if (userId != null) {
+                    serviceHelper.enqueueCall(headerWebService.getProfile(userId + ""), PostDeleteProfile, true, true);
+                } else {
+                    serviceHelper.enqueueCall(headerWebService.getProfile(prefHelper.getUser().getId() + ""), PostDeleteProfile, true, true);
+                }
+
+                break;
+
+            case reportPost:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                break;
+
+            case reportUser:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                break;
+
+            case PostDeleteProfile:
+
+                GetProfileEnt postDelete = (GetProfileEnt) result;
+
+
+                if (postDelete.getProfileStaus().equals("0") && postDelete.getPostStatus().equals("0")) {
+
+                    postCount = String.valueOf(postDelete.getPosts().size());
+                    txtPosts.setText(postCount + " Posts");
+                    setPostData(postDelete.getPosts());
+
+                } else if (postDelete.getProfileStaus().equals("1") && userId != null && !(String.valueOf(prefHelper.getUser().getId()).equals(userId))) {
+
+                    postDelete.setPosts(new ArrayList<Post>());
+                    txtPosts.setText(String.valueOf(postDelete.getPosts().size()) + " Posts");
+                }
+
+                lvPosts.setVisibility(View.VISIBLE);
+                gvPictures.setVisibility(View.GONE);
+                lvFanns.setVisibility(View.GONE);
+
+                txtFanns.setBackgroundColor(getResources().getColor(R.color.transparent));
+                txtFanns.setTextColor(getResources().getColor(R.color.gray_dark));
+
+                txtPictures.setBackgroundColor(getResources().getColor(R.color.transparent));
+                txtPictures.setTextColor(getResources().getColor(R.color.gray_dark));
+
+                txtPosts.setBackgroundColor(getResources().getColor(R.color.app_blue));
+                txtPosts.setTextColor(getResources().getColor(R.color.white));
+
+
+                if (postDelete.getPosts().size() > 0) {
+                    lvPosts.setVisibility(View.VISIBLE);
+                    txtNoData.setVisibility(View.GONE);
+                } else {
+                    lvPosts.setVisibility(View.GONE);
+                    txtNoData.setVisibility(View.VISIBLE);
+                }
+
+
+                break;
+
         }
     }
 
@@ -756,6 +821,7 @@ public class SpProfileFragment extends BaseFragment implements PostClicksInterfa
 
     @Override
     public void share(Post entity, int position) {
+        getDockActivity().onLoadingStarted();
         if (entity.getImageUrl() != null && !entity.getImageUrl().equals("") && entity.getDescription() != null && !entity.getDescription().equals("")) {
             ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), entity.getImageUrl(), entity.getDescription());
         } else if (entity.getImageUrl() != null && entity.getDescription() == null) {
@@ -928,6 +994,22 @@ public class SpProfileFragment extends BaseFragment implements PostClicksInterfa
         super.ResponseFailure(tag);
 
         getDockActivity().onLoadingFinished();
+    }
+
+    @Override
+    public void reportPost(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.reportPost(entity.getId(), entity.getUserId()), reportPost);
+    }
+
+    @Override
+    public void reportUser(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.reportUser(entity.getUserId()), reportUser);
+
+    }
+
+    @Override
+    public void DeletePost(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.deletePost(entity.getId()), deletePost);
     }
 
 

@@ -204,6 +204,11 @@ public abstract class DockActivity extends AppCompatActivity implements
         }
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        //No call for super(). Bug on API Level > 11.
+    }
+
     public void popFragment() {
         if (getSupportFragmentManager() == null)
             return;

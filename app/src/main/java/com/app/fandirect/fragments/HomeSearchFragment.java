@@ -6,12 +6,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.app.fandirect.R;
 import com.app.fandirect.entities.FanStatus;
@@ -126,6 +128,21 @@ public class HomeSearchFragment extends BaseFragment implements RecyclerViewItem
         serviceHelper.enqueueCall(headerWebService.getServices(), AllServicesCategories);
 
         onNotificationReceived();
+
+        txtSearchBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+
+                UIHelper.hideSoftKeyboard(getDockActivity(), txtSearchBox);
+                if (roleId == 3) {
+                    serviceHelper.enqueueCall(headerWebService.SearchPeople(roleId + "", txtSearchBox.getText().toString()), SearchUser);
+                } else {
+                    serviceHelper.enqueueCall(headerWebService.SearchPeople(roleId + "", txtSearchBox.getText().toString()), SearchServiceP);
+                }
+
+                return false;
+            }
+        });
 
     }
 

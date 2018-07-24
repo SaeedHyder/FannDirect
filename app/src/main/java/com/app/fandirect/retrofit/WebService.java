@@ -20,12 +20,14 @@ import java.util.ArrayList;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface WebService {
@@ -263,7 +265,7 @@ public interface WebService {
     @FormUrlEncoded
     @POST("postComment")
     Call<ResponseWrapper<commentEnt>> postComment(
-            @Field("comment") String comment,
+            @Field("selected_comment") String comment,
             @Field("post_id") String post_id
     );
 
@@ -298,7 +300,7 @@ public interface WebService {
 
     @GET("userServiceRequestHistory")
     Call<ResponseWrapper<ArrayList<ServiceHistoryEnt>>> getUserServiceRequestHistory(@Query("from_date") String from_date,
-                                                                                 @Query("to_date") String to_date);
+                                                                                     @Query("to_date") String to_date);
 
 
     @FormUrlEncoded
@@ -335,11 +337,23 @@ public interface WebService {
             @Query("status") int status
     );
 
+    @FormUrlEncoded
+    @POST("reportPost")
+    Call<ResponseWrapper> reportPost(
+            @Field("post_id") Integer post_id,
+            @Field("reportee_id") String reportee_id
+    );
 
+    @FormUrlEncoded
+    @POST("reportUser")
+    Call<ResponseWrapper> reportUser(
+            @Field("reportee_id") String reportee_id
+    );
 
-
-
-
+    @DELETE("deletePost/{post_id}")
+    Call<ResponseWrapper> deletePost(
+            @Path("post_id") Integer post_id
+    );
 
 
 }

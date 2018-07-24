@@ -1,13 +1,13 @@
 package com.app.fandirect.fragments;
 
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -20,6 +20,7 @@ import com.app.fandirect.helpers.UIHelper;
 import com.app.fandirect.interfaces.ImageSetter;
 import com.app.fandirect.interfaces.PostClicksInterface;
 import com.app.fandirect.interfaces.RecyclerViewItemListener;
+import com.app.fandirect.interfaces.ReportPostIntetface;
 import com.app.fandirect.ui.adapters.ArrayListAdapter;
 import com.app.fandirect.ui.binders.FeedsBinder;
 import com.app.fandirect.ui.views.AnyEditTextView;
@@ -37,14 +38,18 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.app.fandirect.global.WebServiceConstants.deletePost;
 import static com.app.fandirect.global.WebServiceConstants.favoritePost;
 import static com.app.fandirect.global.WebServiceConstants.getAllPosts;
 import static com.app.fandirect.global.WebServiceConstants.postLike;
+import static com.app.fandirect.global.WebServiceConstants.reportPost;
+import static com.app.fandirect.global.WebServiceConstants.reportUser;
 
 /**
  * Created by saeedhyder on 3/13/2018.
  */
-public class FeedFragment extends BaseFragment implements RecyclerViewItemListener, ImageSetter, PostClicksInterface {
+public class FeedFragment extends BaseFragment implements RecyclerViewItemListener, ImageSetter, PostClicksInterface, ReportPostIntetface {
+
 
     @BindView(R.id.txt_search)
     AnyEditTextView txtSearch;
@@ -58,10 +63,8 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
     CircleImageView image;
     @BindView(R.id.txt_update_post)
     AnyTextView txtUpdatePost;
-    @BindView(R.id.btn_uploadPhoto)
-    AnyTextView btnUploadPhoto;
-    @BindView(R.id.btn_post)
-    Button btnPost;
+    @BindView(R.id.ll_post)
+    LinearLayout llPost;
     @BindView(R.id.txt_no_data)
     AnyTextView txtNoData;
     @BindView(R.id.lv_feeds)
@@ -84,7 +87,7 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         imageLoader = ImageLoader.getInstance();
-        Adapter = new ArrayListAdapter<Post>(getDockActivity(), new FeedsBinder(getDockActivity(), prefHelper, this, this));
+        Adapter = new ArrayListAdapter<Post>(getDockActivity(), new FeedsBinder(getDockActivity(), prefHelper, this, this, this));
 
         if (getArguments() != null) {
         }
@@ -94,6 +97,7 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feeds, container, false);
+
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -218,28 +222,6 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
 
     }
 
-    @Override
-    public void ResponseSuccess(Object result, String Tag, String message) {
-        super.ResponseSuccess(result, Tag, message);
-        switch (Tag) {
-
-
-            case getAllPosts:
-                ArrayList<Post> entity = (ArrayList<Post>) result;
-                setFeedsListData(entity);
-                break;
-
-            case postLike:
-                UIHelper.showShortToastInCenter(getDockActivity(), message);
-                break;
-
-            case favoritePost:
-                UIHelper.showShortToastInCenter(getDockActivity(), message);
-                break;
-
-
-        }
-    }
 
     private void setFeedsListData(ArrayList<Post> entity) {
 
@@ -283,10 +265,12 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
         getDockActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
+
+
     @Override
     public void share(Post entity, int position) {
 
-   //     getDockActivity().onLoadingStarted();
+        getDockActivity().onLoadingStarted();
 
         if (entity.getImageUrl() != null && !entity.getImageUrl().equals("") && entity.getDescription() != null && !entity.getDescription().equals("")) {
             ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), entity.getImageUrl(), entity.getDescription());
@@ -303,6 +287,59 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
     @Override
     public void comment(Post entity, int position) {
         getDockActivity().replaceDockableFragment(CommentFragment.newInstance(entity.getId() + ""), "CommentFragment");
+    }
+
+
+    @Override
+    public void reportPost(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.reportPost(entity.getId(), entity.getUserId()), reportPost);
+    }
+
+    @Override
+    public void reportUser(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.reportUser(entity.getUserId()), reportUser);
+
+    }
+
+    @Override
+    public void DeletePost(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.deletePost(entity.getId()), deletePost);
+    }
+
+    @Override
+    public void ResponseSuccess(Object result, String Tag, String message) {
+        super.ResponseSuccess(result, Tag, message);
+        switch (Tag) {
+
+
+            case getAllPosts:
+                ArrayList<Post> entity = (ArrayList<Post>) result;
+                setFeedsListData(entity);
+                break;
+
+            case postLike:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                break;
+
+            case favoritePost:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                break;
+
+            case deletePost:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                serviceHelper.enqueueCall(headerWebService.getAllPosts(), getAllPosts);
+                break;
+
+            case reportPost:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                break;
+
+            case reportUser:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                break;
+
+
+        }
     }
 
 

@@ -62,6 +62,8 @@ public class AppConstants {
     public static String cancel_request= "cancel_request";
     public static String declined_request= "declined_request";
     public static String unfriend= "unfriend";
+    public static String block_user= "block_user";
+    public static String delete_user= "delete_user";
 
     //fann Rqeust keys
 

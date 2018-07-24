@@ -90,6 +90,8 @@ import static com.app.fandirect.global.AppConstants.Complete_Request;
 import static com.app.fandirect.global.AppConstants.New_Request;
 import static com.app.fandirect.global.AppConstants.Rejected_Request;
 import static com.app.fandirect.global.AppConstants.accept_request;
+import static com.app.fandirect.global.AppConstants.block_user;
+import static com.app.fandirect.global.AppConstants.delete_user;
 import static com.app.fandirect.global.AppConstants.friend_request;
 import static com.app.fandirect.global.AppConstants.messagePush;
 import static com.app.fandirect.global.WebServiceConstants.feedback;
@@ -234,6 +236,7 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
         if (savedInstanceState == null)
             initFragment();
 
+
     }
 
     @Override
@@ -251,6 +254,10 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
         LocalBroadcastManager.getInstance(getDockActivity()).registerReceiver(broadcastReceiver,
                 new IntentFilter(AppConstants.PUSH_NOTIFICATION));
 
+        if (!prefHelper.isLogin()) {
+            replaceDockableFragment(LoginFragment.newInstance(), "LoginFragment");
+        }
+      //  initFragment();
 
     }
 
@@ -293,6 +300,34 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
                             });
                             dialogHelper.setCancelable(false);
                             dialogHelper.showDialog();
+                        } else if (Type != null && Type.equals(block_user)) {
+
+                            final DialogHelper dialogHelper = new DialogHelper(getDockActivity());
+                            dialogHelper.alertDialoge(R.layout.alert_dialoge, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialogHelper.hideDialog();
+                                }
+                            }, getDockActivity().getResources().getString(R.string.blocked_by_admin));
+
+                            dialogHelper.showDialog();
+                            getDockActivity().popBackStackTillEntry(0);
+                            prefHelper.setLoginStatus(false);
+                            replaceDockableFragment(LoginFragment.newInstance(), "LoginFragment");
+
+                        } else if (Type != null && Type.equals(delete_user)) {
+                            final DialogHelper dialogHelper = new DialogHelper(getDockActivity());
+                            dialogHelper.alertDialoge(R.layout.alert_dialoge, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialogHelper.hideDialog();
+                                }
+                            }, getString(R.string.account_deleted_by_admin));
+
+                            dialogHelper.showDialog();
+                            prefHelper.setLoginStatus(false);
+                            getDockActivity().popBackStackTillEntry(0);
+                            replaceDockableFragment(LoginFragment.newInstance(), "LoginFragment");
                         }
                     }
 
@@ -456,6 +491,34 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
                     }
                 });
                 dialogHelper.showDialog();
+            } else if (Type != null && Type.equals(block_user)) {
+
+               /* final DialogHelper dialogHelper=new DialogHelper(getDockActivity());
+                dialogHelper.alertDialoge(R.layout.alert_dialoge, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialogHelper.hideDialog();
+                    }
+                },getDockActivity().getResources().getString(R.string.blocked_by_admin));
+
+                dialogHelper.showDialog();*/
+                prefHelper.setLoginStatus(false);
+                getDockActivity().popBackStackTillEntry(0);
+                replaceDockableFragment(LoginFragment.newInstance(), "LoginFragment");
+
+            } else if (Type != null && Type.equals(delete_user)) {
+              /*  final DialogHelper dialogHelper=new DialogHelper(getDockActivity());
+                dialogHelper.alertDialoge(R.layout.alert_dialoge, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialogHelper.hideDialog();
+                    }
+                },"Account has been deleted by admin");
+
+                dialogHelper.showDialog();*/
+                prefHelper.setLoginStatus(false);
+                getDockActivity().popBackStackTillEntry(0);
+                replaceDockableFragment(LoginFragment.newInstance(), "LoginFragment");
             }
         }
     }
@@ -810,7 +873,7 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
             final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 turnLocationOn(null);
-                 buildAlertMessageNoGps(R.string.gps_question, Settings.ACTION_LOCATION_SOURCE_SETTINGS, LocationResultCode);
+                buildAlertMessageNoGps(R.string.gps_question, Settings.ACTION_LOCATION_SOURCE_SETTINGS, LocationResultCode);
                 return false;
             } else {
                 return true;

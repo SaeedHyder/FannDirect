@@ -20,6 +20,7 @@ public class WebServiceConstants {
     public static final String PushOnOff = "PushOnOff";
     public static final String GetProfile = "GetProfile";
     public static final String GetProfilePushNotification = "GetProfilePushNotification";
+    public static final String PostDeleteProfile = "PostDeleteProfile";
     public static final String AllServicesCategories = "AllServicesCategories";
     public static final String getNotification = "getNotification";
     public static final String SearchUser = "SearchUser";
@@ -64,4 +65,7 @@ public class WebServiceConstants {
     public static final String confirmRequestProfile = "confirmRequestProfile";
     public static final String postPrivacySetting = "postPrivacySetting";
     public static final String profilePrivacySetting = "profilePrivacySetting";
+    public static final String reportPost = "reportPost";
+    public static final String reportUser = "reportUser";
+    public static final String deletePost = "deletePost";
 }

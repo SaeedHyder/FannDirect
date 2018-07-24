@@ -1,7 +1,16 @@
 package com.app.fandirect.ui.binders;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.SystemClock;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 
 import com.app.fandirect.R;
 import com.app.fandirect.activities.DockActivity;
@@ -10,7 +19,9 @@ import com.app.fandirect.fragments.SpProfileFragment;
 import com.app.fandirect.fragments.UserProfileFragment;
 import com.app.fandirect.helpers.BasePreferenceHelper;
 import com.app.fandirect.helpers.DateHelper;
+import com.app.fandirect.helpers.DialogHelper;
 import com.app.fandirect.interfaces.PostClicksInterface;
+import com.app.fandirect.interfaces.ReportPostIntetface;
 import com.app.fandirect.ui.viewbinders.abstracts.ViewBinder;
 import com.app.fandirect.ui.views.AnyTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -31,14 +42,18 @@ public class PostItemBinder extends ViewBinder<Post> {
     private BasePreferenceHelper prefHelper;
     private ImageLoader imageLoader;
     private PostClicksInterface postClicksInterface;
+    private ReportPostIntetface reportPostIntetface;
+    private PopupMenu popup;
+    private long mLastClickTime = 0;
 
 
-    public PostItemBinder(DockActivity dockActivity, BasePreferenceHelper prefHelper, PostClicksInterface postClicksInterface) {
+    public PostItemBinder(DockActivity dockActivity, BasePreferenceHelper prefHelper, PostClicksInterface postClicksInterface,ReportPostIntetface reportPostIntetface) {
         super(R.layout.row_item_post);
         this.dockActivity = dockActivity;
         this.prefHelper = prefHelper;
         this.imageLoader = ImageLoader.getInstance();
         this.postClicksInterface = postClicksInterface;
+        this.reportPostIntetface=reportPostIntetface;
     }
 
     @Override
@@ -56,7 +71,7 @@ public class PostItemBinder extends ViewBinder<Post> {
         }
         viewHolder.txtName.setText(entity.getUserDetail().getUserName());
         viewHolder.txtDescription.setText(entity.getDescription());
-        viewHolder.txtDate.setText(DateHelper.getFormatedDate("yyyy-MM-dd HH:mm:ss","dd-MM-yyyy",entity.getCreated_at()));
+        viewHolder.txtDate.setText(DateHelper.getFormatedDate("yyyy-MM-dd HH:mm:ss","dd-MM-yy",entity.getCreated_at()));
 
         if (entity.getLocation() != null && !entity.getLocation().equals("")) {
             viewHolder.txtAddress.setText(entity.getLocation());
@@ -76,15 +91,15 @@ public class PostItemBinder extends ViewBinder<Post> {
             viewHolder.comment.setText("");
         }
         if (entity.getIsLike() == 1) {
-            viewHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like4, 0, 0, 0);
+            viewHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.selected_like, 0, 0, 0);
         } else {
-            viewHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like3, 0, 0, 0);
+            viewHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.unselected_like, 0, 0, 0);
         }
 
         if (entity.getIsFavourite() == 1) {
-            viewHolder.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.fav, 0, 0, 0);
+            viewHolder.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.selected_fav, 0, 0, 0);
         } else {
-            viewHolder.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.fav3, 0, 0, 0);
+            viewHolder.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.unselected_fav, 0, 0, 0);
         }
 
         viewHolder.like.setOnClickListener(new View.OnClickListener() {
@@ -92,12 +107,12 @@ public class PostItemBinder extends ViewBinder<Post> {
             public void onClick(View v) {
                 if (entity.getIsLike() == 0) {
                     viewHolder.like.setText(String.valueOf(entity.getLikeCount() + 1));
-                    viewHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like4, 0, 0, 0);
+                    viewHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.selected_like, 0, 0, 0);
                     entity.setLikeCount(entity.getLikeCount() + 1);
                     entity.setIsLike(1);
                 } else {
                     viewHolder.like.setText(String.valueOf(entity.getLikeCount() - 1));
-                    viewHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like3, 0, 0, 0);
+                    viewHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.unselected_like, 0, 0, 0);
                     entity.setIsLike(0);
                     entity.setLikeCount(entity.getLikeCount() - 1);
                 }
@@ -110,9 +125,14 @@ public class PostItemBinder extends ViewBinder<Post> {
                 postClicksInterface.comment(entity, position);
             }
         });
+
         viewHolder.share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 3000) {
+                    return;
+                }
+                mLastClickTime = SystemClock.elapsedRealtime();
                 postClicksInterface.share(entity, position);
             }
         });
@@ -120,16 +140,207 @@ public class PostItemBinder extends ViewBinder<Post> {
             @Override
             public void onClick(View v) {
                 if (entity.getIsFavourite() == 0) {
-                    viewHolder.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.fav, 0, 0, 0);
+                    viewHolder.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.selected_fav, 0, 0, 0);
                     entity.setIsFavourite(1);
 
                 } else {
-                    viewHolder.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.fav3, 0, 0, 0);
+                    viewHolder.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.unselected_fav, 0, 0, 0);
                     entity.setIsFavourite(0);
                 }
                 postClicksInterface.favorite(entity, position);
             }
         });
+
+        viewHolder.menuBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater layoutInflater = (LayoutInflater) dockActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View customView = layoutInflater.inflate(R.layout.popup_window_dialoge, null);
+                final DialogHelper dialogHelper = new DialogHelper(dockActivity);
+
+                AnyTextView deletePost = (AnyTextView) customView.findViewById(R.id.txt_delete_post);
+                AnyTextView reportPost = (AnyTextView) customView.findViewById(R.id.txt_report_post);
+                AnyTextView reportUser = (AnyTextView) customView.findViewById(R.id.txt_repost_user);
+                View viewReport = (View) customView.findViewById(R.id.view_report);
+
+                final PopupWindow popupWindow = new PopupWindow(customView, (int) dockActivity.getResources().getDimension(R.dimen.x130), LinearLayout.LayoutParams.WRAP_CONTENT);
+                //  popupWindow.showAtLocation(viewHolder.llMainframe, Gravity.CENTER, 0, 0);
+
+
+                popupWindow.setBackgroundDrawable(new BitmapDrawable());
+                popupWindow.setOutsideTouchable(true);
+                popupWindow.setTouchable(true);
+
+                popupWindow.showAsDropDown(v);
+
+                if (String.valueOf(entity.getUserDetail().getId()).equals(prefHelper.getUser().getId())) {
+                    reportPost.setVisibility(View.GONE);
+                    reportUser.setVisibility(View.GONE);
+                    deletePost.setVisibility(View.VISIBLE);
+                    viewReport.setVisibility(View.GONE);
+                } else {
+                    reportPost.setVisibility(View.VISIBLE);
+                    reportUser.setVisibility(View.VISIBLE);
+                    viewReport.setVisibility(View.VISIBLE);
+                    deletePost.setVisibility(View.GONE);
+                }
+
+                deletePost.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                        dialogHelper.initDropDown(R.layout.dialoge_delete_post, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                reportPostIntetface.DeletePost(entity, position);
+                                dialogHelper.hideDialog();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialogHelper.hideDialog();
+                            }
+                        }, dockActivity.getResources().getString(R.string.delete_post), dockActivity.getResources().getString(R.string.are_you_sure_you_want_to_delete_post));
+
+                        dialogHelper.showDialog();
+                    }
+                });
+
+                reportPost.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                        dialogHelper.initDropDown(R.layout.dialoge_delete_post, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                reportPostIntetface.reportPost(entity, position);
+                                dialogHelper.hideDialog();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialogHelper.hideDialog();
+                            }
+                        }, dockActivity.getResources().getString(R.string.report_post), dockActivity.getResources().getString(R.string.are_you_sure_you_want_to_report_post));
+
+                        dialogHelper.showDialog();
+                    }
+                });
+
+                reportUser.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupWindow.dismiss();
+                        dialogHelper.initDropDown(R.layout.dialoge_delete_post, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                reportPostIntetface.reportUser(entity, position);
+                                dialogHelper.hideDialog();
+                            }
+                        }, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                dialogHelper.hideDialog();
+                            }
+                        }, dockActivity.getResources().getString(R.string.report_user), dockActivity.getResources().getString(R.string.are_you_sure_you_want_to_report_user));
+
+                        dialogHelper.showDialog();
+                    }
+                });
+
+
+            }
+        });
+
+      /*  if (String.valueOf(entity.getUserDetail().getId()).equals(prefHelper.getUser().getId())) {
+            viewHolder.menuBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popup = new PopupMenu(dockActivity, viewHolder.menuBtn);
+                    //Inflating the Popup using xml file
+                    popup.getMenuInflater()
+                            .inflate(R.menu.popup_menu, popup.getMenu());
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            final DialogHelper dialogHelper = new DialogHelper(dockActivity);
+
+                            dialogHelper.initDropDown(R.layout.dialoge_delete_post, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    reportPostIntetface.DeletePost(entity, position);
+                                    dialogHelper.hideDialog();
+                                }
+                            }, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    dialogHelper.hideDialog();
+                                }
+                            }, dockActivity.getResources().getString(R.string.delete_post), dockActivity.getResources().getString(R.string.are_you_sure_you_want_to_delete_post));
+
+                            dialogHelper.showDialog();
+
+
+                            return true;
+                        }
+                    });
+
+                    popup.show();
+                }
+            });
+        } else {
+            viewHolder.menuBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popup = new PopupMenu(dockActivity, viewHolder.menuBtn);
+                    //Inflating the Popup using xml file
+                    popup.getMenuInflater()
+                            .inflate(R.menu.popup_report, popup.getMenu());
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            final DialogHelper dialogHelper = new DialogHelper(dockActivity);
+
+                            if(item.getTitle().toString().equals(dockActivity.getResources().getString(R.string.report_post))) {
+                                dialogHelper.initDropDown(R.layout.dialoge_delete_post, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        reportPostIntetface.reportPost(entity, position);
+                                        dialogHelper.hideDialog();
+                                    }
+                                }, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialogHelper.hideDialog();
+                                    }
+                                }, dockActivity.getResources().getString(R.string.report_post), dockActivity.getResources().getString(R.string.are_you_sure_you_want_to_report_post));
+
+                                dialogHelper.showDialog();
+                            }else{
+                                dialogHelper.initDropDown(R.layout.dialoge_delete_post, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        reportPostIntetface.reportUser(entity, position);
+                                        dialogHelper.hideDialog();
+                                    }
+                                }, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        dialogHelper.hideDialog();
+                                    }
+                                }, dockActivity.getResources().getString(R.string.report_user), dockActivity.getResources().getString(R.string.are_you_sure_you_want_to_report_user));
+
+                                dialogHelper.showDialog();
+                            }
+
+                            return true;
+                        }
+                    });
+
+                    popup.show();
+                }
+            });
+        }*/
 
        /* viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -162,6 +373,8 @@ public class PostItemBinder extends ViewBinder<Post> {
         AnyTextView share;
         @BindView(R.id.favorite)
         AnyTextView favorite;
+        @BindView(R.id.menu_btn)
+        Button menuBtn;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

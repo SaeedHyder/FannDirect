@@ -457,6 +457,7 @@
                     android:gravity="top"
                     android:hint="About"
                     android:padding="@dimen/x10"
+                    android:imeOptions="actionDone"
                     android:paddingStart="@dimen/x38"
                     android:textColor="@color/text_black_color"
                     android:textSize="@dimen/x14"

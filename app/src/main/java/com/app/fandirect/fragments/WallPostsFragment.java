@@ -14,6 +14,7 @@ import com.app.fandirect.helpers.ShareIntentHelper;
 import com.app.fandirect.helpers.UIHelper;
 import com.app.fandirect.interfaces.PostClicksInterface;
 import com.app.fandirect.interfaces.RecyclerViewItemListener;
+import com.app.fandirect.interfaces.ReportPostIntetface;
 import com.app.fandirect.ui.adapters.ArrayListAdapter;
 import com.app.fandirect.ui.binders.FeedsBinder;
 import com.app.fandirect.ui.views.AnyTextView;
@@ -26,14 +27,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.app.fandirect.global.WebServiceConstants.deletePost;
 import static com.app.fandirect.global.WebServiceConstants.favoritePost;
+import static com.app.fandirect.global.WebServiceConstants.getAllPosts;
 import static com.app.fandirect.global.WebServiceConstants.getMyPosts;
 import static com.app.fandirect.global.WebServiceConstants.postLike;
+import static com.app.fandirect.global.WebServiceConstants.reportPost;
+import static com.app.fandirect.global.WebServiceConstants.reportUser;
 
 /**
  * Created by saeedhyder on 3/14/2018.
  */
-public class WallPostsFragment extends BaseFragment implements RecyclerViewItemListener ,PostClicksInterface{
+public class WallPostsFragment extends BaseFragment implements RecyclerViewItemListener ,PostClicksInterface,ReportPostIntetface{
     @BindView(R.id.txt_name)
     AnyTextView txtName;
     @BindView(R.id.txt_no_data)
@@ -55,7 +60,7 @@ public class WallPostsFragment extends BaseFragment implements RecyclerViewItemL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Adapter = new ArrayListAdapter<Post>(getDockActivity(), new FeedsBinder(getDockActivity(), prefHelper, this,this));
+        Adapter = new ArrayListAdapter<Post>(getDockActivity(), new FeedsBinder(getDockActivity(), prefHelper, this,this,this));
         if (getArguments() != null) {
         }
 
@@ -93,6 +98,19 @@ public class WallPostsFragment extends BaseFragment implements RecyclerViewItemL
 
             case favoritePost:
                 UIHelper.showShortToastInCenter(getDockActivity(),message);
+                break;
+
+            case deletePost:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                serviceHelper.enqueueCall(headerWebService.getMyPosts(),getMyPosts);
+                break;
+
+            case reportPost:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                break;
+
+            case reportUser:
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
                 break;
 
         }
@@ -162,6 +180,7 @@ public class WallPostsFragment extends BaseFragment implements RecyclerViewItemL
 
     @Override
     public void share(Post entity, int position) {
+        getDockActivity().onLoadingStarted();
         if (entity.getImageUrl() != null && !entity.getImageUrl().equals("") && entity.getDescription() != null && !entity.getDescription().equals("")) {
             ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), entity.getImageUrl(), entity.getDescription());
         } else if (entity.getImageUrl() != null && entity.getDescription() == null) {
@@ -183,5 +202,21 @@ public class WallPostsFragment extends BaseFragment implements RecyclerViewItemL
     public void onResume() {
         super.onResume();
         getDockActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+    @Override
+    public void reportPost(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.reportPost(entity.getId(), entity.getUserId()), reportPost);
+    }
+
+    @Override
+    public void reportUser(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.reportUser(entity.getUserId()), reportUser);
+
+    }
+
+    @Override
+    public void DeletePost(Post entity, int position) {
+        serviceHelper.enqueueCall(headerWebService.deletePost(entity.getId()), deletePost);
     }
 }

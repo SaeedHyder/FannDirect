@@ -94,52 +94,9 @@
 
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/x1"
-                android:background="@color/view_color" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/x50"
-                android:gravity="center_vertical"
-                android:visibility="gone"
-                android:orientation="horizontal">
-
-                <com.app.fandirect.ui.views.AnyTextView
-                    android:id="@+id/btn_uploadPhoto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="@dimen/x10"
-                    android:drawablePadding="@dimen/x10"
-                    android:drawableStart="@drawable/camera2"
-                    android:gravity="center_vertical"
-                    android:paddingStart="@dimen/x15"
-                    android:text="Upload Photo"
-                    android:textColor="@color/gray_dark"
-                    android:textSize="@dimen/x14"
-                    app:typeface="@string/font_normal" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:gravity="end|center_vertical"
-                    android:paddingEnd="@dimen/x15">
-
-                    <Button
-                        android:id="@+id/btn_post"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/x30"
-                        android:background="@drawable/rounded_button"
-                        android:text="Post"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/x14" />
-
-                </LinearLayout>
 
 
-            </LinearLayout>
+
 
         </LinearLayout>
 

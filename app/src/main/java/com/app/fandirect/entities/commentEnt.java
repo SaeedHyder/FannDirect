@@ -18,7 +18,7 @@ public class commentEnt {
     @SerializedName("post_id")
     @Expose
     private String postId;
-    @SerializedName("comment")
+    @SerializedName("selected_comment")
     @Expose
     private String comment;
     @SerializedName("created_at")

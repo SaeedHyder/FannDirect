@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.app.fandirect.R;
 import com.app.fandirect.activities.MainActivity;
+import com.app.fandirect.fragments.LoginFragment;
 import com.app.fandirect.global.AppConstants;
 import com.app.fandirect.helpers.BasePreferenceHelper;
 import com.app.fandirect.helpers.NotificationHelper;
@@ -16,8 +17,10 @@ import com.google.firebase.messaging.RemoteMessage;
 
 import org.json.JSONObject;
 
+import static com.app.fandirect.global.AppConstants.block_user;
 import static com.app.fandirect.global.AppConstants.cancel_request;
 import static com.app.fandirect.global.AppConstants.declined_request;
+import static com.app.fandirect.global.AppConstants.delete_user;
 import static com.app.fandirect.global.AppConstants.unfriend;
 
 
@@ -38,8 +41,27 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.e(TAG, "Data Payload: " + remoteMessage.getData().toString());
 
 
-            if (!(remoteMessage.getData().get("type").equals(cancel_request) || remoteMessage.getData().get("type").equals(declined_request) || remoteMessage.getData().get("type").equals(unfriend))) {
+            if (!(remoteMessage.getData().get("type").equals(cancel_request) || remoteMessage.getData().get("type").equals(declined_request) || remoteMessage.getData().get("type").equals(unfriend) || remoteMessage.getData().get("type").equals(block_user) || remoteMessage.getData().get("type").equals(delete_user))) {
                 buildNotification(remoteMessage);
+            }else if(remoteMessage.getData().get("type").equals(block_user) || remoteMessage.getData().get("type").equals(delete_user)){
+
+                preferenceHelper.setLoginStatus(false);
+
+                String message = remoteMessage.getData().get("message");
+                String Type = remoteMessage.getData().get("type");
+                String sender_Id = remoteMessage.getData().get("sender_id");
+                String receiver_Id = remoteMessage.getData().get("receiver_id");
+                String request_id = remoteMessage.getData().get("request_id");
+                Intent pushNotification = new Intent(AppConstants.PUSH_NOTIFICATION);
+                pushNotification.putExtra("message", message);
+                pushNotification.putExtra("pushtype", Type);
+                pushNotification.putExtra("sender_id", sender_Id);
+                pushNotification.putExtra("receiver_id", receiver_Id);
+                pushNotification.putExtra("request_id", request_id);
+
+                LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(pushNotification);
+
+
             } else {
                 String message = remoteMessage.getData().get("message");
                 String Type = remoteMessage.getData().get("type");

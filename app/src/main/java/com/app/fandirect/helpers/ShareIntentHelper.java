@@ -14,8 +14,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import com.app.fandirect.activities.DockActivity;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -64,12 +69,49 @@ public class ShareIntentHelper {
         }
     }
 
+
+
     private static void getBitmap(String image, final DockActivity context, final String text) {
-        Picasso.with(context)
+
+        ImageLoader imageLoader=ImageLoader.getInstance();
+
+        imageLoader.loadImage(image, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                context.onLoadingFinished();
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                context.onLoadingFinished();
+                Uri imageUrl = getImageUri(context,loadedImage);
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+                shareIntent.putExtra(Intent.EXTRA_STREAM, imageUrl);
+                shareIntent.setType("image/jpeg");
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                context.startActivity(Intent.createChooser(shareIntent, "send"));
+
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+                context.onLoadingFinished();
+            }
+        });
+
+       /* Picasso.with(context)
                 .load(image)
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        context.onLoadingFinished();
                         Uri imageUri = getImageUri(context,bitmap);
                         Intent shareIntent = new Intent();
                         shareIntent.setAction(Intent.ACTION_SEND);
@@ -79,7 +121,7 @@ public class ShareIntentHelper {
                         shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                        context.startActivity(Intent.createChooser(shareIntent, "send"));
 
-                       context.onLoadingFinished();
+
                      //  context.startActivity(shareIntent);
                     }
 
@@ -92,7 +134,10 @@ public class ShareIntentHelper {
                     public void onPrepareLoad(Drawable placeHolderDrawable) {
 
                     }
-                });
+
+                });*/
+
+
     }
 
 

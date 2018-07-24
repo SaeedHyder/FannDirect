@@ -21,6 +21,5 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="nineoldandroids-library-2.4.0.nineoldandroids-library-2.4.0" level="project" />
   </component>
 </module>

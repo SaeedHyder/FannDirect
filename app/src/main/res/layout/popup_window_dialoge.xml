@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/dropdown_rounded"
+    android:layout_marginStart="@dimen/x15"
+    android:layout_marginEnd="@dimen/x25"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.app.fandirect.ui.views.AnyTextView
+        android:id="@+id/txt_delete_post"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delete_post"
+        android:gravity="center"
+        android:textColor="@color/app_dark_gray_2"
+        android:padding="@dimen/x7"
+        app:typeface="@string/font_normal"/>
+
+
+
+    <com.app.fandirect.ui.views.AnyTextView
+        android:id="@+id/txt_report_post"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/report_post"
+        android:gravity="center"
+        android:textColor="@color/app_dark_gray_2"
+        android:padding="@dimen/x7"
+        app:typeface="@string/font_normal"/>
+
+    <View
+        android:id="@+id/view_report"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x1"
+        android:alpha="0.4"
+        android:background="@color/view_color"/>
+
+    <com.app.fandirect.ui.views.AnyTextView
+        android:id="@+id/txt_repost_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/report_user"
+        android:gravity="center"
+        android:textColor="@color/app_dark_gray_2"
+        android:padding="@dimen/x7"
+        app:typeface="@string/font_normal"/>
+
+
+
+
+
+</LinearLayout>

@@ -44,6 +44,31 @@ public class DialogHelper {
         cancelbutton.setOnClickListener(oncancelclicklistener);
         return this.dialog;
     }
+    public Dialog initDropDown(int layoutID, View.OnClickListener onokclicklistener, View.OnClickListener oncancelclicklistener,String titleString,String textString) {
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        this.dialog.setContentView(layoutID);
+        Button okbutton = (Button) dialog.findViewById(R.id.btn_yes);
+        okbutton.setOnClickListener(onokclicklistener);
+        Button cancelbutton = (Button) dialog.findViewById(R.id.btn_No);
+        cancelbutton.setOnClickListener(oncancelclicklistener);
+        AnyTextView title=(AnyTextView)dialog.findViewById(R.id.txt_title);
+        AnyTextView textDetail=(AnyTextView)dialog.findViewById(R.id.txt_text);
+        title.setText(titleString);
+        textDetail.setText(textString);
+        return this.dialog;
+    }
+
+    public Dialog alertDialoge(int layoutID, View.OnClickListener onokclicklistener,String text) {
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        this.dialog.setContentView(layoutID);
+        Button okbutton = (Button) dialog.findViewById(R.id.btn_yes);
+        AnyTextView textView = (AnyTextView) dialog.findViewById(R.id.txt_text);
+        okbutton.setOnClickListener(onokclicklistener);
+        textView.setText(text);
+        return this.dialog;
+    }
 
     public Dialog initCancelDialoge(int layoutID, View.OnClickListener Yesclicklistener, View.OnClickListener onNoclicklistener) {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
