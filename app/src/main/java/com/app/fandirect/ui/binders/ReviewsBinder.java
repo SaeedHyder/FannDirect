@@ -44,7 +44,9 @@ public class ReviewsBinder extends RecyclerViewBinder<ReviewsEnt> {
     public void bindView(final ReviewsEnt entity, final int position, Object viewHolder, Context context) {
 
         final ViewHolder holder = (ViewHolder) viewHolder;
-        imageLoader.displayImage(entity.getSenderDetail().getImageUrl(), holder.ivImage);
+        if (entity != null && entity.getSenderDetail() != null && entity.getSenderDetail().getImageUrl() != null) {
+            imageLoader.displayImage(entity.getSenderDetail().getImageUrl(), holder.ivImage);
+        }
 
         holder.txtName.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
        /* if(isBold){
@@ -54,7 +56,7 @@ public class ReviewsBinder extends RecyclerViewBinder<ReviewsEnt> {
         }*/
 
         if (entity != null) {
-            if (entity.getSenderDetail() != null) {
+            if (entity.getSenderDetail() != null && entity.getSenderDetail().getUserName() != null) {
                 holder.txtName.setText(entity.getSenderDetail().getUserName() + "");
             }
             holder.txtDescription.setText(entity.getFeedback() + "");
