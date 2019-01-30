@@ -1,12 +1,22 @@
 package com.app.fandirect.fragments;
 
+import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.app.fandirect.R;
+import com.app.fandirect.entities.NotificationCount;
 import com.app.fandirect.entities.Post;
 import com.app.fandirect.fragments.abstracts.BaseFragment;
 import com.app.fandirect.global.AppConstants;
@@ -20,13 +30,25 @@ import com.app.fandirect.ui.binders.FeedsBinder;
 import com.app.fandirect.ui.views.AnyTextView;
 import com.app.fandirect.ui.views.ExpandedListView;
 import com.app.fandirect.ui.views.TitleBar;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.app.fandirect.global.WebServiceConstants.NotifcationCount;
 import static com.app.fandirect.global.WebServiceConstants.allMyPromotionsPosts;
 import static com.app.fandirect.global.WebServiceConstants.deletePost;
 import static com.app.fandirect.global.WebServiceConstants.favoritePost;
@@ -48,6 +70,8 @@ public class SpPromotionsPostFragment extends BaseFragment implements RecyclerVi
     Unbinder unbinder;
     private ArrayListAdapter<Post> Adapter;
     private ArrayList<Post> Collection;
+    private Post postEntity;
+    private InterstitialAd interstitialAd;
 
     public static SpPromotionsPostFragment newInstance() {
         Bundle args = new Bundle();
@@ -60,6 +84,11 @@ public class SpPromotionsPostFragment extends BaseFragment implements RecyclerVi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        interstitialAd = new InterstitialAd(getDockActivity());
+        interstitialAd.setAdUnitId(getDockActivity().getResources().getString(R.string.ad_unit_id_interstitial));
+        final AdRequest adRequest = new AdRequest.Builder()
+                .build();
+        interstitialAd.loadAd(adRequest);
         Adapter = new ArrayListAdapter<Post>(getDockActivity(), new FeedsBinder(getDockActivity(), prefHelper, this,this,this));
         if (getArguments() != null) {
         }
@@ -78,10 +107,47 @@ public class SpPromotionsPostFragment extends BaseFragment implements RecyclerVi
         super.onViewCreated(view, savedInstanceState);
 
         getMainActivity().showBottomBar(AppConstants.search);
-
+        adMobListner();
+      //  onNotificationReceived();
         serviceHelper.enqueueCall(headerWebService.getMyPromotionsPosts(),allMyPromotionsPosts);
+       // serviceHelper.enqueueCall(headerWebService.getNotificaitonCount(), NotifcationCount);
 
     }
+
+    private void adMobListner() {
+
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                if (interstitialAd != null && interstitialAd.isLoaded()) {
+                    interstitialAd.show();
+                } else {
+                    Toast.makeText(getDockActivity(), "Ad did not load", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the interstitial ad is closed.
+            }
+        });
+    }
+
 
     @Override
     public void ResponseSuccess(Object result, String Tag, String message) {
@@ -91,6 +157,13 @@ public class SpPromotionsPostFragment extends BaseFragment implements RecyclerVi
             case allMyPromotionsPosts:
                 ArrayList<Post> entity=(ArrayList<Post>)result;
                 setPromotionsPostListData(entity);
+                break;
+
+            case NotifcationCount:
+                prefHelper.setNotificationCount(((NotificationCount) result).getNotification_count());
+                if(getTitleBar()!=null){
+              //      getTitleBar().showNotification(prefHelper.getNotificationCount());
+                }
                 break;
 
             case postLike:
@@ -140,12 +213,12 @@ public class SpPromotionsPostFragment extends BaseFragment implements RecyclerVi
         titleBar.hideButtons();
         titleBar.showBackButton();
         titleBar.showTitleLogo();
-        titleBar.showNotificationBell(new View.OnClickListener() {
+        /*titleBar.showNotificationBell(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getDockActivity().replaceDockableFragment(NotificationFragment.newInstance(), "NotificationFragment");
             }
-        });
+        },prefHelper.getNotificationCount());*/
     }
 
 
@@ -172,7 +245,9 @@ public class SpPromotionsPostFragment extends BaseFragment implements RecyclerVi
 
     @Override
     public void share(Post entity, int position) {
-        getDockActivity().onLoadingStarted();
+        postEntity = entity;
+        requestStoragePermission();
+     /*   getDockActivity().onLoadingStarted();
         if (entity.getImageUrl() != null && !entity.getImageUrl().equals("") && entity.getDescription() != null && !entity.getDescription().equals("")) {
             ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), entity.getImageUrl(), entity.getDescription());
         } else if (entity.getImageUrl() != null && entity.getDescription() == null) {
@@ -181,7 +256,7 @@ public class SpPromotionsPostFragment extends BaseFragment implements RecyclerVi
             ShareIntentHelper.shareTextIntent(getDockActivity(), entity.getDescription());
         } else {
             UIHelper.showShortToastInCenter(getDockActivity(), "Description is not avaliable");
-        }
+        }*/
     }
 
     @Override
@@ -189,11 +264,7 @@ public class SpPromotionsPostFragment extends BaseFragment implements RecyclerVi
         getDockActivity().replaceDockableFragment(CommentFragment.newInstance(entity.getId()+""),"CommentFragment");
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        getDockActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
+
 
     @Override
     public void reportPost(Post entity, int position) {
@@ -210,4 +281,107 @@ public class SpPromotionsPostFragment extends BaseFragment implements RecyclerVi
     public void DeletePost(Post entity, int position) {
         serviceHelper.enqueueCall(headerWebService.deletePost(entity.getId()), deletePost);
     }
+
+    private void requestStoragePermission() {
+        Dexter.withActivity(getDockActivity())
+                .withPermissions(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+
+                        if (report.areAllPermissionsGranted()) {
+                            getDockActivity().onLoadingStarted();
+
+                            if (postEntity.getImageUrl() != null && !postEntity.getImageUrl().equals("") && postEntity.getDescription() != null && !postEntity.getDescription().equals("")) {
+                                ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), postEntity.getImageUrl(), postEntity.getDescription());
+                            } else if (postEntity.getImageUrl() != null && postEntity.getDescription() == null) {
+                                ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), postEntity.getImageUrl(), "");
+                            } else if (postEntity.getImageUrl() == null && postEntity.getDescription() != null) {
+                                ShareIntentHelper.shareTextIntent(getDockActivity(), postEntity.getDescription());
+                            } else {
+                                UIHelper.showShortToastInCenter(getDockActivity(), "Description is not avaliable");
+                            }
+                        }
+
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            requestStoragePermission();
+
+                        } else if (report.getDeniedPermissionResponses().size() > 0) {
+                            requestStoragePermission();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).
+                withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        UIHelper.showShortToastInCenter(getDockActivity(), "Grant Storage Permission to processed");
+                        openSettings();
+                    }
+                })
+
+                .onSameThread()
+                .check();
+
+
+    }
+
+    private void openSettings() {
+
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        Uri uri = Uri.fromParts("package", getDockActivity().getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDockActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
+  /*  @Override
+    public void onResume() {
+        super.onResume();
+
+        getDockActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        LocalBroadcastManager.getInstance(getDockActivity()).registerReceiver(broadcastReceiver,
+                new IntentFilter(AppConstants.REGISTRATION_COMPLETE));
+
+        LocalBroadcastManager.getInstance(getDockActivity()).registerReceiver(broadcastReceiver,
+                new IntentFilter(AppConstants.PUSH_NOTIFICATION));
+    }
+
+    @Override
+    public void onPause() {
+        LocalBroadcastManager.getInstance(getDockActivity()).unregisterReceiver(broadcastReceiver);
+        super.onPause();
+    }
+
+    protected BroadcastReceiver broadcastReceiver;
+
+    private void onNotificationReceived() {
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent.getAction().equals(AppConstants.PUSH_NOTIFICATION)) {
+                    if(getTitleBar()!=null){
+                        getTitleBar().showNotification(prefHelper.getNotificationCount());
+                    }
+                }
+            }
+        };
+    }*/
+
 }

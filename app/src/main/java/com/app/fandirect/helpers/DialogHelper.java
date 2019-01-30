@@ -14,7 +14,10 @@ import com.app.fandirect.R;
 import com.app.fandirect.ui.views.AnyEditTextView;
 import com.app.fandirect.ui.views.AnyTextView;
 import com.app.fandirect.ui.views.CustomRatingBar;
+
+import com.jsibbold.zoomage.ZoomageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.xw.repo.XEditText;
 
 
 /**
@@ -44,6 +47,18 @@ public class DialogHelper {
         cancelbutton.setOnClickListener(oncancelclicklistener);
         return this.dialog;
     }
+
+    public Dialog facebookLogin(View.OnClickListener userlistener, View.OnClickListener spListner) {
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        this.dialog.setContentView(R.layout.dialoge_facebook_signup);
+        Button userButton = (Button) dialog.findViewById(R.id.btn_User);
+        userButton.setOnClickListener(userlistener);
+        Button spButton = (Button) dialog.findViewById(R.id.btn_Sp);
+        spButton.setOnClickListener(spListner);
+        return this.dialog;
+    }
+
     public Dialog initDropDown(int layoutID, View.OnClickListener onokclicklistener, View.OnClickListener oncancelclicklistener,String titleString,String textString) {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -81,6 +96,54 @@ public class DialogHelper {
         return this.dialog;
     }
 
+    public Dialog initDeleteDialoge(View.OnClickListener Yesclicklistener, View.OnClickListener onNoclicklistener,String title,String Description) {
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        this.dialog.setContentView(R.layout.dialoge_delete_message);
+        AnyTextView txtTitle = (AnyTextView) dialog.findViewById(R.id.txt_title);
+        txtTitle.setText(title);
+        AnyTextView txtDescription = (AnyTextView) dialog.findViewById(R.id.txt_text);
+        txtDescription.setText(Description);
+        Button btnYes = (Button) dialog.findViewById(R.id.btn_yes);
+        btnYes.setOnClickListener(Yesclicklistener);
+        Button btnNo = (Button) dialog.findViewById(R.id.btn_No);
+        btnNo.setOnClickListener(onNoclicklistener);
+        return this.dialog;
+    }
+
+    public Dialog initDeleteCommentDialoge(View.OnClickListener Yesclicklistener, View.OnClickListener onNoclicklistener,String title,String Description) {
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        this.dialog.setContentView(R.layout.delete_diaoge);
+        AnyTextView txtTitle = (AnyTextView) dialog.findViewById(R.id.txt_title);
+        txtTitle.setText(title);
+        AnyTextView txtDescription = (AnyTextView) dialog.findViewById(R.id.txt_text);
+        txtDescription.setText(Description);
+        Button btnYes = (Button) dialog.findViewById(R.id.btn_yes);
+        btnYes.setOnClickListener(Yesclicklistener);
+        Button btnNo = (Button) dialog.findViewById(R.id.btn_No);
+        btnNo.setOnClickListener(onNoclicklistener);
+        return this.dialog;
+    }
+
+    public Dialog initFullImage(String linkImage) {
+        this.dialog = new Dialog(context,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        imageLoader=ImageLoader.getInstance();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        this.dialog.setContentView(R.layout.fragment_fullscreen);
+        final ZoomageView imageview = (ZoomageView) dialog.findViewById(R.id.imageFull);
+        ImageView cross = (ImageView) dialog.findViewById(R.id.cross);
+        imageLoader.displayImage(linkImage,imageview);
+        cross.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        return this.dialog;
+    }
+
     public Dialog initUnfriendDialoge(int layoutID, View.OnClickListener Yesclicklistener, View.OnClickListener onNoclicklistener) {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
@@ -90,6 +153,20 @@ public class DialogHelper {
         Button btnNo = (Button) dialog.findViewById(R.id.btn_No);
         btnNo.setOnClickListener(onNoclicklistener);
         return this.dialog;
+    }
+
+    public Dialog addService( View.OnClickListener Yesclicklistener) {
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        this.dialog.setContentView(R.layout.dialoge_suggest_service);
+        Button btnDone = (Button) dialog.findViewById(R.id.btn_done);
+        btnDone.setOnClickListener(Yesclicklistener);
+        return this.dialog;
+    }
+
+    public XEditText getSuggestionText() {
+        XEditText text = (XEditText) dialog.findViewById(R.id.txt_service);
+        return text;
     }
 
     public Dialog initCompleteService(int layoutID, View.OnClickListener onokclicklistener, View.OnClickListener oncancelclicklistener) {
@@ -127,6 +204,8 @@ public class DialogHelper {
        AnyEditTextView text = (AnyEditTextView) dialog.findViewById(R.id.txt_feedback);
         return text;
     }
+
+
 
    public Float getRatingScore() {
         CustomRatingBar rbAddRating = (CustomRatingBar) dialog.findViewById(R.id.rbAddRating);

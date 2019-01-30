@@ -58,6 +58,11 @@ public class ArrayListAdapter<T> extends BaseAdapter implements SpinnerAdapter {
 		arrayList.add( entity );
 		notifyDataSetChanged();
 	}
+	public void remove( T entity ) {
+		arrayList.remove(entity);
+		notifyDataSetChanged();
+	}
+
 	
 	/**
 	 * Adds a NotificationDummy to the list and calls

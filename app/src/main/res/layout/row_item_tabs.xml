@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white">
+
+    <com.app.fandirect.ui.views.AnyTextView
+        android:id="@+id/txt_tab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="@dimen/x10"
+        android:paddingBottom="@dimen/x10"
+        android:paddingStart="@dimen/x18"
+        android:paddingEnd="@dimen/x18"
+        android:text="0 Posts"
+        android:textColor="@color/gray_dark"
+        android:textSize="@dimen/x13"
+        app:typeface="@string/font_normal" />
+
+</LinearLayout>

@@ -1,146 +1,171 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/white"
-    android:layout_marginBottom="@dimen/x15">
-
-    <com.app.fandirect.ui.views.AnyTextView
-        android:id="@+id/btn_forgotPassword"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/x40"
-        android:gravity="end|center_vertical"
-        android:paddingEnd="@dimen/x15"
-        android:text="Forgot Password"
-        android:textColor="@color/text_black_color"
-        app:typeface="@string/font_normal" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/x20"
-        android:gravity="center_horizontal">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/login_logo" />
-
-    </LinearLayout>
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/x40"
-        android:layout_marginStart="@dimen/x30"
-        android:layout_marginEnd="@dimen/x30"
+        android:layout_marginBottom="@dimen/x15"
+        android:background="@color/white"
         android:orientation="vertical">
 
-        <com.app.fandirect.ui.views.AnyEditTextView
-            android:id="@+id/txt_email"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x40"
-            android:drawableStart="@drawable/email"
-            android:drawablePadding="@dimen/x10"
-            android:maxLength="50"
-            android:background="@color/transparent"
-            android:hint="@string/email_address"
-            android:imeOptions="actionNext"
-            android:inputType="textEmailAddress"
-            android:maxLines="1"
-            android:paddingEnd="@dimen/x10"
-            android:paddingStart="@dimen/x10"
-            android:textSize="@dimen/x14"
-            android:textColor="@color/text_black_color"
-            app:typeface="@string/font_normal"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x1"
-            android:background="@color/view_color"/>
-
-        <com.app.fandirect.ui.views.AnyEditTextView
-            android:id="@+id/txt_password"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x40"
-            android:layout_marginTop="@dimen/x15"
-            android:drawableStart="@drawable/pass"
-            android:drawablePadding="@dimen/x10"
-            android:background="@color/transparent"
-            android:hint="@string/password"
-            android:imeOptions="actionDone"
-            android:inputType="textPassword"
-            android:maxLines="1"
-            android:paddingEnd="@dimen/x10"
-            android:paddingStart="@dimen/x10"
-            android:textSize="@dimen/x14"
-            android:textColor="@color/text_black_color"
-            app:typeface="@string/font_normal"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x1"
-            android:background="@color/view_color"/>
-
-        <RadioGroup
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="@dimen/x15"
-            android:gravity="center">
-
-            <RadioButton
-                android:id="@+id/btn_user"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/user"
-                android:textSize="@dimen/x14"
-                android:textColor="@color/text_black_color"
-                android:layout_marginEnd="@dimen/x5"/>
-
-            <RadioButton
-                android:id="@+id/btn_tech"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/x5"
-                android:textSize="@dimen/x14"
-                android:textColor="@color/text_black_color"
-                android:text="@string/service_provider"/>
-
-        </RadioGroup>
-
-        <Button
-            android:id="@+id/btn_login"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/x45"
-            android:layout_marginTop="@dimen/x15"
-            android:text="@string/login"
-            android:textColor="@color/white"
-            android:textAllCaps="false"
-            android:textSize="@dimen/x16"
-            android:background="@drawable/rounded_button"/>
-
         <com.app.fandirect.ui.views.AnyTextView
-            android:id="@+id/btn_signup"
+            android:id="@+id/btn_forgotPassword"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/x40"
+            android:gravity="end|center_vertical"
+            android:paddingEnd="@dimen/x15"
+            android:text="Forgot Password"
+            android:textColor="@color/text_black_color"
+            app:typeface="@string/font_normal" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/x15"
-            android:layout_marginBottom="@dimen/x15"
-            app:typeface="@string/font_normal"
-            android:text="@string/don_t_have_an_account_signup"
-            android:gravity="center_horizontal"
-            android:textSize="@dimen/x14"
-            android:textColor="@color/text_black_color"/>
+            android:layout_marginTop="@dimen/x20"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/login_logo" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/x30"
+            android:layout_marginStart="@dimen/x30"
+            android:layout_marginTop="@dimen/x40"
+            android:orientation="vertical">
+
+            <com.app.fandirect.ui.views.AnyEditTextView
+                android:id="@+id/txt_email"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x40"
+                android:background="@color/transparent"
+                android:drawablePadding="@dimen/x10"
+                android:drawableStart="@drawable/email"
+                android:hint="@string/email_address"
+                android:imeOptions="actionNext"
+                android:inputType="textEmailAddress"
+                android:maxLength="50"
+                android:maxLines="1"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
+                android:textColor="@color/text_black_color"
+                android:textSize="@dimen/x14"
+                app:typeface="@string/font_normal" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x1"
+                android:background="@color/view_color" />
+
+            <com.app.fandirect.ui.views.AnyEditTextView
+                android:id="@+id/txt_password"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x40"
+                android:layout_marginTop="@dimen/x15"
+                android:background="@color/transparent"
+                android:drawablePadding="@dimen/x10"
+                android:drawableStart="@drawable/pass"
+                android:hint="@string/password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
+                android:textColor="@color/text_black_color"
+                android:textSize="@dimen/x14"
+                app:typeface="@string/font_normal" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x1"
+                android:background="@color/view_color" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x15"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/btn_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/x5"
+                    android:text="@string/user"
+                    android:textColor="@color/text_black_color"
+                    android:textSize="@dimen/x14" />
+
+                <RadioButton
+                    android:id="@+id/btn_tech"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/x5"
+                    android:text="@string/service_provider"
+                    android:textColor="@color/text_black_color"
+                    android:textSize="@dimen/x14" />
+
+            </RadioGroup>
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x45"
+                android:layout_marginTop="@dimen/x15"
+                android:background="@drawable/rounded_button"
+                android:text="@string/login"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/x14" />
+
+            <LinearLayout
+                android:id="@+id/ll_facebook"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x45"
+                android:layout_marginTop="@dimen/x10"
+                android:background="@drawable/rounded_facebook"
+                android:gravity="center"
+              android:onClick="onViewClicked"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/facebook_login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/x45"
+                    android:background="@color/transparent"
+                    android:drawablePadding="@dimen/x10"
+                    android:drawableStart="@drawable/facebook_icon1"
+                    android:text="@string/facebook"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/x14" />
+
+            </LinearLayout>
+
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/btn_signup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/x15"
+                android:layout_marginTop="@dimen/x15"
+                android:gravity="center_horizontal"
+                android:text="@string/don_t_have_an_account_signup"
+                android:textColor="@color/text_black_color"
+                android:textSize="@dimen/x14"
+                app:typeface="@string/font_normal" />
+        </LinearLayout>
+
+
     </LinearLayout>
-
-
-</LinearLayout>
 
 </ScrollView>

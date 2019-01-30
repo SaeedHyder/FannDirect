@@ -1,6 +1,10 @@
 package com.app.fandirect.fragments;
 
+import android.Manifest;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +24,16 @@ import com.app.fandirect.ui.adapters.ArrayListAdapter;
 import com.app.fandirect.ui.binders.FeedsBinder;
 import com.app.fandirect.ui.views.AnyTextView;
 import com.app.fandirect.ui.views.TitleBar;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +58,7 @@ public class FavoriteFragment extends BaseFragment implements RecyclerViewItemLi
     Unbinder unbinder;
     private ArrayListAdapter<Post> Adapter;
     private ArrayList<Post> Collection;
+    private Post postEntity;
 
     public static FavoriteFragment newInstance() {
         Bundle args = new Bundle();
@@ -86,6 +99,9 @@ public class FavoriteFragment extends BaseFragment implements RecyclerViewItemLi
         switch (Tag) {
 
             case allFavoritePosts:
+                if (getTitleBar() != null) {
+                    getTitleBar().hideNotificationBell();
+                }
                 ArrayList<Post> entity = (ArrayList<Post>) result;
                 setFavoriteListData(entity);
                 break;
@@ -163,7 +179,10 @@ public class FavoriteFragment extends BaseFragment implements RecyclerViewItemLi
     @Override
     public void share(Post entity, int position) {
 
-        getDockActivity().onLoadingStarted();
+        postEntity = entity;
+        requestStoragePermission();
+
+      /*  getDockActivity().onLoadingStarted();
 
         if (entity.getImageUrl() != null && !entity.getImageUrl().equals("") && entity.getDescription() != null && !entity.getDescription().equals("")) {
             ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), entity.getImageUrl(), entity.getDescription());
@@ -173,7 +192,7 @@ public class FavoriteFragment extends BaseFragment implements RecyclerViewItemLi
             ShareIntentHelper.shareTextIntent(getDockActivity(), entity.getDescription());
         } else {
             UIHelper.showShortToastInCenter(getDockActivity(), "Description is not avaliable");
-        }
+        }*/
     }
 
     @Override
@@ -202,5 +221,68 @@ public class FavoriteFragment extends BaseFragment implements RecyclerViewItemLi
     @Override
     public void DeletePost(Post entity, int position) {
         serviceHelper.enqueueCall(headerWebService.deletePost(entity.getId()), deletePost);
+    }
+
+    private void requestStoragePermission() {
+        Dexter.withActivity(getDockActivity())
+                .withPermissions(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+
+                        if (report.areAllPermissionsGranted()) {
+                            getDockActivity().onLoadingStarted();
+
+                            if (postEntity.getImageUrl() != null && !postEntity.getImageUrl().equals("") && postEntity.getDescription() != null && !postEntity.getDescription().equals("")) {
+                                ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), postEntity.getImageUrl(), postEntity.getDescription());
+                            } else if (postEntity.getImageUrl() != null && postEntity.getDescription() == null) {
+                                ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), postEntity.getImageUrl(), "");
+                            } else if (postEntity.getImageUrl() == null && postEntity.getDescription() != null) {
+                                ShareIntentHelper.shareTextIntent(getDockActivity(), postEntity.getDescription());
+                            } else {
+                                UIHelper.showShortToastInCenter(getDockActivity(), "Description is not avaliable");
+                            }
+                        }
+
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            requestStoragePermission();
+
+                        } else if (report.getDeniedPermissionResponses().size() > 0) {
+                            requestStoragePermission();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).
+                withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        UIHelper.showShortToastInCenter(getDockActivity(), "Grant Storage Permission to processed");
+                        openSettings();
+                    }
+                })
+
+                .onSameThread()
+                .check();
+
+
+    }
+
+    private void openSettings() {
+
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        Uri uri = Uri.fromParts("package", getDockActivity().getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
     }
 }

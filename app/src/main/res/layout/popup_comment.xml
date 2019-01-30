@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@drawable/dropdown_rounded"
+    android:layout_marginStart="@dimen/x15"
+    android:layout_marginEnd="@dimen/x25"
+    android:layout_width="match_parent"
+
+    android:layout_height="wrap_content">
+
+    <com.app.fandirect.ui.views.AnyTextView
+        android:id="@+id/txt_delete_comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete Comment"
+        android:gravity="center"
+        android:textColor="@color/app_dark_gray_2"
+        android:padding="@dimen/x7"
+        app:typeface="@string/font_normal"/>
+
+
+
+
+
+
+
+
+</LinearLayout>

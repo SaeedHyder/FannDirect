@@ -15,6 +15,7 @@ import com.app.fandirect.fragments.SpProfileFragment;
 import com.app.fandirect.fragments.UserProfileFragment;
 import com.app.fandirect.helpers.BasePreferenceHelper;
 import com.app.fandirect.helpers.DateHelper;
+import com.app.fandirect.interfaces.OnLongTap;
 import com.app.fandirect.interfaces.RecyclerViewItemListener;
 import com.app.fandirect.ui.viewbinders.abstracts.RecyclerViewBinder;
 import com.app.fandirect.ui.viewbinders.abstracts.ViewBinder;
@@ -37,14 +38,16 @@ public class ChatItemBinder extends RecyclerViewBinder<MessageThreadsEnt> {
     private BasePreferenceHelper prefHelper;
     private ImageLoader imageLoader;
     private RecyclerViewItemListener clickListner;
+    private OnLongTap onLongTap;
 
 
-    public ChatItemBinder(DockActivity dockActivity, BasePreferenceHelper prefHelper, RecyclerViewItemListener clickListner) {
+    public ChatItemBinder(DockActivity dockActivity, BasePreferenceHelper prefHelper, RecyclerViewItemListener clickListner,OnLongTap onLongTap) {
         super(R.layout.row_item_chat);
         this.dockActivity = dockActivity;
         this.prefHelper = prefHelper;
         this.imageLoader = ImageLoader.getInstance();
         this.clickListner = clickListner;
+        this.onLongTap=onLongTap;
     }
 
     @Override
@@ -55,12 +58,12 @@ public class ChatItemBinder extends RecyclerViewBinder<MessageThreadsEnt> {
 
 
     @Override
-    public void bindView(final MessageThreadsEnt entity, int position, Object viewHolder, Context context) {
+    public void bindView(final MessageThreadsEnt entity, final int position, Object viewHolder, Context context) {
 
         ViewHolder holder = (ViewHolder) viewHolder;
 
+        holder.setIsRecyclable(false);
         boolean isSender = false;
-
 
         if (entity.getSenderId().equals(String.valueOf(prefHelper.getUser().getId()))) {
             isSender = true;
@@ -69,7 +72,7 @@ public class ChatItemBinder extends RecyclerViewBinder<MessageThreadsEnt> {
         }
 
         if (isSender) {
-            if (entity.getSenderDetail().getImageUrl() != null)
+            if (entity.getSenderDetail()!=null && entity.getSenderDetail().getImageUrl() != null)
                 imageLoader.displayImage(entity.getSenderDetail().getImageUrl(), holder.imageViewRight);
             holder.txtReceiverChatRight.setText(entity.getMessage());
             holder.txtReceiverDatetRight.setText(DateHelper.getLocalDateTime(entity.getCreatedAt()));
@@ -77,7 +80,7 @@ public class ChatItemBinder extends RecyclerViewBinder<MessageThreadsEnt> {
 
 
         } else {
-            if (entity.getSenderDetail().getImageUrl() != null)
+            if (entity.getSenderDetail()!=null && entity.getSenderDetail().getImageUrl() != null)
             imageLoader.displayImage(entity.getSenderDetail().getImageUrl(), holder.imageViewLeft);
             holder.txtSenderChatLeft.setText(entity.getMessage());
             holder.txtSenderDateLeft.setText(DateHelper.getLocalDateTime(entity.getCreatedAt()));
@@ -105,6 +108,22 @@ public class ChatItemBinder extends RecyclerViewBinder<MessageThreadsEnt> {
                 } else {
                     dockActivity.replaceDockableFragment(SpProfileFragment.newInstance(entity.getSenderDetail().getId() + ""), "SpProfileFragment");
                 }
+            }
+        });
+
+        holder.leftLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                onLongTap.onClick(entity, position);
+                return true;
+            }
+        });
+
+        holder.rightLayout.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                onLongTap.onClick(entity, position);
+                return true;
             }
         });
 

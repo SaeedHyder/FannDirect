@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="@color/white"
 
     >
 
@@ -14,7 +14,7 @@
         android:layout_marginLeft="@dimen/x15"
         android:layout_marginRight="@dimen/x15"
         android:layout_marginTop="@dimen/x15"
-        android:gravity="start|end"
+        android:gravity="start"
         android:scrollbars="vertical"
         android:scrollbarFadeDuration="1"
         android:alpha="0.6"

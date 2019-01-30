@@ -24,6 +24,17 @@ public class ReceiverDetail {
     @SerializedName("role_id")
     @Expose
     private String roleId;
+    @SerializedName("deleted_at")
+    @Expose
+    private String deletedAt;
+
+    public String getDeletedAt() {
+        return deletedAt;
+    }
+
+    public void setDeletedAt(String deletedAt) {
+        this.deletedAt = deletedAt;
+    }
 
     public String getRoleId() {
         return roleId;

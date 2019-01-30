@@ -12,6 +12,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.app.fandirect.global.WebServiceConstants.HomeCount;
+
 /**
  * Created on 7/17/2017.
  */
@@ -35,14 +37,16 @@ public class ServiceHelper<T> {
                 public void onResponse(Call<ResponseWrapper<T>> call, Response<ResponseWrapper<T>> response) {
                     context.onLoadingFinished();
                     if (response != null && response.body() != null) {
-                        if (response.body().getCode().equals(WebServiceConstants.SUCCESS_RESPONSE_CODE)){
-                            serviceResponseLisener.ResponseSuccess(response.body().getResult(), tag,response.body().getMessage());
+                        if (response.body().getCode().equals(WebServiceConstants.SUCCESS_RESPONSE_CODE)) {
+                            serviceResponseLisener.ResponseSuccess(response.body().getResult(), tag, response.body().getMessage());
                         } else {
                             UIHelper.showShortToastInCenter(context, response.body().getMessage());
                         }
-                    }
-                    else {
-                        UIHelper.showShortToastInCenter(context, "No Service Response");
+                    } else {
+                        serviceResponseLisener.ResponseFailure(tag);
+                        if (!tag.equals(HomeCount)) {
+                        //    UIHelper.showShortToastInCenter(context, "No Service Response");
+                        }
                     }
 
                 }
@@ -57,22 +61,21 @@ public class ServiceHelper<T> {
         }
     }
 
-    public void enqueueCall(Call<ResponseWrapper<T>> call, final String tag,boolean loading) {
+    public void enqueueCall(Call<ResponseWrapper<T>> call, final String tag, boolean loading) {
         if (InternetHelper.CheckInternetConectivityandShowToast(context)) {
             call.enqueue(new Callback<ResponseWrapper<T>>() {
                 @Override
                 public void onResponse(Call<ResponseWrapper<T>> call, Response<ResponseWrapper<T>> response) {
 
                     if (response != null && response.body() != null) {
-                        if (response.body().getCode().equals(WebServiceConstants.SUCCESS_RESPONSE_CODE)){
-                            serviceResponseLisener.ResponseSuccess(response.body().getResult(), tag,response.body().getMessage());
+                        if (response.body().getCode().equals(WebServiceConstants.SUCCESS_RESPONSE_CODE)) {
+                            serviceResponseLisener.ResponseSuccess(response.body().getResult(), tag, response.body().getMessage());
                         } else {
                             UIHelper.showShortToastInCenter(context, response.body().getMessage());
                         }
-                    }
-                    else {
+                    } else {
                         serviceResponseLisener.ResponseFailure(tag);
-                        UIHelper.showShortToastInCenter(context, "No Service Response");
+                        //   UIHelper.showShortToastInCenter(context, "No Service Response");
                     }
 
                 }
@@ -85,24 +88,28 @@ public class ServiceHelper<T> {
                 }
             });
         }
-        }
+    }
 
-    public void enqueueCall(Call<ResponseWrapper<T>> call, final String tag,boolean loading,boolean isProfile) {
+    public void cancelCall(Call<ResponseWrapper<T>> call) {
+        call.cancel();
+    }
+
+    public void enqueueCall(Call<ResponseWrapper<T>> call, final String tag, boolean loading, boolean isProfile) {
         // if (InternetHelper.CheckInternetConectivityandShowToast(context)) {
         call.enqueue(new Callback<ResponseWrapper<T>>() {
             @Override
             public void onResponse(Call<ResponseWrapper<T>> call, Response<ResponseWrapper<T>> response) {
 
                 if (response != null && response.body() != null) {
-                    if (response.body().getCode().equals(WebServiceConstants.SUCCESS_RESPONSE_CODE)){
-                        serviceResponseLisener.ResponseSuccess(response.body().getResult(), tag,response.body().getMessage());
+                    if (response.body().getCode().equals(WebServiceConstants.SUCCESS_RESPONSE_CODE)) {
+                        serviceResponseLisener.ResponseSuccess(response.body().getResult(), tag, response.body().getMessage());
                     } else {
                         UIHelper.showShortToastInCenter(context, response.body().getMessage());
                     }
-                }
-                else {
+                } else {
                     serviceResponseLisener.ResponseFailure(tag);
-                    UIHelper.showShortToastInCenter(context, "No Service Response");
+
+               //     UIHelper.showShortToastInCenter(context, "No Service Response");
                 }
 
             }

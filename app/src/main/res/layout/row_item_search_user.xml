@@ -49,7 +49,9 @@
                 android:text="Las Vegas"
                 android:textColor="@color/text_color"
                 android:textSize="@dimen/x12"
-                app:typeface="@string/font_normal" />
+                app:typeface="@string/font_normal"
+               />
+
 
 
 

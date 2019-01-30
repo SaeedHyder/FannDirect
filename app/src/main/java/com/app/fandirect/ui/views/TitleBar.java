@@ -88,9 +88,22 @@ public class TitleBar extends RelativeLayout {
 
 	}
 
+	public void hideNotificationBell() {
+
+		btnRight2.setVisibility(View.INVISIBLE);
+		rl_Right2.setVisibility(View.INVISIBLE);
+		txtBadge.setVisibility(View.GONE);
+	}
+
 	public void showBackButton() {
 		btnLeft.setVisibility(View.VISIBLE);
 		btnLeft.setOnClickListener(backButtonListener);
+
+	}
+
+	public void showBackButton(OnClickListener listner) {
+		btnLeft.setVisibility(View.VISIBLE);
+		btnLeft.setOnClickListener(listner);
 
 	}
 
@@ -99,11 +112,29 @@ public class TitleBar extends RelativeLayout {
 		txtPost.setOnClickListener(btnClick);
 	}
 
-	public void showNotificationBell(OnClickListener listener){
+	public void showNotificationBell(OnClickListener listener,int Count){
 		btnRight2.setVisibility(VISIBLE);
 		rl_Right2.setVisibility(VISIBLE);
 		btnRight2.setImageResource(R.drawable.notification5);
 		rl_Right2.setOnClickListener(listener);
+		if (Count > 0) {
+			txtBadge.setVisibility(View.VISIBLE);
+			txtBadge.setText(Count + "");
+		} else {
+			txtBadge.setVisibility(View.GONE);
+		}
+	}
+	public void showNotification(int Count){
+		btnRight2.setVisibility(VISIBLE);
+		rl_Right2.setVisibility(VISIBLE);
+		btnRight2.setImageResource(R.drawable.notification5);
+		rl_Right2.setOnClickListener(notificationButtonListener);
+		if (Count > 0) {
+			txtBadge.setVisibility(View.VISIBLE);
+			txtBadge.setText(Count + "");
+		} else {
+			txtBadge.setVisibility(View.GONE);
+		}
 	}
 
 	public void showMessageBtn(OnClickListener listener){

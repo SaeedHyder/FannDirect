@@ -3,6 +3,8 @@ package com.app.fandirect.entities;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 /**
  * Created by saeedhyder on 5/14/2018.
  */
@@ -21,6 +23,9 @@ public class Post {
     @SerializedName("description")
     @Expose
     private String description;
+    @SerializedName("post_text")
+    @Expose
+    private String postText;
     @SerializedName("image")
     @Expose
     private String image;
@@ -39,7 +44,6 @@ public class Post {
     @SerializedName("image_url")
     @Expose
     private String imageUrl;
-
     @SerializedName("user_detail")
     @Expose
     private UserDetail userDetail;
@@ -58,6 +62,25 @@ public class Post {
     @SerializedName("comment_count")
     @Expose
     private Integer commentCount;
+    @SerializedName("tag_person_name")
+    @Expose
+    private ArrayList<TagName> tagPersonName = new ArrayList<>();
+
+    public String getPostText() {
+        return postText;
+    }
+
+    public void setPostText(String postText) {
+        this.postText = postText;
+    }
+
+    public ArrayList<TagName> getTagPersonName() {
+        return tagPersonName;
+    }
+
+    public void setTagPersonName(ArrayList<TagName> tagPersonName) {
+        this.tagPersonName = tagPersonName;
+    }
 
     public Integer getIsFavourite() {
         return isFavourite;

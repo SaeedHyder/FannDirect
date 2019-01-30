@@ -30,6 +30,7 @@
                 app:typeface="@string/font_bold" />
 
             <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/fann_requests"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
@@ -61,10 +62,11 @@
                 app:typeface="@string/font_bold" />
 
             <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_fanns"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:text="Fanns"
+                android:text="Fann"
                 android:textColor="@color/white"
                 android:textSize="@dimen/x16"
                 app:typeface="@string/font_normal" />
@@ -107,6 +109,7 @@
             android:background="@color/transparent"
             android:gravity="center_vertical"
             android:hint="Search"
+            android:imeOptions="actionDone"
             android:inputType="text"
             android:paddingStart="@dimen/x15"
             android:textColor="@color/text_color"
@@ -137,7 +140,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="No data to show"
+        android:text="No fann found"
         android:textColor="@color/dark_grey"
         android:textSize="@dimen/x15"
         android:visibility="gone"

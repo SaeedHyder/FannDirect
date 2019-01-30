@@ -36,6 +36,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+
     }
 
     @Override
@@ -52,20 +54,7 @@ public class SplashActivity extends AppCompatActivity {
                 showMainActivity();
             }
         }, MIN_TIME_INTERVAL_FOR_SPLASH);
-        // Launch timer to test image changing and background threads work
-       /* checkWorkTimer = new Timer();
-        checkWorkTimer.scheduleAtFixedRate(new TimerTask() {
 
-            @Override
-            public void run() {
-                if (workComplete) {
-                    initNextActivity();
-                }
-            }
-
-        }, MIN_TIME_INTERVAL_FOR_SPLASH, TIME_INTERVAL_TO_CHECK);
-
-        new Thread(backgroundWork).start();*/
     }
 
     private void initNextActivity() {
@@ -76,6 +65,8 @@ public class SplashActivity extends AppCompatActivity {
 
     private void showMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+      //  i.putExtra("intent",getIntent().getExtras());
         startActivity(i);
         finish();
     }

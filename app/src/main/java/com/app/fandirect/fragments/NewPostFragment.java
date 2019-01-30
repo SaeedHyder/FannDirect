@@ -313,7 +313,7 @@ public class NewPostFragment extends BaseFragment implements RecyclerViewItemLis
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (getMainActivity().statusCheck()) {
+        if (getMainActivity()!=null && getMainActivity().statusCheck()) {
             getCurrentLocation();
         }
     }

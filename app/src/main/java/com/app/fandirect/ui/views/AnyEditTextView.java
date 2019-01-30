@@ -4,6 +4,7 @@ import com.andreabaccega.widget.FormEditText;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 
 public class AnyEditTextView extends FormEditText {
 	
@@ -28,5 +29,6 @@ public class AnyEditTextView extends FormEditText {
 		}
 		
 	}
+
 	
 }

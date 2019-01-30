@@ -8,6 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -61,6 +62,7 @@
                 android:hint="@string/name"
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName"
+                android:maxLength="35"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/x10"
                 android:paddingStart="@dimen/x10"
@@ -80,8 +82,8 @@
                 android:layout_marginTop="@dimen/x10"
                 android:background="@color/transparent"
                 android:drawablePadding="@dimen/x10"
-                android:gravity="center_vertical"
                 android:drawableStart="@drawable/email"
+                android:gravity="center_vertical"
                 android:hint="@string/email_address"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
@@ -109,7 +111,9 @@
                 android:hint="@string/phone_number"
                 android:imeOptions="actionNext"
                 android:inputType="phone"
+                android:digits="+0123456789"
                 android:maxLines="1"
+                android:maxLength="16"
                 android:paddingEnd="@dimen/x10"
                 android:paddingStart="@dimen/x10"
                 android:textColor="@color/text_black_color"
@@ -196,30 +200,60 @@
                 android:layout_height="@dimen/x1"
                 android:background="@color/view_color" />
 
-
-            <com.app.fandirect.ui.views.AnyTextView
-                android:id="@+id/txt_birthday"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/x40"
-                android:layout_marginTop="@dimen/x10"
-                android:background="@color/transparent"
-                android:drawablePadding="@dimen/x10"
-                android:drawableStart="@drawable/state"
-                android:gravity="center_vertical"
-                android:hint="@string/dob"
-                android:imeOptions="actionNext"
-                android:inputType="phone"
-                android:maxLines="1"
-                android:paddingEnd="@dimen/x10"
-                android:paddingStart="@dimen/x10"
-                android:textColor="@color/text_black_color"
-                android:textSize="@dimen/x14"
-                app:typeface="@string/font_normal" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/x1"
-                android:background="@color/view_color" />
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:id="@+id/txt_birthday"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/x40"
+                    android:layout_marginTop="@dimen/x10"
+                    android:background="@color/transparent"
+                    android:drawablePadding="@dimen/x10"
+                    android:drawableStart="@drawable/state"
+                    android:gravity="center_vertical"
+                    android:hint="@string/dob"
+                    android:imeOptions="actionNext"
+                    android:inputType="phone"
+                    android:maxLines="1"
+                    android:paddingEnd="@dimen/x10"
+                    android:paddingStart="@dimen/x10"
+                    android:textColor="@color/text_black_color"
+                    android:textSize="@dimen/x14"
+                    app:typeface="@string/font_normal" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/x1"
+                    android:background="@color/view_color" />
+
+                <com.app.fandirect.ui.views.AnyEditTextView
+                    android:id="@+id/txt_Education"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/x40"
+                    android:layout_marginTop="@dimen/x10"
+                    android:background="@color/transparent"
+                    android:drawablePadding="@dimen/x10"
+                    android:drawableStart="@drawable/profession"
+                    android:hint="@string/education"
+                    android:imeOptions="actionNext"
+                    android:inputType="textPersonName"
+                    android:maxLines="1"
+                    android:paddingEnd="@dimen/x10"
+                    android:paddingStart="@dimen/x10"
+                    android:textColor="@color/text_black_color"
+                    android:textSize="@dimen/x14"
+                    app:typeface="@string/font_normal" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/x1"
+                    android:background="@color/view_color" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -242,6 +276,7 @@
                     android:gravity="center_vertical"
                     android:imeOptions="actionNext"
                     android:inputType="textPersonName"
+                    android:maxLength="35"
                     android:maxLines="1"
                     android:paddingEnd="@dimen/x10"
                     android:paddingStart="@dimen/x10"
@@ -257,6 +292,7 @@
                 android:layout_height="@dimen/x1"
                 android:background="@color/view_color" />
 
+
             <com.app.fandirect.ui.views.AnyEditTextView
                 android:id="@+id/txt_certificate_license"
                 android:layout_width="match_parent"
@@ -268,6 +304,7 @@
                 android:hint="Certificate License"
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName"
+                android:maxLength="40"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/x10"
                 android:paddingStart="@dimen/x10"
@@ -287,10 +324,12 @@
                 android:layout_marginTop="@dimen/x10"
                 android:background="@color/transparent"
                 android:drawablePadding="@dimen/x10"
+
                 android:drawableStart="@drawable/type_of_license"
                 android:hint="Type of license"
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName"
+                android:maxLength="40"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/x10"
                 android:paddingStart="@dimen/x10"
@@ -311,8 +350,9 @@
                 android:background="@color/transparent"
                 android:drawablePadding="@dimen/x10"
                 android:drawableStart="@drawable/company_name"
-                android:hint="Company Name"
+                android:hint="@string/company_name"
                 android:imeOptions="actionNext"
+                android:maxLength="40"
                 android:inputType="textPersonName"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/x10"
@@ -336,6 +376,7 @@
                 android:drawableStart="@drawable/company_name"
                 android:hint="Company Category"
                 android:imeOptions="actionNext"
+                android:maxLength="40"
                 android:inputType="textPersonName"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/x10"
@@ -359,11 +400,11 @@
                     android:layout_width="0dp"
                     android:layout_height="@dimen/x40"
                     android:layout_marginTop="@dimen/x10"
-                    android:gravity="center_vertical"
                     android:layout_weight="0.8"
                     android:background="@color/transparent"
                     android:drawablePadding="@dimen/x10"
                     android:drawableStart="@drawable/insurance_available"
+                    android:gravity="center_vertical"
                     android:hint="Insurance Avaliable"
                     android:imeOptions="actionNext"
                     android:inputType="textPersonName"
@@ -409,6 +450,7 @@
                 android:inputType="textPersonName"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/x10"
+                android:maxLength="40"
                 android:paddingStart="@dimen/x10"
                 android:textColor="@color/text_black_color"
                 android:textSize="@dimen/x14"
@@ -456,12 +498,12 @@
                     android:background="@drawable/rectangle_box_white_2"
                     android:gravity="top"
                     android:hint="About"
-                    android:padding="@dimen/x10"
                     android:imeOptions="actionDone"
+                    android:padding="@dimen/x10"
                     android:paddingStart="@dimen/x38"
                     android:textColor="@color/text_black_color"
                     android:textSize="@dimen/x14"
-                    app:x_disableEmoji="true"/>
+                    app:x_disableEmoji="true" />
 
                 <ImageView
                     android:layout_width="wrap_content"

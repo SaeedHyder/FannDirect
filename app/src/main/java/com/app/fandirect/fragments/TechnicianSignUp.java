@@ -4,14 +4,18 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -19,17 +23,24 @@ import com.app.fandirect.R;
 import com.app.fandirect.entities.GetServicesEnt;
 import com.app.fandirect.entities.UserEnt;
 import com.app.fandirect.fragments.abstracts.BaseFragment;
+import com.app.fandirect.global.AppConstants;
+import com.app.fandirect.global.WebServiceConstants;
+import com.app.fandirect.helpers.DialogHelper;
 import com.app.fandirect.helpers.UIHelper;
 import com.app.fandirect.interfaces.RecyclerViewItemListener;
 import com.app.fandirect.ui.binders.CategoryItemBinder;
 import com.app.fandirect.ui.views.AnyEditTextView;
+import com.app.fandirect.ui.views.AnyTextView;
 import com.app.fandirect.ui.views.AutoCompleteLocation;
 import com.app.fandirect.ui.views.CustomRecyclerView;
 import com.app.fandirect.ui.views.TitleBar;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +48,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.app.fandirect.global.WebServiceConstants.AllServicesCategories;
+import static com.app.fandirect.global.WebServiceConstants.SuggestService;
 import static com.app.fandirect.global.WebServiceConstants.registerSP;
 
 /**
@@ -66,6 +78,14 @@ public class TechnicianSignUp extends BaseFragment implements RecyclerViewItemLi
     CustomRecyclerView lvCategories;
     @BindView(R.id.txt_autoComplete)
     AutoCompleteLocation txtAutoComplete;
+    @BindView(R.id.cb_term)
+    CheckBox cbTerm;
+    @BindView(R.id.btn_terms_and_condition)
+    AnyTextView btnTermsAndCondition;
+    @BindView(R.id.txt_new_service)
+    AnyTextView txtNewService;
+    @BindView(R.id.ll_password)
+    LinearLayout llPassword;
     private ArrayList<String> userCollections = new ArrayList<>();
     private ArrayList<String> categoriesIds = new ArrayList<>();
     private ArrayList<String> genderCollection;
@@ -74,6 +94,7 @@ public class TechnicianSignUp extends BaseFragment implements RecyclerViewItemLi
     private boolean isSpinnerFirstTime = true;
     private String locationName = "";
     private LatLng locationLatLng = new LatLng(0, 0);
+    private DialogHelper dialogHelper;
 
     public static TechnicianSignUp newInstance() {
         Bundle args = new Bundle();
@@ -102,6 +123,8 @@ public class TechnicianSignUp extends BaseFragment implements RecyclerViewItemLi
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getMainActivity().hideBottomBar();
+        txtNewService.setText(Html.fromHtml("<a href=''>" + getResources().getString(R.string.don_t_see_your_profession_or_service) + "</a>"));
+        btnTermsAndCondition.setText(Html.fromHtml("<a href=''>" + getResources().getString(R.string.by_registering_you_agree_to_terms_condition) + "</a>"));
         serviceHelper.enqueueCall(webService.getServices(), AllServicesCategories);
 
         setCategoryRecyclerView();
@@ -160,10 +183,10 @@ public class TechnicianSignUp extends BaseFragment implements RecyclerViewItemLi
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position != 0) {
-                 //   if (!isSpinnerFirstTime) {
-                        categoriesIds.add(categoriesCollection.get(position).getId().toString());
-                        userCollections.add(genderCollection.get(position).toString());
-                        lvCategories.notifyDataSetChanged();
+                    //   if (!isSpinnerFirstTime) {
+                    categoriesIds.add(categoriesCollection.get(position).getId().toString());
+                    userCollections.add(genderCollection.get(position).toString());
+                    lvCategories.notifyDataSetChanged();
 
                    /* } else {
                         isSpinnerFirstTime = false;
@@ -181,7 +204,7 @@ public class TechnicianSignUp extends BaseFragment implements RecyclerViewItemLi
 
     private void setCategoryRecyclerView() {
 
-        lvCategories.BindRecyclerView(new CategoryItemBinder(this,true), userCollections,
+        lvCategories.BindRecyclerView(new CategoryItemBinder(this, true), userCollections,
                 new LinearLayoutManager(getDockActivity(), LinearLayoutManager.HORIZONTAL, false)
                 , new DefaultItemAnimator());
     }
@@ -242,6 +265,9 @@ public class TechnicianSignUp extends BaseFragment implements RecyclerViewItemLi
                 setEditTextFocus(txtConfpassword);
             }
             return false;
+        } else if (!cbTerm.isChecked()) {
+            UIHelper.showShortToastInCenter(getDockActivity(), getDockActivity().getResources().getString(R.string.select_term_cond));
+            return false;
         } else {
             return true;
         }
@@ -257,27 +283,6 @@ public class TechnicianSignUp extends BaseFragment implements RecyclerViewItemLi
         titleBar.showBackButton();
     }
 
-
-    @OnClick(R.id.btn_signup)
-    public void onViewClicked() {
-        result = TextUtils.join(", ", categoriesIds);
-        if (isValidated()) {
-
-            serviceHelper.enqueueCall(webService.registerSp(
-                    txtName.getText().toString(),
-                    txtEmail.getText().toString(),
-                    txtPhone.getText().toString(),
-                    txtPassword.getText().toString(),
-                    txtCity.getText().toString(),
-                    txtState.getText().toString(),
-                    String.valueOf(locationLatLng.latitude),
-                    String.valueOf(locationLatLng.longitude),
-                    locationName,
-                    result
-            ), registerSP);
-        }
-
-    }
 
     @Override
     public void onRecyclerItemClicked(Object Ent, int position) {
@@ -313,10 +318,70 @@ public class TechnicianSignUp extends BaseFragment implements RecyclerViewItemLi
 
             case AllServicesCategories:
                 ArrayList<GetServicesEnt> ent = (ArrayList<GetServicesEnt>) result;
+
+                Collections.sort(ent, new Comparator<GetServicesEnt>() {
+                    @Override
+                    public int compare(GetServicesEnt getServicesEnt, GetServicesEnt t1) {
+                        return getServicesEnt.getName().toLowerCase().compareTo(t1.getName().toLowerCase());
+                    }
+                });
+
                 setMechanicSpinner(ent);
+                break;
+
+            case SuggestService:
+                UIHelper.showShortToastInCenter(getDockActivity(), getResString(R.string.suggestion_submitted));
+
                 break;
         }
     }
 
+
+    @OnClick({R.id.btn_terms_and_condition, R.id.btn_signup, R.id.txt_new_service})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.btn_terms_and_condition:
+                getDockActivity().addDockableFragment(TermsAndConditionFragment.newInstance(), "TermsAndConditionFragment");
+                break;
+            case R.id.txt_new_service:
+                final DialogHelper dialogHelper = new DialogHelper(getDockActivity());
+                dialogHelper.addService(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (dialogHelper.getSuggestionText() != null && !dialogHelper.getSuggestionText().getText().toString().trim().equals("")) {
+                            serviceHelper.enqueueCall(webService.suggestService(dialogHelper.getSuggestionText().getText().toString()), SuggestService);
+                            getDockActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                            dialogHelper.hideDialog();
+                        } else {
+                            dialogHelper.getSuggestionText().setError(getResString(R.string.write_service_error));
+                        }
+
+                    }
+                });
+                dialogHelper.showDialog();
+
+                break;
+            case R.id.btn_signup:
+                result = TextUtils.join(", ", categoriesIds);
+                if (isValidated()) {
+
+                    serviceHelper.enqueueCall(webService.registerSp(
+                            txtName.getText().toString(),
+                            txtEmail.getText().toString(),
+                            txtPhone.getText().toString(),
+                            txtPassword.getText().toString(),
+                            txtCity.getText().toString(),
+                            txtState.getText().toString(),
+                            String.valueOf(locationLatLng.latitude),
+                            String.valueOf(locationLatLng.longitude),
+                            locationName,
+                            result,
+                            AppConstants.Device_Type,
+                            FirebaseInstanceId.getInstance().getToken()
+                    ), registerSP);
+                }
+                break;
+        }
+    }
 
 }

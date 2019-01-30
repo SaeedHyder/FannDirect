@@ -97,7 +97,7 @@ public class ServiceDspViewFragment extends BaseFragment {
         txtService.setText(serviceHistoryEnt.getServiceDetail().getName()+"");
         txtLocation.setText(serviceHistoryEnt.getLocation()+"");
         txtMessage.setText(serviceHistoryEnt.getDescription()+"");
-        txtDate.setText(DateHelper.getFormatedDate("yyyy-MM-dd HH:mm:ss","dd-MMM-yyyy",serviceHistoryEnt.getDatetime()+""));
+        txtDate.setText(DateHelper.getFormatedDate("yyyy-MM-dd HH:mm:ss","MM-dd-yyyy",serviceHistoryEnt.getDatetime()+""));
         txtTime.setText(DateHelper.getFormatedDate("yyyy-MM-dd HH:mm:ss","hh:mm a",serviceHistoryEnt.getDatetime()+""));
     }
 
@@ -142,7 +142,6 @@ public class ServiceDspViewFragment extends BaseFragment {
             case markRequestService:
                 UIHelper.showShortToastInCenter(getDockActivity(),message);
                 getDockActivity().popFragment();
-                getDockActivity().replaceDockableFragment(ServiceHistorySpFragment.newInstance(),"ServiceHistorySpFragment");
                 break;
 
         }

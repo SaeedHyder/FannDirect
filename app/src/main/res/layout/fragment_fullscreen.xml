@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black"
+    android:orientation="vertical">
+
+
+    <com.jsibbold.zoomage.ZoomageView
+        android:id="@+id/imageFull"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/placeholder_thumb"
+        android:scaleType="fitCenter"
+        android:layout_margin="@dimen/x1"
+        app:zoomage_restrictBounds="true"
+        app:zoomage_animateOnReset="true"
+        app:zoomage_autoResetMode="UNDER"
+        app:zoomage_autoCenter="true"
+        app:zoomage_zoomable="true"
+        app:zoomage_translatable="true"
+        app:zoomage_minScale="0.6"
+        app:zoomage_maxScale="8"
+        app:zoomage_doubleTapToZoom="true"
+
+        />
+
+    <ImageView
+        android:id="@+id/cross"
+        android:layout_width="@dimen/x25"
+        android:layout_height="@dimen/x25"
+       android:layout_alignEnd="@+id/imageFull"
+        android:layout_margin="@dimen/x15"
+        android:padding="@dimen/x5"
+        android:src="@drawable/cross_1" />
+
+</RelativeLayout>

@@ -1,6 +1,7 @@
 package com.app.fandirect.ui.binders;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -41,15 +42,27 @@ public class CategoryRecyclerBinder extends RecyclerViewBinder<GetServicesEnt> {
     public void bindView(final GetServicesEnt entity, final int position, final Object viewHolder, Context context) {
 
         ViewHolder holder = (ViewHolder) viewHolder;
-        holder.txtCategoryName.setText(entity.getName() + "");
-        imageLoader.displayImage(entity.getLogoUrl(),holder.ivCategoryImage);
+        if (entity != null) {
 
-        holder.llCategory.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recyclerViewItemListener.onRecyclerItemClicked(entity,position);
+            if(entity.isSelected()){
+                holder.txtCategoryName.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+
+            }else{
+                holder.txtCategoryName.setTypeface(Typeface.defaultFromStyle(Typeface.NORMAL));
             }
-        });
+
+            holder.txtCategoryName.setText(entity.getName() + "");
+            if (entity != null && entity.getLogoUrl() != null) {
+                imageLoader.displayImage(entity.getLogoUrl(), holder.ivCategoryImage);
+            }
+
+            holder.llCategory.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    recyclerViewItemListener.onRecyclerItemClicked(entity, position);
+                }
+            });
+        }
     }
 
     static class ViewHolder extends BaseViewHolder {
@@ -59,7 +72,6 @@ public class CategoryRecyclerBinder extends RecyclerViewBinder<GetServicesEnt> {
         AnyTextView txtCategoryName;
         @BindView(R.id.ll_category)
         LinearLayout llCategory;
-
 
 
         ViewHolder(View view) {

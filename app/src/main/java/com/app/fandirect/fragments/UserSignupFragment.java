@@ -1,16 +1,19 @@
 package com.app.fandirect.fragments;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
 import com.app.fandirect.R;
 import com.app.fandirect.entities.UserEnt;
 import com.app.fandirect.fragments.abstracts.BaseFragment;
+import com.app.fandirect.helpers.UIHelper;
 import com.app.fandirect.ui.views.AnyEditTextView;
 import com.app.fandirect.ui.views.AnyTextView;
 import com.app.fandirect.ui.views.AutoCompleteLocation;
@@ -50,8 +53,10 @@ public class UserSignupFragment extends BaseFragment {
     @BindView(R.id.txt_autoComplete)
     AutoCompleteLocation txtAutoComplete;
     Unbinder unbinder;
-    private String locationName="";
-    private LatLng locationLatLng=new LatLng(0,0);
+    @BindView(R.id.cb_term)
+    CheckBox cbTerm;
+    private String locationName = "";
+    private LatLng locationLatLng = new LatLng(0, 0);
 
     public static UserSignupFragment newInstance() {
         Bundle args = new Bundle();
@@ -81,6 +86,7 @@ public class UserSignupFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         getMainActivity().hideBottomBar();
         autoCompleteLocationListner();
+        btnTermsAndCondition.setText(Html.fromHtml("<a href=''>"+getResources().getString(R.string.by_registering_you_agree_to_terms_condition)+"</a>"));
     }
 
     private void autoCompleteLocationListner() {
@@ -141,6 +147,9 @@ public class UserSignupFragment extends BaseFragment {
                 setEditTextFocus(txtConfpassword);
             }
             return false;
+        } else if (!cbTerm.isChecked()) {
+            UIHelper.showShortToastInCenter(getDockActivity(),getDockActivity().getResources().getString(R.string.select_term_cond));
+            return false;
         } else {
             return true;
         }
@@ -158,7 +167,7 @@ public class UserSignupFragment extends BaseFragment {
                     // getDockActivity().replaceDockableFragment(CodeVerificationFragment.newInstance(false,txtEmail.getText().toString()), "CodeVerificationFragment");
                     serviceHelper.enqueueCall(webService.registerUser(txtName.getText().toString(),
                             txtEmail.getText().toString(),
-                           String.valueOf(locationLatLng.latitude),
+                            String.valueOf(locationLatLng.latitude),
                             String.valueOf(locationLatLng.longitude),
                             (locationName != null) ? locationName : txtAutoComplete.getText().toString(),
                             txtPassword.getText().toString(), Device_Type, FirebaseInstanceId.getInstance().getToken()), RegisterUser);
@@ -193,4 +202,6 @@ public class UserSignupFragment extends BaseFragment {
                 break;
         }
     }
+
+
 }

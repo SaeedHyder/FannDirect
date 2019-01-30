@@ -14,12 +14,15 @@ public class BasePreferenceHelper extends PreferenceHelper {
 
     private Context context;
     protected static final String KEY_LOGIN_STATUS = "islogin";
+    protected static final String KEY_BEFORE_LOGIN_STATUS = "isBeforelogin";
     private static final String FILENAME = "preferences";
     protected static final String Firebase_TOKEN = "Firebasetoken";
     protected static final String NotificationCount = "NotificationCount";
     protected static final String USER = "user";
     protected static final String TOKEN = "TOKEN";
     protected static final String KEY_USER = "KEY_USER";
+    protected static final String CHAT_KEY = "CHAT_KEY";
+    protected static final String CHAT_RECEIVER_KEY = "CHAT_RECEIVER_KEY";
 
 
     public BasePreferenceHelper(Context c) {
@@ -36,6 +39,14 @@ public class BasePreferenceHelper extends PreferenceHelper {
 
     public boolean isLogin() {
         return getBooleanPreference(context, FILENAME, KEY_LOGIN_STATUS);
+    }
+
+    public void setBeforeLoginStatus( boolean isLogin ) {
+        putBooleanPreference( context, FILENAME, KEY_BEFORE_LOGIN_STATUS, isLogin );
+    }
+
+    public boolean isBeforeLogin() {
+        return getBooleanPreference(context, FILENAME, KEY_BEFORE_LOGIN_STATUS);
     }
 
 
@@ -78,15 +89,27 @@ public class BasePreferenceHelper extends PreferenceHelper {
     }
 
     public UserEnt getUser() {
-        return GsonFactory.getConfiguredGson().fromJson(
-                getStringPreference(context, FILENAME, KEY_USER), UserEnt.class);
+        return GsonFactory.getConfiguredGson().fromJson(getStringPreference(context, FILENAME, KEY_USER), UserEnt.class);
     }
 
     public void putUser(UserEnt user) {
-        putStringPreference(context, FILENAME, KEY_USER, GsonFactory
-                .getConfiguredGson().toJson(user));
+        putStringPreference(context, FILENAME, KEY_USER, GsonFactory.getConfiguredGson().toJson(user));
     }
 
+    public void setChatScreen( boolean isChat ) {
+        putBooleanPreference( context, FILENAME, CHAT_KEY, isChat );
+    }
 
+    public boolean isChatScreen() {
+        return getBooleanPreference(context, FILENAME, CHAT_KEY);
+    }
+
+    public String getChatReceiver_id() {
+        return getStringPreference(context, FILENAME, CHAT_RECEIVER_KEY);
+    }
+
+    public void setChatReceiver_id(String receiverId) {
+        putStringPreference(context, FILENAME, CHAT_RECEIVER_KEY, receiverId);
+    }
 
 }

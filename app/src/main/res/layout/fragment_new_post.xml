@@ -14,8 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/x15"
-            android:gravity="top
-"
+            android:gravity="top"
             android:orientation="horizontal">
 
             <de.hdodenhof.circleimageview.CircleImageView

@@ -1,35 +1,68 @@
 package com.app.fandirect.fragments;
 
+import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.SystemClock;
+import android.provider.Settings;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.app.fandirect.R;
+import com.app.fandirect.entities.NotificationCount;
 import com.app.fandirect.entities.Post;
 import com.app.fandirect.fragments.abstracts.BaseFragment;
 import com.app.fandirect.global.AppConstants;
+import com.app.fandirect.global.WebServiceConstants;
 import com.app.fandirect.helpers.ShareIntentHelper;
 import com.app.fandirect.helpers.UIHelper;
 import com.app.fandirect.interfaces.ImageSetter;
 import com.app.fandirect.interfaces.PostClicksInterface;
 import com.app.fandirect.interfaces.RecyclerViewItemListener;
 import com.app.fandirect.interfaces.ReportPostIntetface;
+import com.app.fandirect.ui.adapters.AdapterRecyclerviewAdMob;
 import com.app.fandirect.ui.adapters.ArrayListAdapter;
 import com.app.fandirect.ui.binders.FeedsBinder;
+import com.app.fandirect.ui.binders.FeedsRecyclerBinder;
 import com.app.fandirect.ui.views.AnyEditTextView;
 import com.app.fandirect.ui.views.AnyTextView;
+import com.app.fandirect.ui.views.CustomRecyclerView;
 import com.app.fandirect.ui.views.ExpandedListView;
 import com.app.fandirect.ui.views.TitleBar;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.NativeExpressAdView;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
@@ -37,7 +70,15 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
+import me.leolin.shortcutbadger.ShortcutBadger;
+import retrofit2.http.POST;
 
+import static com.app.fandirect.global.AppConstants.ITEM_PER_AD;
+import static com.app.fandirect.global.AppConstants.cancel_request;
+import static com.app.fandirect.global.AppConstants.friend_request;
+import static com.app.fandirect.global.AppConstants.messagePush;
+import static com.app.fandirect.global.WebServiceConstants.HomeCount;
+import static com.app.fandirect.global.WebServiceConstants.NotifcationCount;
 import static com.app.fandirect.global.WebServiceConstants.deletePost;
 import static com.app.fandirect.global.WebServiceConstants.favoritePost;
 import static com.app.fandirect.global.WebServiceConstants.getAllPosts;
@@ -68,12 +109,19 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
     @BindView(R.id.txt_no_data)
     AnyTextView txtNoData;
     @BindView(R.id.lv_feeds)
-    ExpandedListView lvFeeds;
+    CustomRecyclerView lvFeeds;
     Unbinder unbinder;
     private ImageLoader imageLoader;
 
+    private Post postEntity;
     private ArrayListAdapter<Post> Adapter;
     private ArrayList<Post> collection;
+    private InterstitialAd interstitialAd;
+    private AdapterRecyclerviewAdMob mAdapter;
+
+
+    public static final int NATIVE_EXPRESS_AD_HEIGHT = 150;
+
 
     public static FeedFragment newInstance() {
         Bundle args = new Bundle();
@@ -86,8 +134,15 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        interstitialAd = new InterstitialAd(getDockActivity());
+        interstitialAd.setAdUnitId(getDockActivity().getResources().getString(R.string.ad_unit_id_interstitial));
+        final AdRequest adRequest = new AdRequest.Builder()
+                .build();
+        interstitialAd.loadAd(adRequest);
+
         imageLoader = ImageLoader.getInstance();
-        Adapter = new ArrayListAdapter<Post>(getDockActivity(), new FeedsBinder(getDockActivity(), prefHelper, this, this, this));
+        // Adapter = new ArrayListAdapter<Post>(getDockActivity(), new FeedsBinder(getDockActivity(), prefHelper, this, this, this));
 
         if (getArguments() != null) {
         }
@@ -97,7 +152,6 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_feeds, container, false);
-
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -107,17 +161,53 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
         super.onViewCreated(view, savedInstanceState);
         getMainActivity().setImageSetter(this);
         getMainActivity().showBottomBar(AppConstants.search);
+        adMobListner();
 
         if (prefHelper.getUser().getImageUrl() != null) {
             imageLoader.displayImage(prefHelper.getUser().getImageUrl() + "", image);
         }
+        lvFeeds.setNestedScrollingEnabled(false);
 
-
-        lvFeeds.setAdapter(Adapter);
         serviceHelper.enqueueCall(headerWebService.getAllPosts(), getAllPosts);
+     //   serviceHelper.enqueueCall(headerWebService.getNotificaitonCount(), NotifcationCount);
 
         setTextWatecher();
 
+    }
+
+
+    private void adMobListner() {
+
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                if (interstitialAd != null && interstitialAd.isLoaded()) {
+                    interstitialAd.show();
+                } else {
+                    Toast.makeText(getDockActivity(), "Ad did not load", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onAdFailedToLoad(int errorCode) {
+                // Code to be executed when an ad request fails.
+            }
+
+            @Override
+            public void onAdOpened() {
+                // Code to be executed when the ad is displayed.
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                // Code to be executed when the user has left the app.
+            }
+
+            @Override
+            public void onAdClosed() {
+                // Code to be executed when when the interstitial ad is closed.
+            }
+        });
     }
 
     private void setTextWatecher() {
@@ -140,7 +230,10 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
     }
 
     public ArrayList<Post> getSearchedArray(String keyword) {
-        if (collection.isEmpty()) {
+        if (collection == null) {
+            return new ArrayList<>();
+        }
+        if (collection != null && collection.isEmpty()) {
             return new ArrayList<>();
         }
 
@@ -167,12 +260,12 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
         titleBar.hideButtons();
         titleBar.showTitleLogo();
         titleBar.showBackButton();
-        titleBar.showNotificationBell(new View.OnClickListener() {
+     /*   titleBar.showNotificationBell(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getDockActivity().replaceDockableFragment(NotificationFragment.newInstance(), "NotificationFragment");
             }
-        });
+        }, prefHelper.getNotificationCount());*/
        /* titleBar.showMessageBtn(new View.OnClickListener() {
             @Override
             public void onUserProfileClick(View v) {
@@ -198,7 +291,7 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
         switch (view.getId()) {
 
             case R.id.ll_post:
-                getDockActivity().popFragment();
+            //   getDockActivity().popFragment();
                 getDockActivity().replaceDockableFragment(AddPostFragment.newInstance(false), "NewPostFragment");
                 break;
         }
@@ -227,6 +320,8 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
 
         collection = new ArrayList<>();
         collection.addAll(entity);
+        //  addNativeExpressAds();
+        //  setUpAndLoadNativeExpressAds();
         bindData(collection);
 
     }
@@ -241,9 +336,18 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
             txtNoData.setVisibility(View.VISIBLE);
         }
 
-        Adapter.clearList();
+      /*  mAdapter = new AdapterRecyclerviewAdMob(this.collection, getDockActivity(),getMainActivity(),prefHelper,this,this,this);
+        lvFeeds.setLayoutManager(new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false));
+        lvFeeds.setItemAnimator(new DefaultItemAnimator());
+        lvFeeds.setAdapter(mAdapter);*/
+
+        lvFeeds.BindRecyclerView(new FeedsRecyclerBinder(getDockActivity(), prefHelper, this, this, this), collection,
+                new LinearLayoutManager(getDockActivity(), LinearLayoutManager.VERTICAL, false)
+                , new DefaultItemAnimator());
+
+      /*  Adapter.clearList();
         lvFeeds.setAdapter(Adapter);
-        Adapter.addAll(collection);
+        Adapter.addAll(collection);*/
     }
 
 
@@ -260,17 +364,12 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        getDockActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-    }
-
-
-
-    @Override
     public void share(Post entity, int position) {
 
-        getDockActivity().onLoadingStarted();
+        postEntity = entity;
+        requestStoragePermission();
+
+      /*  getDockActivity().onLoadingStarted();
 
         if (entity.getImageUrl() != null && !entity.getImageUrl().equals("") && entity.getDescription() != null && !entity.getDescription().equals("")) {
             ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), entity.getImageUrl(), entity.getDescription());
@@ -280,13 +379,13 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
             ShareIntentHelper.shareTextIntent(getDockActivity(), entity.getDescription());
         } else {
             UIHelper.showShortToastInCenter(getDockActivity(), "Description is not avaliable");
-        }
+        }*/
 
     }
 
     @Override
     public void comment(Post entity, int position) {
-        getDockActivity().replaceDockableFragment(CommentFragment.newInstance(entity.getId() + ""), "CommentFragment");
+        getDockActivity().addDockableFragment(CommentFragment.newInstance(entity.getId() + ""), "CommentFragment");
     }
 
 
@@ -313,10 +412,20 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
 
 
             case getAllPosts:
+                if(getTitleBar()!=null){
+                    getTitleBar().hideNotificationBell();
+                }
                 ArrayList<Post> entity = (ArrayList<Post>) result;
                 setFeedsListData(entity);
                 break;
 
+            case NotifcationCount:
+                prefHelper.setNotificationCount(((NotificationCount) result).getNotification_count());
+              /*  if(getTitleBar()!=null){
+                    getTitleBar().showNotification(prefHelper.getNotificationCount());
+                    ShortcutBadger.applyCount(getDockActivity(), prefHelper.getNotificationCount());
+                }*/
+                break;
             case postLike:
                 UIHelper.showShortToastInCenter(getDockActivity(), message);
                 break;
@@ -343,4 +452,133 @@ public class FeedFragment extends BaseFragment implements RecyclerViewItemListen
     }
 
 
+    private void requestStoragePermission() {
+        Dexter.withActivity(getDockActivity())
+                .withPermissions(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+
+                        if (report.areAllPermissionsGranted()) {
+                            getDockActivity().onLoadingStarted();
+
+                            if (postEntity.getImageUrl() != null && !postEntity.getImageUrl().equals("") && postEntity.getDescription() != null && !postEntity.getDescription().equals("")) {
+                                ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), postEntity.getImageUrl(), postEntity.getDescription());
+                            } else if (postEntity.getImageUrl() != null && postEntity.getDescription() == null) {
+                                ShareIntentHelper.shareImageAndTextResultIntent(getDockActivity(), postEntity.getImageUrl(), "");
+                            } else if (postEntity.getImageUrl() == null && postEntity.getDescription() != null) {
+                                ShareIntentHelper.shareTextIntent(getDockActivity(), postEntity.getDescription());
+                            } else {
+                                UIHelper.showShortToastInCenter(getDockActivity(), "Description is not avaliable");
+                            }
+                        }
+
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            requestStoragePermission();
+
+                        } else if (report.getDeniedPermissionResponses().size() > 0) {
+                            requestStoragePermission();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).
+                withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        UIHelper.showShortToastInCenter(getDockActivity(), "Grant Storage Permission to processed");
+                        openSettings();
+                    }
+                })
+
+                .onSameThread()
+                .check();
+
+
+    }
+
+    private void openSettings() {
+
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        Uri uri = Uri.fromParts("package", getDockActivity().getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getDockActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+    }
+
 }
+
+ /*   private void addNativeExpressAds(){
+
+        for(int i=0;i<=collection.size();i+=ITEM_PER_AD){
+            final NativeExpressAdView adView =new NativeExpressAdView(getDockActivity());
+            collection.add(i,adView);
+        }
+    }
+
+    private void setUpAndLoadNativeExpressAds(){
+        lvFeeds.post(new Runnable() {
+            @Override
+            public void run() {
+                final float scale=getDockActivity().getResources().getDisplayMetrics().density;
+
+                for(int i=0;i<=collection.size();i+=ITEM_PER_AD){
+                    final NativeExpressAdView adView=(NativeExpressAdView)collection.get(i);
+                    AdSize adSize=new AdSize((int)(300/scale),NATIVE_EXPRESS_AD_HEIGHT);
+                    adView.setAdSize(adSize);
+                    adView.setAdUnitId(getDockActivity().getResources().getString(R.string.ad_unit_id_native));
+
+                    loadNativeExpressAd(0);
+                }
+            }
+        });
+    }
+
+    private void loadNativeExpressAd(final int index) {
+
+        if(index>=collection.size()){
+            return;
+        }
+
+        Object item=collection.get(index);
+        if(!(item instanceof NativeExpressAdView)){
+            throw new ClassCastException("Expected item at index "+ index + "to be a Native");
+        }
+
+        final NativeExpressAdView adView=(NativeExpressAdView)item;
+
+        adView.setAdListener(new AdListener(){
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                loadNativeExpressAd(index+ITEM_PER_AD);
+            }
+
+            @Override
+            public void onAdFailedToLoad(int i) {
+                super.onAdFailedToLoad(i);
+                loadNativeExpressAd(index+ITEM_PER_AD);
+            }
+        });
+
+    }*/
+
+
+

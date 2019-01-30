@@ -1,6 +1,8 @@
 package com.app.fandirect.fragments;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +12,11 @@ import android.widget.ListView;
 
 import com.app.fandirect.R;
 import com.app.fandirect.entities.AllRequestEnt;
+import com.app.fandirect.entities.FannListEnt;
 import com.app.fandirect.entities.GetMyFannsEnt;
+import com.app.fandirect.entities.Post;
+import com.app.fandirect.entities.ReceiverDetail;
+import com.app.fandirect.entities.SenderDetail;
 import com.app.fandirect.fragments.abstracts.BaseFragment;
 import com.app.fandirect.global.AppConstants;
 import com.app.fandirect.interfaces.MyFannsInterface;
@@ -21,6 +27,9 @@ import com.app.fandirect.ui.views.AnyTextView;
 import com.app.fandirect.ui.views.TitleBar;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +46,10 @@ import static com.app.fandirect.global.WebServiceConstants.getMyFanns;
 public class FannsFragment extends BaseFragment implements MyFannsInterface {
     @BindView(R.id.txt_fannsRequestNo)
     AnyTextView txtFannsRequestNo;
+    @BindView(R.id.txt_fanns)
+    AnyTextView txt_fanns;
+    @BindView(R.id.fann_requests)
+    AnyTextView fann_requests;
     @BindView(R.id.btnFannsRequest)
     LinearLayout btnFannsRequest;
     @BindView(R.id.txt_fannsNo)
@@ -57,12 +70,13 @@ public class FannsFragment extends BaseFragment implements MyFannsInterface {
     @BindView(R.id.txt_no_data)
     AnyTextView txtNoData;
 
-    String fannsCount="";
-    String fannsRequestCount="";
+    String fannsCount = "";
+    String fannsRequestCount = "";
 
-    private ArrayListAdapter<GetMyFannsEnt> adapter;
-    private ArrayList<GetMyFannsEnt> collection;
-    private ArrayList<AllRequestEnt> collectionFannRqeuests;
+    private ArrayListAdapter<FannListEnt> adapter;
+    private ArrayList<FannListEnt> collection = new ArrayList<>();
+    private ArrayList<AllRequestEnt> collectionFannRqeuests = new ArrayList<>();
+
 
     public static FannsFragment newInstance() {
         Bundle args = new Bundle();
@@ -75,7 +89,7 @@ public class FannsFragment extends BaseFragment implements MyFannsInterface {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new ArrayListAdapter<GetMyFannsEnt>(getDockActivity(), new FannsItemBinder(getDockActivity(), prefHelper, this));
+        adapter = new ArrayListAdapter<FannListEnt>(getDockActivity(), new FannsItemBinder(getDockActivity(), prefHelper, this));
 
         if (getArguments() != null) {
         }
@@ -97,6 +111,55 @@ public class FannsFragment extends BaseFragment implements MyFannsInterface {
         serviceHelper.enqueueCall(headerWebService.getMyFanns(), getMyFanns);
         serviceHelper.enqueueCall(headerWebService.getAllFannRequests(), AlRequests);
 
+        setTextWatecher();
+
+    }
+
+    private void setTextWatecher() {
+        txtSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                bindData(getSearchedArray(s.toString()));
+            }
+        });
+    }
+
+    public ArrayList<FannListEnt> getSearchedArray(String keyword) {
+        if (collection == null) {
+            return new ArrayList<>();
+        }
+        if (collection != null && collection.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        ArrayList<FannListEnt> arrayList = new ArrayList<>();
+
+        String UserName = "";
+        for (FannListEnt item : collection) {
+           /* if (item.getSenderDetail().getId().equals(String.valueOf(prefHelper.getUser().getId()))) {
+                if (item.getReceiverDetail() != null) {
+                    UserName = item.getReceiverDetail().getUserName();
+                }
+            } else if (item.getSenderDetail() != null) {
+                UserName = item.getSenderDetail().getUserName();
+            }*/
+
+            if (Pattern.compile(Pattern.quote(keyword), Pattern.CASE_INSENSITIVE).matcher(item.getName()).find()) {
+                arrayList.add(item);
+            }
+        }
+        return arrayList;
+
     }
 
     @Override
@@ -106,9 +169,48 @@ public class FannsFragment extends BaseFragment implements MyFannsInterface {
 
             case getMyFanns:
                 ArrayList<GetMyFannsEnt> entity = (ArrayList<GetMyFannsEnt>) result;
-                fannsCount=String.valueOf(entity.size());
+
+                ArrayList<FannListEnt> sortedList = new ArrayList<>();
+
+                for (GetMyFannsEnt item : entity) {
+                    if (item.getSenderDetail()!=null && item.getSenderDetail().getId()!=null && item.getSenderDetail().getId().equals(String.valueOf(prefHelper.getUser().getId()))) {
+                        if (item.getReceiverDetail() != null) {
+                            sortedList.add(new FannListEnt(item.getReceiverDetail().getUserName(), item.getReceiverDetail().getImageUrl(), item.getReceiverDetail().getId(), item.getReceiverDetail().getRoleId()));
+                        }
+                    } else if (item.getSenderDetail() != null) {
+                        sortedList.add(new FannListEnt(item.getSenderDetail().getUserName(), item.getSenderDetail().getImageUrl(), item.getSenderDetail().getId(), item.getSenderDetail().getRoleId()));
+                    }
+                }
+                Collections.sort(sortedList, new Comparator<FannListEnt>() {
+                    @Override
+                    public int compare(FannListEnt fannListEnt, FannListEnt t1) {
+                        return fannListEnt.getName().toLowerCase().compareTo(t1.getName().toLowerCase());
+                    }
+                });
+
+             /*   Collections.sort(entity, new Comparator<GetMyFannsEnt>() {
+                    @Override
+                    public int compare(GetMyFannsEnt getMyFannsEnt, GetMyFannsEnt t1) {
+                        if (getMyFannsEnt.getSenderDetail().getId().equals(String.valueOf(prefHelper.getUser().getId()))) {
+                            if (getMyFannsEnt.getReceiverDetail() != null) {
+                                return getMyFannsEnt.getReceiverDetail().getUserName().toLowerCase().compareTo(t1.getReceiverDetail().getUserName().toLowerCase());
+                            }
+                        } else if (getMyFannsEnt.getSenderDetail() != null) {
+                            return getMyFannsEnt.getSenderDetail().getUserName().toLowerCase().compareTo(t1.getSenderDetail().getUserName().toLowerCase());
+                        }
+                        return 0;
+                    }
+                });*/
+
+                fannsCount = String.valueOf(sortedList.size());
+                if (fannsCount.equals("1")) {
+                    txt_fanns.setText(R.string.fann);
+                } else {
+                    txt_fanns.setText(R.string.fanns);
+                }
                 txtFannsNo.setText(fannsCount);
-                setFannsData(entity);
+
+                setFannsData(sortedList);
                 break;
 
             case AlRequests:
@@ -126,16 +228,29 @@ public class FannsFragment extends BaseFragment implements MyFannsInterface {
                         collectionFannRqeuests.add(item);
                     }
                 }
-                fannsRequestCount=String.valueOf(collectionFannRqeuests.size());
+                fannsRequestCount = String.valueOf(collectionFannRqeuests.size());
+                if (fannsRequestCount.equals("1")) {
+                    fann_requests.setText(R.string.fann_request);
+                } else {
+                    fann_requests.setText(R.string.fann_requests);
+                }
                 txtFannsRequestNo.setText(fannsRequestCount);
                 break;
 
         }
     }
 
-    private void setFannsData(ArrayList<GetMyFannsEnt> entity) {
+    private void setFannsData(ArrayList<FannListEnt> entity) {
+        collection = new ArrayList<>();
+        collection.addAll(entity);
+        bindData(collection);
 
-        if (entity.size() > 0) {
+
+    }
+
+    private void bindData(ArrayList<FannListEnt> collection) {
+
+        if (collection.size() > 0) {
             lvFanns.setVisibility(View.VISIBLE);
             txtNoData.setVisibility(View.GONE);
         } else {
@@ -145,10 +260,7 @@ public class FannsFragment extends BaseFragment implements MyFannsInterface {
 
         adapter.clearList();
         lvFanns.setAdapter(adapter);
-        adapter.addAll(entity);
-        adapter.notifyDataSetChanged();
-
-
+        adapter.addAll(collection);
     }
 
     @Override
@@ -175,9 +287,9 @@ public class FannsFragment extends BaseFragment implements MyFannsInterface {
 
 
     @Override
-    public void getMyFanns(GetMyFannsEnt entity, int position) {
+    public void getMyFanns(FannListEnt entity, int position) {
 
-        String userId = "";
+       /* String userId = "";
         String roleId = "";
 
         if (entity != null && entity.getSenderDetail() != null && entity.getReceiverDetail() != null) {
@@ -190,11 +302,11 @@ public class FannsFragment extends BaseFragment implements MyFannsInterface {
                 userId = entity.getSenderDetail().getId() + "";
                 roleId = entity.getSenderDetail().getRoleId() + "";
             }
-        }
-        if (roleId.equals(UserRoleId)) {
-            getDockActivity().replaceDockableFragment(UserProfileFragment.newInstance(userId), "UserProfileFragment");
+        }*/
+        if (entity.getRoleId().equals(UserRoleId)) {
+            getDockActivity().replaceDockableFragment(UserProfileFragment.newInstance(entity.getUserId()), "UserProfileFragment");
         } else {
-            getDockActivity().replaceDockableFragment(SpProfileFragment.newInstance(userId), "SpProfileFragment");
+            getDockActivity().replaceDockableFragment(SpProfileFragment.newInstance(entity.getUserId()), "SpProfileFragment");
 
         }
 

@@ -45,6 +45,9 @@ public class GetProfileEnt {
     @SerializedName("state")
     @Expose
     private String state;
+    @SerializedName("reviews_count")
+    @Expose
+    private String reviewsCount;
     @SerializedName("country")
     @Expose
     private String country;
@@ -115,6 +118,25 @@ public class GetProfileEnt {
     @SerializedName("rating")
     @Expose
     private Float rating;
+    @SerializedName("education")
+    @Expose
+    private String Education;
+
+    public String getEducation() {
+        return Education;
+    }
+
+    public void setEducation(String education) {
+        Education = education;
+    }
+
+    public String getReviewsCount() {
+        return reviewsCount;
+    }
+
+    public void setReviewsCount(String reviewsCount) {
+        this.reviewsCount = reviewsCount;
+    }
 
     public Float getRating() {
         return rating;
@@ -191,11 +213,16 @@ public class GetProfileEnt {
     @SerializedName("Fans")
     @Expose
     private ArrayList<GetMyFannsEnt> fans = new ArrayList<>();
+    @SerializedName("MutualFans")
+    @Expose
+    private ArrayList<GetMyFannsEnt> mutualFanns = new ArrayList<>();
+    @SerializedName("Reviews")
+    @Expose
+    private ArrayList<ReviewsEnt> reviews =new ArrayList<>();
+
     @SerializedName("image_url")
     @Expose
     private String imageUrl;
-
-
     @SerializedName("fan_status")
     @Expose
     private FanStatus fanStatus;
@@ -205,6 +232,22 @@ public class GetProfileEnt {
     @SerializedName("post_status")
     @Expose
     private String postStatus;
+
+    public ArrayList<ReviewsEnt> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(ArrayList<ReviewsEnt> reviews) {
+        this.reviews = reviews;
+    }
+
+    public ArrayList<GetMyFannsEnt> getMutualFanns() {
+        return mutualFanns;
+    }
+
+    public void setMutualFanns(ArrayList<GetMyFannsEnt> mutualFanns) {
+        this.mutualFanns = mutualFanns;
+    }
 
     public String getProfileStaus() {
         return profileStaus;

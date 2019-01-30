@@ -53,6 +53,7 @@
                 android:drawablePadding="@dimen/x10"
                 android:drawableStart="@drawable/name"
                 android:hint="@string/name"
+                android:maxLength="35"
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName"
                 android:maxLines="1"
@@ -95,14 +96,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/x40"
                 android:layout_marginTop="@dimen/x10"
-                android:paddingStart="@dimen/x10"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:paddingStart="@dimen/x10">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/location"/>
+                    android:src="@drawable/location" />
 
                 <com.app.fandirect.ui.views.AutoCompleteLocation
                     android:id="@+id/txt_autoComplete"
@@ -136,6 +137,7 @@
                 android:drawableStart="@drawable/pass"
                 android:hint="@string/password"
                 android:imeOptions="actionNext"
+                android:maxLength="20"
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/x10"
@@ -162,6 +164,7 @@
                 android:inputType="textPassword"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/x10"
+                android:maxLength="20"
                 android:paddingStart="@dimen/x10"
                 android:textColor="@color/text_black_color"
                 android:textSize="@dimen/x14"
@@ -172,14 +175,37 @@
                 android:layout_height="@dimen/x1"
                 android:background="@color/view_color" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/x15"
+                android:gravity="center"
+                android:orientation="horizontal">
 
+                <CheckBox
+                    android:id="@+id/cb_term"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:buttonTint="@color/app_blue" />
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:id="@+id/btn_terms_and_condition"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/by_registering_you_agree_to_terms_condition"
+                    android:gravity="start"
+                    android:textColor="@color/text_black_color"
+                    android:textSize="@dimen/x11"
+                    app:typeface="@string/font_normal" />
+
+            </LinearLayout>
 
 
             <Button
                 android:id="@+id/btn_signup"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/x45"
-                android:layout_marginTop="@dimen/x20"
+                android:layout_marginTop="@dimen/x10"
                 android:background="@drawable/rounded_button"
                 android:text="@string/signup"
                 android:textAllCaps="false"
@@ -190,6 +216,7 @@
                 android:id="@+id/btn_signup_service_provider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/x45"
+                android:layout_marginBottom="@dimen/x20"
                 android:layout_marginTop="@dimen/x12"
                 android:background="@drawable/rounder_button_white"
                 android:text="@string/signup_as_servie_provicer"
@@ -197,16 +224,7 @@
                 android:textColor="@color/app_blue"
                 android:textSize="@dimen/x16" />
 
-            <com.app.fandirect.ui.views.AnyTextView
-                android:id="@+id/btn_terms_and_condition"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/x10"
-                android:gravity="center_horizontal"
-                android:text="@string/by_registering_you_agree_to_terms_condition"
-                android:textColor="@color/text_black_color"
-                android:textSize="@dimen/x14"
-                app:typeface="@string/font_normal" />
+
         </LinearLayout>
 
     </LinearLayout>

@@ -3,6 +3,9 @@ package com.app.fandirect.entities;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by saeedhyder on 5/17/2018.
  */
@@ -18,9 +21,12 @@ public class commentEnt {
     @SerializedName("post_id")
     @Expose
     private String postId;
-    @SerializedName("selected_comment")
+    @SerializedName("comment")
     @Expose
     private String comment;
+    @SerializedName("tag_user_ids")
+    @Expose
+    private String tagUserIds;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
@@ -30,6 +36,12 @@ public class commentEnt {
     @SerializedName("deleted_at")
     @Expose
     private String deletedAt;
+    @SerializedName("comment_text")
+    @Expose
+    private String commentText;
+    @SerializedName("tag_person_name")
+    @Expose
+    private ArrayList<TagName> tagPersonName = new ArrayList<>();
     @SerializedName("user_detail")
     @Expose
     private UserDetail userDetail;
@@ -66,6 +78,14 @@ public class commentEnt {
         this.comment = comment;
     }
 
+    public String getTagUserIds() {
+        return tagUserIds;
+    }
+
+    public void setTagUserIds(String tagUserIds) {
+        this.tagUserIds = tagUserIds;
+    }
+
     public String getCreatedAt() {
         return createdAt;
     }
@@ -88,6 +108,22 @@ public class commentEnt {
 
     public void setDeletedAt(String deletedAt) {
         this.deletedAt = deletedAt;
+    }
+
+    public String getCommentText() {
+        return commentText;
+    }
+
+    public void setCommentText(String commentText) {
+        this.commentText = commentText;
+    }
+
+    public ArrayList<TagName> getTagPersonName() {
+        return tagPersonName;
+    }
+
+    public void setTagPersonName(ArrayList<TagName> tagPersonName) {
+        this.tagPersonName = tagPersonName;
     }
 
     public UserDetail getUserDetail() {

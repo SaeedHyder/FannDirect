@@ -33,7 +33,7 @@
 
             <ProgressBar
                 android:id="@+id/progressBar"
-                style="?android:attr/progressBarStyleLarge"
+                style="?android:attr/progressBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -41,6 +41,23 @@
                 android:indeterminate="true"
                 android:visibility="invisible" />
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <com.google.android.gms.ads.AdView xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/adView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/x5"
+            android:layout_marginBottom="@dimen/x5"
+            ads:adSize="SMART_BANNER"
+            android:visibility="visible"
+            ads:adUnitId="@string/ad_unit_id_banner" />
+
+        </LinearLayout>
 
 
         <LinearLayout

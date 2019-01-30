@@ -23,6 +23,7 @@
             android:background="@color/transparent"
             android:gravity="center_vertical"
             android:hint="Search"
+            android:imeOptions="actionDone"
             android:inputType="text"
             android:paddingStart="@dimen/x15"
             android:textColor="@color/text_color"
@@ -53,7 +54,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="No data to show"
+        android:text="No chat thread found"
         android:textColor="@color/dark_grey"
         android:textSize="@dimen/x15"
         android:visibility="gone"
@@ -61,7 +62,7 @@
 
         />
 
-    <ListView
+    <com.app.fandirect.ui.views.CustomRecyclerView
         android:id="@+id/lv_message"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

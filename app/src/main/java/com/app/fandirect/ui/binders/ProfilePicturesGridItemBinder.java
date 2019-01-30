@@ -32,7 +32,7 @@ public class ProfilePicturesGridItemBinder extends ViewBinder<Picture> {
     private DockActivity dockActivity;
     private BasePreferenceHelper prefHelper;
     private ImageLoader imageLoader;
-    private LongPressPopup popup ;
+    private LongPressPopup popup;
 
 
     public ProfilePicturesGridItemBinder(DockActivity dockActivity, BasePreferenceHelper prefHelper) {
@@ -53,12 +53,14 @@ public class ProfilePicturesGridItemBinder extends ViewBinder<Picture> {
 
         final ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        imageLoader.displayImage(entity.getImageUrl(),viewHolder.image);
+        // imageLoader.displayImage(entity.getImageUrl(),viewHolder.image);
+        if (entity.getImageUrl() != null)
+            Picasso.with(dockActivity).load(entity.getImageUrl()).placeholder(R.drawable.placeholder).into(viewHolder.image);
 
         viewHolder.image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            dockActivity.replaceDockableFragment(ProfilePictureDetail.newInstance(entity),"ProfilePictureDetail");
+                dockActivity.addDockableFragment(ProfilePictureDetail.newInstance(entity.getId() + ""), "ProfilePictureDetail");
             }
         });
 
@@ -86,8 +88,7 @@ public class ProfilePicturesGridItemBinder extends ViewBinder<Picture> {
     }
 
 
-
-    static class ViewHolder extends BaseViewHolder{
+    static class ViewHolder extends BaseViewHolder {
         @BindView(R.id.image)
         ImageView image;
 

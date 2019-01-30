@@ -10,7 +10,7 @@ public class AppConstants {
     // broadcast receiver intent filters
     public static final String TOPIC_GLOBAL = "global";
     public static final String REGISTRATION_COMPLETE = "registrationComplete";
-    public static final String PUSH_NOTIFICATION = "pushNotification";
+    public static final String PUSH_NOTIFICATION = "PushNotification";
 
     // id to handle the notification in the notification tray
     public static  int NOTIFICATION_ID = 100;
@@ -64,6 +64,10 @@ public class AppConstants {
     public static String unfriend= "unfriend";
     public static String block_user= "block_user";
     public static String delete_user= "delete_user";
+    public static String comment= "comment";
+    public static String post= "post";
+    public static String admin= "admin";
+    public static String promotion= "promotion";
 
     //fann Rqeust keys
 
@@ -74,6 +78,15 @@ public class AppConstants {
     public static String REQUEST_UNFRIEND= "unfriend";
 
 
+    public static String POST= "Post";
+    public static String PICTURES= "Picture";
+    public static String FANN= "Fann";
+    public static String MUTUALFANN= "Mutual";
+    public static String REVIEW= "Review";
+
+
+    public static final int ITEM_PER_AD=8;
+    public static final String DistanceUnit="miles";
 
 
 

@@ -2,8 +2,15 @@ package com.app.fandirect.ui.binders;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.SystemClock;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,10 +18,13 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.app.fandirect.R;
 import com.app.fandirect.activities.DockActivity;
 import com.app.fandirect.entities.Post;
+import com.app.fandirect.entities.TagName;
+import com.app.fandirect.fragments.LikePostFragment;
 import com.app.fandirect.fragments.SpProfileFragment;
 import com.app.fandirect.fragments.UserProfileFragment;
 import com.app.fandirect.helpers.BasePreferenceHelper;
@@ -25,6 +35,8 @@ import com.app.fandirect.interfaces.ReportPostIntetface;
 import com.app.fandirect.ui.viewbinders.abstracts.ViewBinder;
 import com.app.fandirect.ui.views.AnyTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,13 +59,13 @@ public class PostItemBinder extends ViewBinder<Post> {
     private long mLastClickTime = 0;
 
 
-    public PostItemBinder(DockActivity dockActivity, BasePreferenceHelper prefHelper, PostClicksInterface postClicksInterface,ReportPostIntetface reportPostIntetface) {
+    public PostItemBinder(DockActivity dockActivity, BasePreferenceHelper prefHelper, PostClicksInterface postClicksInterface, ReportPostIntetface reportPostIntetface) {
         super(R.layout.row_item_post);
         this.dockActivity = dockActivity;
         this.prefHelper = prefHelper;
         this.imageLoader = ImageLoader.getInstance();
         this.postClicksInterface = postClicksInterface;
-        this.reportPostIntetface=reportPostIntetface;
+        this.reportPostIntetface = reportPostIntetface;
     }
 
     @Override
@@ -66,42 +78,51 @@ public class PostItemBinder extends ViewBinder<Post> {
 
         final ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        if (entity.getUserDetail().getImageUrl() != null) {
-            imageLoader.displayImage(entity.getUserDetail().getImageUrl(), viewHolder.ivImage);
-        }
-        viewHolder.txtName.setText(entity.getUserDetail().getUserName());
-        viewHolder.txtDescription.setText(entity.getDescription());
-        viewHolder.txtDate.setText(DateHelper.getFormatedDate("yyyy-MM-dd HH:mm:ss","dd-MM-yy",entity.getCreated_at()));
+        if (entity != null) {
+            if (entity.getUserDetail() != null && entity.getUserDetail().getImageUrl() != null) {
+                imageLoader.displayImage(entity.getUserDetail().getImageUrl(), viewHolder.ivImage);
+            }
+            if (entity.getUserDetail() != null && entity.getUserDetail().getUserName() != null) {
+                viewHolder.txtName.setText(entity.getUserDetail().getUserName());
+            }
+            viewHolder.txtDate.setText(DateHelper.getFormatedDate("yyyy-MM-dd HH:mm:ss", "MM-dd-yy", entity.getCreated_at()));
 
-        if (entity.getLocation() != null && !entity.getLocation().equals("")) {
-            viewHolder.txtAddress.setText(entity.getLocation());
-            viewHolder.txtAddress.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.txtAddress.setVisibility(View.GONE);
-        }
+            if (entity.getTagPersonName()!=null && entity.getTagPersonName().size() > 0) {
+                makeLinks(viewHolder.txtDescription, entity.getTagPersonName(), entity.getPostText().replace("@", ""), entity);
 
-        if (entity.getLikeCount() != 0) {
-            viewHolder.like.setText(entity.getLikeCount() + "");
-        } else {
-            viewHolder.like.setText("");
-        }
-        if (entity.getCommentCount() != 0) {
-            viewHolder.comment.setText(entity.getCommentCount() + "");
-        } else {
-            viewHolder.comment.setText("");
-        }
-        if (entity.getIsLike() == 1) {
-            viewHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.selected_like, 0, 0, 0);
-        } else {
-            viewHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.unselected_like, 0, 0, 0);
-        }
+            } else {
+                viewHolder.txtDescription.setText(entity.getPostText());
+            }
 
-        if (entity.getIsFavourite() == 1) {
-            viewHolder.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.selected_fav, 0, 0, 0);
-        } else {
-            viewHolder.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.unselected_fav, 0, 0, 0);
-        }
+            if (entity.getLocation() != null && !entity.getLocation().equals("")) {
+                viewHolder.txtAddress.setText(entity.getLocation());
+                viewHolder.txtAddress.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.txtAddress.setVisibility(View.GONE);
+            }
 
+            if (entity.getLikeCount() != 0) {
+                viewHolder.like.setText(entity.getLikeCount() + "");
+            } else {
+                viewHolder.like.setText("");
+            }
+            if (entity.getCommentCount() != 0) {
+                viewHolder.comment.setText(entity.getCommentCount() + "");
+            } else {
+                viewHolder.comment.setText("");
+            }
+            if (entity.getIsLike() == 1) {
+                viewHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.selected_like, 0, 0, 0);
+            } else {
+                viewHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.unselected_like, 0, 0, 0);
+            }
+
+            if (entity.getIsFavourite() == 1) {
+                viewHolder.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.selected_fav, 0, 0, 0);
+            } else {
+                viewHolder.favorite.setCompoundDrawablesWithIntrinsicBounds(R.drawable.unselected_fav, 0, 0, 0);
+            }
+        }
         viewHolder.like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -252,6 +273,15 @@ public class PostItemBinder extends ViewBinder<Post> {
             }
         });
 
+        viewHolder.llLikeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (entity.getLikeCount() > 0) {
+                    dockActivity.addDockableFragment(LikePostFragment.newInstance(entity.getId() + ""), "LikePostFragment");
+                }
+            }
+        });
+
       /*  if (String.valueOf(entity.getUserDetail().getId()).equals(prefHelper.getUser().getId())) {
             viewHolder.menuBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -354,6 +384,50 @@ public class PostItemBinder extends ViewBinder<Post> {
         });*/
     }
 
+    public void makeLinks(TextView textView, ArrayList<TagName> links, String text, Post entity) {
+        SpannableString spannableString = new SpannableString(text);
+
+        for (TagName item : links) {
+            int startIndexOfLink = text.indexOf(item.getUserName());
+            if (item.getDeletedAt() != null && !item.getDeletedAt().equals("") && !item.getDeletedAt().equals("null")) {
+                if (startIndexOfLink != -1) {
+                    spannableString.setSpan(new ForegroundColorSpan(Color.BLACK), startIndexOfLink, startIndexOfLink + item.getUserName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+            } else {
+                if (startIndexOfLink != -1) {
+                    spannableString.setSpan(getClickableSpan(item, item.getId() + ""), startIndexOfLink, startIndexOfLink + item.getUserName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+
+            }
+        }
+
+        textView.setHighlightColor(Color.TRANSPARENT); // prevent TextView change background when highlight
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        textView.setText(spannableString, TextView.BufferType.SPANNABLE);
+    }
+
+
+    private ClickableSpan getClickableSpan(final TagName entity, final String id) {
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                if (entity != null && entity.getRoleId() != null && entity.getRoleId().equals(UserRoleId)) {
+                    ((DockActivity) dockActivity).addDockableFragment(UserProfileFragment.newInstance(id), "UserProfileFragment");
+                } else {
+                    ((DockActivity) dockActivity).addDockableFragment(SpProfileFragment.newInstance(id), "SpProfileFragment");
+                }
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+            }
+        };
+
+        return clickableSpan;
+    }
+
     static class ViewHolder extends BaseViewHolder {
         @BindView(R.id.iv_image)
         CircleImageView ivImage;
@@ -375,6 +449,8 @@ public class PostItemBinder extends ViewBinder<Post> {
         AnyTextView favorite;
         @BindView(R.id.menu_btn)
         Button menuBtn;
+        @BindView(R.id.ll_likeBtn)
+        LinearLayout llLikeBtn;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

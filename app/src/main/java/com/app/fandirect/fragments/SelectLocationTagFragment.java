@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,13 +20,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.app.fandirect.R;
+import com.app.fandirect.entities.HomeGridEnt;
 import com.app.fandirect.fragments.abstracts.BaseFragment;
+import com.app.fandirect.helpers.InternetHelper;
 import com.app.fandirect.helpers.UIHelper;
+import com.app.fandirect.helpers.Utils;
 import com.app.fandirect.interfaces.OnReceivePlaceListener;
 import com.app.fandirect.interfaces.PostInterface;
 import com.app.fandirect.ui.adapters.ArrayListAdapter;
 import com.app.fandirect.ui.adapters.AutoCompleteListAdapter;
 import com.app.fandirect.ui.binders.AutocompleteBinder;
+import com.app.fandirect.ui.binders.HomeGridItemBinder;
 import com.app.fandirect.ui.binders.SelectLocationBinder;
 import com.app.fandirect.ui.views.AnyTextView;
 import com.app.fandirect.ui.views.AutoCompleteLocation;
@@ -54,6 +59,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
+import static com.app.fandirect.global.WebServiceConstants.HomeCount;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
@@ -74,6 +80,7 @@ public class SelectLocationTagFragment extends BaseFragment implements NearByPla
     EditText edtDestination;
     @BindView(R.id.new_places)
     ExpandedListView newPlaces;
+
 
     private PlacesTask placesTask;
     private PlacesEnt nearByPlaces;
@@ -105,8 +112,9 @@ public class SelectLocationTagFragment extends BaseFragment implements NearByPla
         }
 
     }
-    void setInterfaceListner( PostInterface postInterface){
-        this.postInterface=postInterface;
+
+    void setInterfaceListner(PostInterface postInterface) {
+        this.postInterface = postInterface;
     }
 
 
@@ -128,26 +136,32 @@ public class SelectLocationTagFragment extends BaseFragment implements NearByPla
         placesTask = new PlacesTask(this);
 
 
-        googleApiClient = new GoogleApiClient.Builder(getMainActivity())
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .addApi(Places.GEO_DATA_API)
-                .build();
+        if (getMainActivity() != null) {
+            googleApiClient = new GoogleApiClient.Builder(getMainActivity())
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .addApi(LocationServices.API)
+                    .addApi(Places.GEO_DATA_API)
+                    .build();
 
+        }
 
         autoCOmpleteListner();
         setAutocomplete();
         setListner();
 
+
     }
+
 
     private void setListner() {
 
         newPlaces.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if(Utils.doubleClickCheck2Seconds()) {
                 getPlace(position);
+            }
             }
         });
 
@@ -155,7 +169,9 @@ public class SelectLocationTagFragment extends BaseFragment implements NearByPla
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Result entity = (Result) adapter.getItem(position);
-                setPlaceWithPlaceId(entity.getPlaceId());
+                if(Utils.doubleClickCheck2Seconds()) {
+                    setPlaceWithPlaceId(entity.getPlaceId());
+                }
             }
         });
 
@@ -179,8 +195,10 @@ public class SelectLocationTagFragment extends BaseFragment implements NearByPla
                     if (places.getCount() > 0) {
                         // Got place details
                         final Place place = places.get(0);
-                        postInterface.getSelectedPlaceData(place.getName().toString(),place.getAddress().toString(), place.getLatLng().latitude + "", place.getLatLng().longitude + "");
-                        getMainActivity().popFragment();
+                        postInterface.getSelectedPlaceData(place.getName().toString(), place.getAddress().toString(), place.getLatLng().latitude + "", place.getLatLng().longitude + "");
+                        if (getMainActivity() != null) {
+                            getMainActivity().popFragment();
+                        }
                         //getDockActivity().addDockableFragment(AddPostFragment.newInstance(place.getName().toString(),place.getAddress().toString(), place.getLatLng().latitude + "", place.getLatLng().longitude + ""),"AddPostFragment");
                         // setPlace(place.getAddress().toString(), place.getLatLng());
 //                        madapter.clear();
@@ -203,30 +221,39 @@ public class SelectLocationTagFragment extends BaseFragment implements NearByPla
 
     private void setPlaceWithPlaceId(String placeId) {
 
-        PendingResult<PlaceBuffer> placeResult =
-                Places.GeoDataApi.getPlaceById(googleApiClient, placeId);
-        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
-            @Override
-            public void onResult(@NonNull PlaceBuffer places) {
-                if (!places.getStatus().isSuccess()) {
-                    places.release();
-                    return;
-                }
-                if (places.getCount() > 0) {
-                    // Got place details
-                    final Place place = places.get(0);
-                    postInterface.getSelectedPlaceData(place.getName().toString(),place.getAddress().toString(), place.getLatLng().latitude + "", place.getLatLng().longitude + "");
-                    getMainActivity().popFragment();
-                    //  getDockActivity().addDockableFragment(AddPostFragment.newInstance(place.getName().toString(),place.getAddress().toString(), place.getLatLng().latitude + "", place.getLatLng().longitude + ""),"AddPostFragment");
+        try {
 
-                } else {
-                    Toast.makeText(getApplicationContext(), "Place details not found.", Toast.LENGTH_LONG).show();
-                }
 
-                places.release();
+            if (placeId != null && !placeId.equals("")) {
+                PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeId);
+                placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
+                    @Override
+                    public void onResult(@NonNull PlaceBuffer places) {
+                        if (!places.getStatus().isSuccess()) {
+                            places.release();
+                            return;
+                        }
+                        if (places.getCount() > 0) {
+                            // Got place details
+                            final Place place = places.get(0);
+                            postInterface.getSelectedPlaceData(place.getName().toString(), place.getAddress().toString(), place.getLatLng().latitude + "", place.getLatLng().longitude + "");
+                            if (getMainActivity() != null) {
+                                getMainActivity().popFragment();
+                            }
+                            //  getDockActivity().addDockableFragment(AddPostFragment.newInstance(place.getName().toString(),place.getAddress().toString(), place.getLatLng().latitude + "", place.getLatLng().longitude + ""),"AddPostFragment");
+
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Place details not found.", Toast.LENGTH_LONG).show();
+                        }
+
+                        places.release();
+                    }
+
+                });
             }
-
-        });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setAutocomplete() {
@@ -316,8 +343,14 @@ public class SelectLocationTagFragment extends BaseFragment implements NearByPla
                         Double longitude = Mylocation.getLongitude();
 
                         StringBuilder sbValue = new StringBuilder(sbMethod(latitude, longitude));
-                        placesTask.execute(sbValue.toString());
+                        try {
+                            placesTask = new PlacesTask(SelectLocationTagFragment.this);
+                            placesTask.execute(sbValue.toString());
 
+                        } catch (Exception e) {
+                            mainFrame.setVisibility(View.VISIBLE);
+                            e.printStackTrace();
+                        }
 
                     } else {
                         UIHelper.showShortToastInCenter(getDockActivity(), "Can't get your Location Try getting using Location Button");
@@ -336,7 +369,7 @@ public class SelectLocationTagFragment extends BaseFragment implements NearByPla
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (getMainActivity().statusCheck()) {
+        if (getMainActivity() != null && getMainActivity().statusCheck()) {
             getCurrentLocation();
         }
     }

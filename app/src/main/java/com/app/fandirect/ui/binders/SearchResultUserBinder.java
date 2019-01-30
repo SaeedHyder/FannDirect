@@ -14,6 +14,7 @@ import com.app.fandirect.interfaces.userProfileClick;
 import com.app.fandirect.ui.viewbinders.abstracts.ViewBinder;
 import com.app.fandirect.ui.views.AnyTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,13 +58,21 @@ public class SearchResultUserBinder extends ViewBinder<UserEnt> {
         final UserEnt ent = entity;
         final ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        viewHolder.image.setImageResource(R.drawable.placeholder);
-        if (entity.getImageUrl() != null) {
-            imageLoader.displayImage(entity.getImageUrl() + "", viewHolder.image);
-        }
-        viewHolder.txtName.setText(entity.getUserName() + "");
-        viewHolder.txtLocation.setText(entity.getLocation() + "");
 
+        viewHolder.image.setImageResource(R.drawable.placeholder);
+        if (entity != null) {
+            if (entity.getImageUrl() != null) {
+                Picasso.with(dockActivity).load(entity.getImageUrl()).placeholder(R.drawable.placeholder).into(viewHolder.image);
+                // imageLoader.displayImage(entity.getImageUrl() + "", viewHolder.image);
+            }
+            viewHolder.txtName.setText(entity.getUserName() + "");
+            if (entity.getLocation() != null && !entity.getLocation().equals("")) {
+                viewHolder.txtLocation.setVisibility(View.VISIBLE);
+                viewHolder.txtLocation.setText(entity.getLocation());
+            } else {
+                viewHolder.txtLocation.setVisibility(View.GONE);
+            }
+        }
         if (entity.getFanStatus() != null && entity.getFanStatus().getSenderId() != null && entity.getFanStatus().getStatus() != null) {
             if (entity.getFanStatus().getSenderId().equals(prefHelper.getUser().getId())) {
                 if (entity.getFanStatus().getStatus().equals(REQUEST_PENDING)) {
@@ -93,12 +102,12 @@ public class SearchResultUserBinder extends ViewBinder<UserEnt> {
                     viewHolder.btnRequest.setTextColor(dockActivity.getResources().getColor(R.color.app_blue));
                     viewHolder.btnRequest.setText(R.string.add_fann);
                 }
-            }else {
+            } else {
                 viewHolder.btnRequest.setBackground(dockActivity.getResources().getDrawable(R.drawable.rounder_button_white));
                 viewHolder.btnRequest.setTextColor(dockActivity.getResources().getColor(R.color.app_blue));
                 viewHolder.btnRequest.setText(R.string.add_fann);
             }
-        }else {
+        } else {
             viewHolder.btnRequest.setBackground(dockActivity.getResources().getDrawable(R.drawable.rounder_button_white));
             viewHolder.btnRequest.setTextColor(dockActivity.getResources().getColor(R.color.app_blue));
             viewHolder.btnRequest.setText(R.string.add_fann);

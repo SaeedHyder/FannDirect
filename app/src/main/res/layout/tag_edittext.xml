@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edtTxt1"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:text="sadasdasd"
+    android:textColor="@color/app_blue"
+    android:textSize="@dimen/x20"
+    android:textStyle="bold" />

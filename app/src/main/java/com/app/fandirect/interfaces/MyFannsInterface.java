@@ -1,5 +1,6 @@
 package com.app.fandirect.interfaces;
 
+import com.app.fandirect.entities.FannListEnt;
 import com.app.fandirect.entities.GetMyFannsEnt;
 
 /**
@@ -8,5 +9,5 @@ import com.app.fandirect.entities.GetMyFannsEnt;
 
 public interface MyFannsInterface {
 
-    void getMyFanns(GetMyFannsEnt entity, int position);
+    void getMyFanns(FannListEnt entity, int position);
 }

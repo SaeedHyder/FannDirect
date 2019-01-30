@@ -14,6 +14,7 @@ import com.app.fandirect.interfaces.RecyclerViewItemListener;
 import com.app.fandirect.ui.viewbinders.abstracts.ViewBinder;
 import com.app.fandirect.ui.views.AnyTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,14 +49,16 @@ public class HomeSearchBinder extends ViewBinder<GetServicesEnt> {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         viewHolder.txtCategory.setText(entity.getName());
-        imageLoader.displayImage(entity.getBannerUrl(), viewHolder.ivCategory);
+        if (entity.getBannerUrl() != null) {
+            Picasso.with(dockActivity).load(entity.getBannerUrl()).placeholder(R.drawable.placeholder_thumb).into(viewHolder.ivCategory);
+         //   imageLoader.displayImage(entity.getBannerUrl(), viewHolder.ivCategory);
+        }
         viewHolder.rlHomeSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clickListner.onRecyclerItemClicked(entity, position);
             }
         });
-
 
 
     }

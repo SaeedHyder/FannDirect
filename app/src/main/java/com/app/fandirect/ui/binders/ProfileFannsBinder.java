@@ -37,15 +37,17 @@ public class ProfileFannsBinder extends ViewBinder<GetMyFannsEnt> {
     private UserItemClickInterface userItemClick;
     private String userId;
     private String id;
+    private boolean isMutualFann;
 
 
-    public ProfileFannsBinder(DockActivity dockActivity, BasePreferenceHelper prefHelper, UserItemClickInterface userItemClick, String userId) {
+    public ProfileFannsBinder(DockActivity dockActivity, BasePreferenceHelper prefHelper, UserItemClickInterface userItemClick, String userId,boolean isMutualFann) {
         super(R.layout.row_item_fanns);
         this.dockActivity = dockActivity;
         this.prefHelper = prefHelper;
         this.imageLoader = ImageLoader.getInstance();
         this.userItemClick = userItemClick;
         this.userId = userId;
+        this.isMutualFann=isMutualFann;
 
     }
 
@@ -66,9 +68,14 @@ public class ProfileFannsBinder extends ViewBinder<GetMyFannsEnt> {
         } else {
             id = prefHelper.getUser().getId();
         }
+        if(isMutualFann){
+            viewHolder.btnAddFann.setVisibility(View.GONE);
+        }else{
+            viewHolder.btnAddFann.setVisibility(View.VISIBLE);
+        }
 
 
-        if (entity.getSenderDetail().getId() != null && entity.getSenderDetail().getId().equals(id)) {
+        if (entity.getSenderDetail()!=null && entity.getSenderDetail().getId() != null && entity.getSenderDetail().getId().equals(id)) {
             if (entity.getReceiverDetail() != null) {
                 if (entity.getReceiverDetail().getImageUrl() != null)
                     imageLoader.displayImage(entity.getReceiverDetail().getImageUrl(), viewHolder.ivImage);

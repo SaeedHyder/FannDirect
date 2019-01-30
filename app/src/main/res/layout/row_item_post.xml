@@ -10,7 +10,9 @@
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/x15"
         android:layout_marginStart="@dimen/x15"
-        android:layout_marginTop="@dimen/x15"
+        android:layout_marginTop="@dimen/x10"
+        android:layout_marginBottom="@dimen/x7"
+        android:elevation="@dimen/x1"
         android:background="@color/white"
         android:orientation="vertical">
 
@@ -37,7 +39,9 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/x15"
-                    android:layout_weight="0.6"
+                    android:layout_weight="1"
+                    android:maxLines="2"
+                    android:ellipsize="end"
                     android:text="Olivia Martins"
                     android:textColor="@color/app_dark_gray_2"
                     android:textSize="@dimen/x15"
@@ -45,25 +49,23 @@
 
                 <com.app.fandirect.ui.views.AnyTextView
                     android:id="@+id/txt_date"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/txt_address"
                     android:layout_alignParentTop="true"
                     android:layout_marginEnd="@dimen/x7"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginStart="@dimen/x10"
                     android:layout_toEndOf="@+id/txt_name"
-                    android:layout_weight="0.3"
-                    android:gravity="end|center_vertical"
+                    android:gravity="end"
                     android:text="22-07-17"
                     android:textColor="@color/app_dark_gray"
                     android:textSize="@dimen/x12"
                     app:typeface="@string/font_normal" />
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/x20"
                     android:layout_height="@dimen/x20"
                     android:layout_toEndOf="@+id/txt_date"
-                    android:layout_weight="0.1"
                     android:gravity="end">
 
                     <Button
@@ -109,6 +111,7 @@
             app:typeface="@string/font_normal" />
 
         <LinearLayout
+            android:id="@+id/ll_likeBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/x15"

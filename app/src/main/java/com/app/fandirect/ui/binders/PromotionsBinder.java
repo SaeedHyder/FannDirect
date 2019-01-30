@@ -2,8 +2,15 @@ package com.app.fandirect.ui.binders;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.SystemClock;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -11,10 +18,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.app.fandirect.R;
 import com.app.fandirect.activities.DockActivity;
 import com.app.fandirect.entities.Post;
+import com.app.fandirect.entities.TagName;
+import com.app.fandirect.fragments.LikePostFragment;
 import com.app.fandirect.fragments.SpProfileFragment;
 import com.app.fandirect.fragments.UserProfileFragment;
 import com.app.fandirect.helpers.BasePreferenceHelper;
@@ -26,6 +36,8 @@ import com.app.fandirect.interfaces.ReportPostIntetface;
 import com.app.fandirect.ui.viewbinders.abstracts.ViewBinder;
 import com.app.fandirect.ui.views.AnyTextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,9 +94,17 @@ public class PromotionsBinder extends ViewBinder<Post> {
         if (entity.getUserDetail() != null && entity.getUserDetail().getImageUrl() != null)
             imageLoader.displayImage(entity.getUserDetail().getImageUrl(), viewHolder.ivImage);
 
-        viewHolder.txtName.setText(entity.getUserDetail().getUserName());
-        viewHolder.txtDate.setText(DateHelper.getFormatedDate("yyyy-MM-dd HH:mm:ss", "dd-MM-yy", entity.getCreated_at()));
-        viewHolder.txtDescription.setText(entity.getDescription());
+        if(entity.getUserDetail()!=null && entity.getUserDetail().getUserName()!=null) {
+            viewHolder.txtName.setText(entity.getUserDetail().getUserName());
+        }
+        viewHolder.txtDate.setText(DateHelper.getFormatedDate("yyyy-MM-dd HH:mm:ss", "MM-dd-yy", entity.getCreated_at()));
+
+        if (entity.getTagPersonName()!=null && entity.getTagPersonName().size() > 0) {
+            makeLinks(viewHolder.txtDescription, entity.getTagPersonName(), entity.getPostText().replace("@", ""), entity);
+
+        } else {
+            viewHolder.txtDescription.setText(entity.getPostText());
+        }
 
         if (entity.getLocation() != null && !entity.getLocation().equals("")) {
             viewHolder.txtAddress.setText(entity.getLocation());
@@ -165,6 +185,17 @@ public class PromotionsBinder extends ViewBinder<Post> {
         });
 
         viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (entity.getUserDetail().getRoleId().equals(UserRoleId)) {
+                    dockActivity.replaceDockableFragment(UserProfileFragment.newInstance(entity.getUserDetail().getId() + ""), "UserProfileFragment");
+                } else {
+                    dockActivity.replaceDockableFragment(SpProfileFragment.newInstance(entity.getUserDetail().getId() + ""), "SpProfileFragment");
+                }
+            }
+        });
+
+        viewHolder.txtName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (entity.getUserDetail().getRoleId().equals(UserRoleId)) {
@@ -276,6 +307,30 @@ public class PromotionsBinder extends ViewBinder<Post> {
             }
         });
 
+        viewHolder.ivPostImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                DialogHelper dialoge = new DialogHelper(dockActivity);
+                dialoge.initFullImage(entity.getImageUrl());
+                dialoge.showDialog();
+
+                  /*     Intent intent=new Intent(dockActivity,FullscreenActivity.class);
+                intent.putExtra("Image",entity.getImageUrl());
+                dockActivity.startActivity(intent);*/
+                //   dockActivity.replaceDockableFragment(FullScreenImageFragment.newInstance(entity.getImageUrl()),"FullScreenImageFragment");
+            }
+        });
+
+        viewHolder.llLikeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (entity.getLikeCount() > 0) {
+                    dockActivity.addDockableFragment(LikePostFragment.newInstance(entity.getId()+""), "LikePostFragment");
+                }
+            }
+        });
+
        /* if (String.valueOf(entity.getUserDetail().getId()).equals(prefHelper.getUser().getId())) {
             viewHolder.menuBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -367,6 +422,50 @@ public class PromotionsBinder extends ViewBinder<Post> {
         }*/
     }
 
+    public void makeLinks(TextView textView, ArrayList<TagName> links, String text, Post entity) {
+
+        SpannableString spannableString = new SpannableString(text);
+        for (TagName item : links) {
+            int startIndexOfLink = text.indexOf(item.getUserName());
+            if (item.getDeletedAt() != null && !item.getDeletedAt().equals("") && !item.getDeletedAt().equals("null")) {
+                if (startIndexOfLink != -1) {
+                    spannableString.setSpan(new ForegroundColorSpan(Color.BLACK), startIndexOfLink, startIndexOfLink + item.getUserName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+            }else{
+                if (startIndexOfLink != -1) {
+                    spannableString.setSpan(getClickableSpan(item, item.getId() + ""), startIndexOfLink, startIndexOfLink + item.getUserName().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+
+            }
+        }
+
+        textView.setHighlightColor(Color.TRANSPARENT); // prevent TextView change background when highlight
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        textView.setText(spannableString, TextView.BufferType.SPANNABLE);
+    }
+
+
+    private ClickableSpan getClickableSpan(final TagName entity, final String id) {
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                if (entity!=null && entity.getRoleId()!=null && entity.getRoleId().equals(UserRoleId)) {
+                    ( (DockActivity)dockActivity).addDockableFragment(UserProfileFragment.newInstance(id), "UserProfileFragment");
+                } else {
+                    ( (DockActivity)dockActivity).addDockableFragment(SpProfileFragment.newInstance(id), "SpProfileFragment");
+                }
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+            }
+        };
+
+        return clickableSpan;
+    }
+
     static class ViewHolder extends BaseViewHolder {
         @BindView(R.id.iv_image)
         CircleImageView ivImage;
@@ -392,6 +491,8 @@ public class PromotionsBinder extends ViewBinder<Post> {
         AnyTextView favorite;
         @BindView(R.id.menu_btn)
         Button menuBtn;
+        @BindView(R.id.ll_likeBtn)
+        LinearLayout llLikeBtn;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

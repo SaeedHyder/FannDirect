@@ -9,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 
 public class UserDetail {
 
+
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -27,12 +28,12 @@ public class UserDetail {
     @SerializedName("longitude")
     @Expose
     private String longitude;
-    @SerializedName("image_url")
-    @Expose
-    private String imageUrl;
     @SerializedName("role_id")
     @Expose
     private String roleId;
+    @SerializedName("image_url")
+    @Expose
+    private String imageUrl;
 
     public String getRoleId() {
         return roleId;

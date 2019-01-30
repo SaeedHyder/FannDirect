@@ -1,9 +1,13 @@
 package com.app.fandirect.fragments;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
@@ -39,6 +43,13 @@ import com.app.fandirect.ui.views.TitleBar;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.xw.repo.XEditText;
 
@@ -47,7 +58,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -107,6 +121,8 @@ public class EditProfileSpFragment extends BaseFragment implements ImageSetter, 
     Spinner spnServices;
     @BindView(R.id.lv_categories)
     CustomRecyclerView lvCategories;
+    @BindView(R.id.txt_Education)
+    AnyEditTextView txtEducation;
     private Date DateSelected;
 
     private String gender = AppConstants.male;
@@ -199,22 +215,43 @@ public class EditProfileSpFragment extends BaseFragment implements ImageSetter, 
 
             if (getProfileEnt.getImageUrl() != null)
                 imageLoader.displayImage(getProfileEnt.getImageUrl() + "", ivProfileImage);
-            txtName.setText(getProfileEnt.getUserName());
-            txtEmail.setText(getProfileEnt.getEmail());
-            if (getProfileEnt.getPhone() != null)
+
+            if (getProfileEnt.getUserName() != null && !getProfileEnt.getUserName().equals("") && !getProfileEnt.getUserName().equals("null")) {
+                txtName.setText(getProfileEnt.getUserName());
+            }
+            if (getProfileEnt.getEmail() != null && !getProfileEnt.getEmail().equals("") && !getProfileEnt.getEmail().equals("null")) {
+                txtEmail.setText(getProfileEnt.getEmail());
+            }
+            if (getProfileEnt.getPhone() != null && !getProfileEnt.getPhone().equals("") && !getProfileEnt.getPhone().equals("null")) {
                 txtPhone.setText(getProfileEnt.getPhone() + "");
-
-
-            if (getProfileEnt.getDob() != null)
+            }
+            if (getProfileEnt.getDob() != null && !getProfileEnt.getDob().equals("") && !getProfileEnt.getDob().equals("null")) {
                 txtBirthday.setText(getProfileEnt.getDob() + "");
-            txtAutoComplete.setText(getProfileEnt.getLocation() + "");
-            txtCertificateLicense.setText(getProfileEnt.getCertificateLicense() + "");
-            txtTypeOfLicense.setText(getProfileEnt.getLicenseType() + "");
-            txtCompanyName.setText(getProfileEnt.getCompanyName() + "");
-            txtCompanyCategory.setText(getProfileEnt.getCompanyCategory() + "");
-            txtInsuranceInformation.setText(getProfileEnt.getInsuranceInformation() + "");
-            if (getProfileEnt.getAbout() != null)
+            }
+            if (getProfileEnt.getLocation() != null && !getProfileEnt.getLocation().equals("") && !getProfileEnt.getLocation().equals("null")) {
+                txtAutoComplete.setText(getProfileEnt.getLocation() + "");
+            }
+            if (getProfileEnt.getCertificateLicense() != null && !getProfileEnt.getCertificateLicense().equals("") && !getProfileEnt.getCertificateLicense().equals("null")) {
+                txtCertificateLicense.setText(getProfileEnt.getCertificateLicense() + "");
+            }
+            if (getProfileEnt.getLicenseType() != null && !getProfileEnt.getLicenseType().equals("") && !getProfileEnt.getLicenseType().equals("null")) {
+                txtTypeOfLicense.setText(getProfileEnt.getLicenseType() + "");
+            }
+            if (getProfileEnt.getCompanyName() != null && !getProfileEnt.getCompanyName().equals("") && !getProfileEnt.getCompanyName().equals("null")) {
+                txtCompanyName.setText(getProfileEnt.getCompanyName() + "");
+            }
+            if (getProfileEnt.getCompanyCategory() != null && !getProfileEnt.getCompanyCategory().equals("") && !getProfileEnt.getCompanyCategory().equals("null")) {
+                txtCompanyCategory.setText(getProfileEnt.getCompanyCategory() + "");
+            }
+            if (getProfileEnt.getInsuranceInformation() != null && !getProfileEnt.getInsuranceInformation().equals("") && !getProfileEnt.getInsuranceInformation().equals("null")) {
+                txtInsuranceInformation.setText(getProfileEnt.getInsuranceInformation() + "");
+            }
+            if (getProfileEnt.getAbout() != null && !getProfileEnt.getAbout().equals("") && !getProfileEnt.getAbout().equals("null")) {
                 txtAboutUs.setText(getProfileEnt.getAbout() + "");
+            }
+            if (getProfileEnt.getEducation() != null && !getProfileEnt.getEducation().equals("") && !getProfileEnt.getEducation().equals("null")) {
+                txtEducation.setText(getProfileEnt.getEducation() != null ? getProfileEnt.getEducation() : "");
+            }
 
             if (getProfileEnt.getMyServices().size() > 0) {
                 for (GetServicesEnt item : getProfileEnt.getMyServices()) {
@@ -229,7 +266,7 @@ public class EditProfileSpFragment extends BaseFragment implements ImageSetter, 
                 toggleNotification.setChecked(false);
             }
 
-            if (locationLatLng == null) {
+            if (locationLatLng == null && !getProfileEnt.getLatitude().equals("")) {
                 locationLatLng = new LatLng(Double.parseDouble(getProfileEnt.getLatitude()), Double.parseDouble(getProfileEnt.getLongitude()));
             }
 
@@ -311,11 +348,11 @@ public class EditProfileSpFragment extends BaseFragment implements ImageSetter, 
             }
             txtPhone.setError(getString(R.string.enter_MobileNum));
             return false;
-        }*/ else if (txtBirthday.getText() == null || (txtBirthday.getText().toString().isEmpty())) {
+        }*/ /*else if (txtBirthday.getText() == null || (txtBirthday.getText().toString().isEmpty())) {
             UIHelper.showShortToastInCenter(getDockActivity(),"Date of birth cannot be Empty");
            // txtBirthday.setError("Date of birth cannot be Empty");
             return false;
-        } else if (txtAutoComplete.getText() == null || (txtAutoComplete.getText().toString().isEmpty())) {
+        }*/ else if (txtAutoComplete.getText() == null || (txtAutoComplete.getText().toString().isEmpty())) {
             txtAutoComplete.setError("Location cannot be Empty");
             return false;
         } else if (txtCertificateLicense.getText() == null || (txtCertificateLicense.getText().toString().isEmpty())) {
@@ -366,7 +403,7 @@ public class EditProfileSpFragment extends BaseFragment implements ImageSetter, 
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_UploadProfile:
-                CameraHelper.uploadPhotoDialog(getMainActivity());
+                requestCameraPermission();
                 break;
             case R.id.btn_update:
                /* if(getProfileEnt.getMyServices().size()>0){
@@ -443,7 +480,7 @@ public class EditProfileSpFragment extends BaseFragment implements ImageSetter, 
             filePart = MultipartBody.Part.createFormData("avatar", "",
                     RequestBody.create(MediaType.parse("*/*"), ""));
         }
-        serviceHelper.enqueueCall(headerWebService.updateSpProfile(
+       /* serviceHelper.enqueueCall(headerWebService.updateSpProfile(
                 RequestBody.create(MediaType.parse("text/plain"), txtName.getText().toString()),
                 RequestBody.create(MediaType.parse("text/plain"), txtEmail.getText().toString()),
                 RequestBody.create(MediaType.parse("text/plain"), txtPhone.getText().toString()),
@@ -452,6 +489,25 @@ public class EditProfileSpFragment extends BaseFragment implements ImageSetter, 
                 RequestBody.create(MediaType.parse("text/plain"), (String.valueOf(locationLatLng.latitude))),
                 RequestBody.create(MediaType.parse("text/plain"), String.valueOf(locationLatLng.longitude)),
                 RequestBody.create(MediaType.parse("text/plain"), txtBirthday.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), resultIds),
+                RequestBody.create(MediaType.parse("text/plain"), txtCertificateLicense.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtTypeOfLicense.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtCompanyName.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtCompanyCategory.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), (toggleNotification.isChecked()) ? "yes" : "no"),
+                RequestBody.create(MediaType.parse("text/plain"), txtInsuranceInformation.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtAboutUs.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtEducation.getText().toString()),
+                filePart
+        ), UpdateUserProfile);*/
+        serviceHelper.enqueueCall(headerWebService.updateSpProfile(
+                RequestBody.create(MediaType.parse("text/plain"), txtName.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtEmail.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtPhone.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), gender),
+                RequestBody.create(MediaType.parse("text/plain"), (locationName != null) ? locationName : txtAutoComplete.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), (String.valueOf(locationLatLng.latitude))),
+                RequestBody.create(MediaType.parse("text/plain"), String.valueOf(locationLatLng.longitude)),
                 RequestBody.create(MediaType.parse("text/plain"), resultIds),
                 RequestBody.create(MediaType.parse("text/plain"), txtCertificateLicense.getText().toString()),
                 RequestBody.create(MediaType.parse("text/plain"), txtTypeOfLicense.getText().toString()),
@@ -503,14 +559,22 @@ public class EditProfileSpFragment extends BaseFragment implements ImageSetter, 
                 prefHelper.putUser(entity);
                 prefHelper.setUserType(getString(R.string.technician));
                 prefHelper.set_TOKEN(entity.getToken());
-
+                UIHelper.showShortToastInCenter(getDockActivity(),"Profile updated successfully");
                 getDockActivity().popFragment();
-                getDockActivity().replaceDockableFragment(SpProfileFragment.newInstance(), "SpProfileFragment");
+               // getDockActivity().replaceDockableFragment(SpProfileFragment.newInstance(), "SpProfileFragment");
 
                 break;
 
             case AllServicesCategories:
                 ArrayList<GetServicesEnt> ent = (ArrayList<GetServicesEnt>) result;
+
+                Collections.sort(ent, new Comparator<GetServicesEnt>() {
+                    @Override
+                    public int compare(GetServicesEnt getServicesEnt, GetServicesEnt t1) {
+                        return getServicesEnt.getName().toLowerCase().compareTo(t1.getName().toLowerCase());
+                    }
+                });
+
                 setMechanicSpinner(ent);
                 break;
         }
@@ -578,4 +642,60 @@ public class EditProfileSpFragment extends BaseFragment implements ImageSetter, 
     public void onCategoryClick(Object Ent, int position) {
 
     }
+
+    private void requestCameraPermission() {
+        Dexter.withActivity(getDockActivity())
+                .withPermissions(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+
+                        if (report.areAllPermissionsGranted()) {
+                            CameraHelper.uploadPhotoDialog(getMainActivity());
+                        }
+
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            requestCameraPermission();
+
+                        } else if (report.getDeniedPermissionResponses().size() > 0) {
+                            requestCameraPermission();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).
+                withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        UIHelper.showShortToastInCenter(getDockActivity(), "Grant Camera And Storage Permission to processed");
+                        openSettings();
+                    }
+                })
+
+                .onSameThread()
+                .check();
+
+
+    }
+
+    private void openSettings() {
+
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        Uri uri = Uri.fromParts("package", getDockActivity().getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
+
 }

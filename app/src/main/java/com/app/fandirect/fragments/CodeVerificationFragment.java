@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.app.fandirect.R;
 import com.app.fandirect.entities.UserEnt;
@@ -43,6 +44,8 @@ public class CodeVerificationFragment extends BaseFragment {
     private static String isForgotKey = "isForgotPass";
     @BindView(R.id.resend_code_btn)
     AnyTextView resendCodeBtn;
+    @BindView(R.id.ll_timer)
+    LinearLayout llTimer;
     private boolean isForgot = false;
     private static String userIdKey = "userIdKey";
     private static String emailIdKey = "emailIdKey";
@@ -93,7 +96,7 @@ public class CodeVerificationFragment extends BaseFragment {
     }
 
     public void counter() {
-        timer = new CountDownTimer(225000, 1000) {
+        timer = new CountDownTimer(120000, 1000) {
 
             public void onTick(long millisUntilFinished) {
 
@@ -107,8 +110,10 @@ public class CodeVerificationFragment extends BaseFragment {
             }
 
             public void onFinish() {
-                if (tvCounter != null)
-                    tvCounter.setText("0");
+                if (tvCounter != null){
+                   llTimer.setVisibility(View.GONE);
+                   resendCodeBtn.setVisibility(View.VISIBLE);
+                }
             }
         }.start();
 
@@ -131,10 +136,6 @@ public class CodeVerificationFragment extends BaseFragment {
 
                 break;
             case R.id.btn_login:
-                if (timer != null) {
-                    timer.cancel();
-                }
-
                 if (txtPinEntry.getText().toString().length() < 5) {
                     UIHelper.showShortToastInCenter(getDockActivity(), getString(R.string.correct_verification_code));
                 } else {
@@ -157,26 +158,38 @@ public class CodeVerificationFragment extends BaseFragment {
         switch (Tag) {
 
             case VerifyCode:
+                if (timer != null) {
+                    timer.cancel();
+                }
+
                 UserEnt entity = (UserEnt) result;
                 prefHelper.putUser(entity);
                 prefHelper.set_TOKEN(entity.getToken());
                 getMainActivity().popBackStackTillEntry(0);
-                UIHelper.showShortToastInCenter(getDockActivity(),message);
+                UIHelper.showShortToastInCenter(getDockActivity(), message);
                 getDockActivity().replaceDockableFragment(HomeFragment.newInstance(), "HomeFragment");
+
+
 
                 break;
 
             case VerifyCodeForgot:
+                if (timer != null) {
+                    timer.cancel();
+                }
+
                 UserEnt ent = (UserEnt) result;
                 prefHelper.putUser(ent);
                 prefHelper.set_TOKEN(ent.getToken());
-                UIHelper.showShortToastInCenter(getDockActivity(),message);
+                //   UIHelper.showShortToastInCenter(getDockActivity(),message);
                 getDockActivity().replaceDockableFragment(ForgotPasswordFragment.newInstance(ent.getId() + ""), "ForgotPasswordFragment");
 
                 break;
 
             case ResendCode:
-
+                counter();
+                llTimer.setVisibility(View.VISIBLE);
+                resendCodeBtn.setVisibility(View.GONE);
                 UIHelper.showShortToastInCenter(getDockActivity(), message);
 
                 break;
@@ -200,4 +213,6 @@ public class CodeVerificationFragment extends BaseFragment {
                 break;
         }
     }
+
+
 }

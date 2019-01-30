@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/mainFrameLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/x15"
         android:gravity="center_vertical"
@@ -20,29 +21,41 @@
 
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/x8"
             android:orientation="vertical">
 
-
-            <com.app.fandirect.ui.views.AnyTextView
-                android:id="@+id/tv_NameCommentor"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/name"
-                android:textColor="#393939"
-                android:textSize="@dimen/x16"
-                app:typeface="Roboto-Regular.ttf" />
+                android:orientation="horizontal">
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:id="@+id/tv_NameCommentor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.8"
+                    android:text="@string/name"
+                    android:textColor="@color/app_dark_gray_2"
+                    android:textSize="@dimen/x16"
+                    app:typeface="Roboto-Regular.ttf" />
+
+                <Button
+                    android:id="@+id/menu_btn"
+                    android:layout_width="@dimen/x30"
+                    android:layout_height="@dimen/x30"
+                    android:background="@drawable/menu2" />
+
+            </LinearLayout>
 
             <com.app.fandirect.ui.views.AnyTextView
                 android:id="@+id/tv_CommentBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.6"
                 android:text="Comments"
-                android:textColor="@color/black"
-                android:textSize="@dimen/x14"
+                android:textColor="@color/app_dark_gray"
+                android:textSize="@dimen/x15"
                 app:typeface="Roboto-Regular.ttf" />
 
 

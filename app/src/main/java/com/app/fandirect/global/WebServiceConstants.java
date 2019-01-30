@@ -2,7 +2,8 @@ package com.app.fandirect.global;
 
 public class WebServiceConstants {
     public static final String SERVICE_URL = "";
-    public static final String Local_SERVICE_URL = "http://fandirect.stagingic.com/api/";
+    public static final String Local_SERVICE_URL = "http://app.fanndirect.com/api/";
+   // public static final String Local_SERVICE_URL = "http://fandirect.stagingic.com/api/";
     public static final String SUCCESS_RESPONSE_CODE = "200";
 
 
@@ -20,9 +21,12 @@ public class WebServiceConstants {
     public static final String PushOnOff = "PushOnOff";
     public static final String GetProfile = "GetProfile";
     public static final String GetProfilePushNotification = "GetProfilePushNotification";
+    public static final String UpdateProfile = "UpdateProfile";
+    public static final String UpdateProfilePictureData = "UpdateProfilePictureData";
     public static final String PostDeleteProfile = "PostDeleteProfile";
     public static final String AllServicesCategories = "AllServicesCategories";
     public static final String getNotification = "getNotification";
+    public static final String NotifcationCount = "NotifcationCount";
     public static final String SearchUser = "SearchUser";
     public static final String SearchServiceP = "SearchServiceP";
     public static final String AddFann = "AddFann";
@@ -68,4 +72,17 @@ public class WebServiceConstants {
     public static final String reportPost = "reportPost";
     public static final String reportUser = "reportUser";
     public static final String deletePost = "deletePost";
+    public static final String deleteComment = "deleteComment";
+    public static final String updateLatLng = "updateLatLng";
+    public static final String PostDetail = "PostDetail";
+    public static final String DeleteChat = "DeleteChat";
+    public static final String DeleteAccount = "DeleteAccount";
+    public static final String DeleteMessage = "DeleteMessage";
+    public static final String GetReviews = "GetReviews";
+    public static final String FacebookLoginSp = "FacebookLoginSp";
+    public static final String FacebookLoginUser = "FacebookLoginUser";
+    public static final String LikeDetails = "LikeDetails";
+    public static final String HomeCount = "HomeCount";
+    public static final String SuggestService = "SuggestService";
+
 }

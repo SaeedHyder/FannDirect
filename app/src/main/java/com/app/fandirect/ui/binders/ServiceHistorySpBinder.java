@@ -56,27 +56,30 @@ public class ServiceHistorySpBinder extends ViewBinder<ServiceHistoryEnt> {
 
         viewHolder.ivImage.setImageResource(R.drawable.placeholder);
 
-        if (entity.getSenderDetail().getImageUrl() != null)
-            imageLoader.displayImage(entity.getSenderDetail().getImageUrl(), viewHolder.ivImage);
-        viewHolder.txtName.setText(entity.getSenderDetail().getUserName() + "");
-        viewHolder.txtDescription.setText(entity.getDescription() + "");
-        viewHolder.txtTimeDate.setText(DateHelper.getLocalDateTime2(entity.getCreatedAt()));
+        if (entity != null) {
+            if (entity.getSenderDetail() != null && entity.getSenderDetail().getImageUrl() != null)
+                imageLoader.displayImage(entity.getSenderDetail().getImageUrl(), viewHolder.ivImage);
+            if (entity.getSenderDetail() != null && entity.getSenderDetail().getUserName() != null)
+                viewHolder.txtName.setText(entity.getSenderDetail().getUserName() + "");
+            viewHolder.txtDescription.setText(entity.getDescription() + "");
+            viewHolder.txtTimeDate.setText(DateHelper.getLocalDateTime3(entity.getDatetime()));
+        }
 
 
-        if (entity.getStatus().equals(AppConstants.pending)) {
+        if (entity.getStatus() != null && entity.getStatus().equals(AppConstants.pending)) {
             viewHolder.status.setBackground(dockActivity.getResources().getDrawable(R.drawable.rounded_btn_view_detail));
             viewHolder.status.setTextColor(dockActivity.getResources().getColor(R.color.app_dark_gray_2));
             viewHolder.status.setText(R.string.view_detail);
-        } else if (entity.getStatus().equals(AppConstants.accepted)) {
+        } else if (entity.getStatus() != null && entity.getStatus().equals(AppConstants.accepted)) {
             viewHolder.status.setBackground(dockActivity.getResources().getDrawable(R.drawable.rounded_btn_inprogess));
             viewHolder.status.setTextColor(dockActivity.getResources().getColor(R.color.white));
             viewHolder.status.setText(R.string.inprogress);
 
-        } else if (entity.getStatus().equals(AppConstants.completed)) {
+        } else if (entity.getStatus() != null && entity.getStatus().equals(AppConstants.completed)) {
             viewHolder.status.setBackground(dockActivity.getResources().getDrawable(R.drawable.rounded_button));
             viewHolder.status.setTextColor(dockActivity.getResources().getColor(R.color.white));
             viewHolder.status.setText(R.string.completed);
-        } else if (entity.getStatus().equals(AppConstants.rejected)) {
+        } else if (entity.getStatus() != null && entity.getStatus().equals(AppConstants.rejected)) {
             viewHolder.status.setBackground(dockActivity.getResources().getDrawable(R.drawable.rounded_btn_inprogess));
             viewHolder.status.setTextColor(dockActivity.getResources().getColor(R.color.white));
             viewHolder.status.setText(R.string.rejected);
@@ -94,21 +97,25 @@ public class ServiceHistorySpBinder extends ViewBinder<ServiceHistoryEnt> {
             }
         });
 
+        viewHolder.btnRate.setVisibility(View.GONE);
 
         viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (entity.getSenderId().equals(String.valueOf(prefHelper.getUser().getId()))) {
-                    userId = entity.getReceiverId();
-                    roleId = entity.getReceiverDetail().getRoleId();
-                } else {
-                    userId = entity.getSenderId();
-                    roleId = entity.getSenderDetail().getRoleId();
-                }
-                if (roleId.equals(UserRoleId)) {
-                    dockActivity.replaceDockableFragment(UserProfileFragment.newInstance(userId), "UserProfileFragment");
-                } else {
-                    dockActivity.replaceDockableFragment(SpProfileFragment.newInstance(userId), "SpProfileFragment");
+                if (entity.getReceiverId() != null && entity.getSenderId() != null) {
+                    if (entity.getSenderId().equals(String.valueOf(prefHelper.getUser().getId()))) {
+                        userId = entity.getReceiverId();
+                        roleId = entity.getReceiverDetail().getRoleId();
+                    } else {
+                        userId = entity.getSenderId();
+                        roleId = entity.getSenderDetail().getRoleId();
+                    }
+
+                    if (roleId.equals(UserRoleId)) {
+                        dockActivity.addDockableFragment(UserProfileFragment.newInstance(userId), "UserProfileFragment");
+                    } else {
+                        dockActivity.addDockableFragment(SpProfileFragment.newInstance(userId), "SpProfileFragment");
+                    }
                 }
             }
         });
@@ -126,6 +133,8 @@ public class ServiceHistorySpBinder extends ViewBinder<ServiceHistoryEnt> {
         AnyTextView txtTimeDate;
         @BindView(R.id.status)
         Button status;
+        @BindView(R.id.btnRate)
+        Button btnRate;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

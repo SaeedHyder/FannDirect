@@ -127,7 +127,17 @@ public class UserEnt {
     @SerializedName("post_status")
     @Expose
     private String postStatus;
+    @SerializedName("distance")
+    @Expose
+    private String distance;
 
+    public String getDistance() {
+        return distance;
+    }
+
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
 
     public String getProfileStaus() {
         return profileStaus;

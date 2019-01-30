@@ -6,21 +6,24 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/mainFrameLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/x7"
+        android:layout_marginStart="@dimen/x10"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_margin="@dimen/x10"
         android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/iv_image"
             android:layout_width="@dimen/x50"
             android:layout_height="@dimen/x50"
-            android:layout_margin="@dimen/x10"
+            android:layout_marginEnd="@dimen/x10"
             android:src="@drawable/placeholder" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -42,7 +45,6 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:gravity="center_vertical"
-                android:maxLines="1"
                 android:text="@string/lorem_ipsum"
                 android:textColor="@color/app_dark_gray_2"
                 android:textSize="@dimen/x11"

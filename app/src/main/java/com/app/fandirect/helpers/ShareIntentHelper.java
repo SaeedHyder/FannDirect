@@ -51,7 +51,7 @@ public class ShareIntentHelper {
         intent.putExtra(Intent.EXTRA_TEXT, text);
         context.onLoadingFinished();
         try {
-          //  context.startActivity(intent);
+            //  context.startActivity(intent);
             context.startActivity(Intent.createChooser(intent, "send"));
         } catch (android.content.ActivityNotFoundException ex) {
             UIHelper.showShortToastInCenter(context, "App have not been installed.");
@@ -62,7 +62,7 @@ public class ShareIntentHelper {
     public static void shareImageAndTextResultIntent(DockActivity context, String image, String text) {
         try {
 
-          getBitmap(image, context,text);
+            getBitmap(image, context, text);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,10 +70,9 @@ public class ShareIntentHelper {
     }
 
 
-
     private static void getBitmap(String image, final DockActivity context, final String text) {
 
-        ImageLoader imageLoader=ImageLoader.getInstance();
+        ImageLoader imageLoader = ImageLoader.getInstance();
 
         imageLoader.loadImage(image, new ImageLoadingListener() {
             @Override
@@ -89,15 +88,18 @@ public class ShareIntentHelper {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 context.onLoadingFinished();
-                Uri imageUrl = getImageUri(context,loadedImage);
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, text);
-                shareIntent.putExtra(Intent.EXTRA_STREAM, imageUrl);
-                shareIntent.setType("image/jpeg");
-                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                context.startActivity(Intent.createChooser(shareIntent, "send"));
-
+                if (getImageUri(context, loadedImage) != null) {
+                    Uri imageUrl = getImageUri(context, loadedImage);
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, text);
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, imageUrl);
+                    shareIntent.setType("image/jpeg");
+                    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    context.startActivity(Intent.createChooser(shareIntent, "send"));
+                } else {
+                    UIHelper.showShortToastInCenter(context, "try again...");
+                }
             }
 
             @Override
@@ -141,12 +143,19 @@ public class ShareIntentHelper {
     }
 
 
-
     public static Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
+        if (inImage != null) {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+            if (path != null) {
+                return Uri.parse(path);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
 
     }
 }

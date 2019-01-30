@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+
+
 
     <LinearLayout
         android:id="@+id/ll_item"
@@ -41,4 +43,19 @@
 
     </LinearLayout>
 
-</LinearLayout>
+    <com.app.fandirect.ui.views.AnyTextView
+        android:id="@+id/txtBadge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/x4"
+        android:background="@drawable/badge_blue"
+        android:gravity="center"
+        android:maxLength="3"
+        android:text="22"
+        android:textColor="@color/white"
+        android:textSize="@dimen/x10"
+        android:visibility="gone"
+        app:typeface="@string/font_normal" />
+
+</RelativeLayout>

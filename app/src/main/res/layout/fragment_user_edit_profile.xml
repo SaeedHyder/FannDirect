@@ -8,6 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -58,6 +59,7 @@
                 android:background="@color/transparent"
                 android:drawablePadding="@dimen/x10"
                 android:drawableStart="@drawable/name"
+                android:maxLength="35"
                 android:hint="@string/name"
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName"
@@ -80,8 +82,8 @@
                 android:layout_marginTop="@dimen/x10"
                 android:background="@color/transparent"
                 android:drawablePadding="@dimen/x10"
-                android:gravity="center_vertical"
                 android:drawableStart="@drawable/email"
+                android:gravity="center_vertical"
                 android:hint="@string/email_address"
                 android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
@@ -107,8 +109,10 @@
                 android:drawablePadding="@dimen/x10"
                 android:drawableStart="@drawable/phone"
                 android:hint="@string/phone"
+                android:digits="+0123456789"
                 android:imeOptions="actionNext"
                 android:inputType="phone"
+                android:maxLength="16"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/x10"
                 android:paddingStart="@dimen/x10"
@@ -121,11 +125,18 @@
                 android:layout_height="@dimen/x1"
                 android:background="@color/view_color" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
             <com.app.fandirect.ui.views.AnyTextView
                 android:id="@+id/txt_birthday"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/x40"
                 android:layout_marginTop="@dimen/x10"
+                android:maxLength="40"
                 android:background="@color/transparent"
                 android:drawablePadding="@dimen/x10"
                 android:drawableStart="@drawable/state"
@@ -145,18 +156,43 @@
                 android:layout_height="@dimen/x1"
                 android:background="@color/view_color" />
 
+            <com.app.fandirect.ui.views.AnyEditTextView
+                android:id="@+id/txt_Education"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x40"
+                android:layout_marginTop="@dimen/x10"
+                android:background="@color/transparent"
+                android:drawablePadding="@dimen/x10"
+                android:drawableStart="@drawable/profession"
+                android:hint="@string/education"
+                android:imeOptions="actionNext"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
+                android:textColor="@color/text_black_color"
+                android:textSize="@dimen/x14"
+                app:typeface="@string/font_normal" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/x1"
+                android:background="@color/view_color" />
+
+            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/x40"
                 android:layout_marginTop="@dimen/x10"
-                android:paddingStart="@dimen/x10"
+                android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:paddingStart="@dimen/x10">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/location"/>
+                    android:src="@drawable/location" />
 
                 <com.app.fandirect.ui.views.AutoCompleteLocation
                     android:id="@+id/txt_autoComplete"
@@ -274,15 +310,17 @@
                 android:layout_height="@dimen/x1"
                 android:background="@color/view_color" />
 
+
             <com.app.fandirect.ui.views.AnyEditTextView
-                android:id="@+id/txt_profession"
+                android:id="@+id/txt_WorksAt"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/x40"
                 android:layout_marginTop="@dimen/x10"
                 android:background="@color/transparent"
+                android:maxLength="40"
                 android:drawablePadding="@dimen/x10"
                 android:drawableStart="@drawable/profession"
-                android:hint="Profession"
+                android:hint="Works At"
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName"
                 android:maxLines="1"
@@ -297,15 +335,18 @@
                 android:layout_height="@dimen/x1"
                 android:background="@color/view_color" />
 
+
+
             <com.app.fandirect.ui.views.AnyEditTextView
-                android:id="@+id/txt_WorksAt"
+                android:id="@+id/txt_profession"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/x40"
                 android:layout_marginTop="@dimen/x10"
                 android:background="@color/transparent"
                 android:drawablePadding="@dimen/x10"
                 android:drawableStart="@drawable/profession"
-                android:hint="Works At"
+                android:hint="Profession"
+                android:maxLength="40"
                 android:imeOptions="actionNext"
                 android:inputType="textPersonName"
                 android:maxLines="1"
@@ -330,6 +371,7 @@
                 android:drawableStart="@drawable/hobbies"
                 android:hint="Hobbies"
                 android:imeOptions="actionNext"
+                android:maxLength="40"
                 android:inputType="textPersonName"
                 android:maxLines="1"
                 android:paddingEnd="@dimen/x10"
@@ -355,8 +397,8 @@
                     android:background="@drawable/rectangle_box_white_2"
                     android:gravity="top"
                     android:hint="About"
-                    android:padding="@dimen/x10"
                     android:imeOptions="actionDone"
+                    android:padding="@dimen/x10"
                     android:paddingStart="@dimen/x38"
                     android:textColor="@color/text_black_color"
                     android:textSize="@dimen/x14"

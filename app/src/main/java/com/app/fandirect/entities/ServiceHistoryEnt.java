@@ -3,12 +3,13 @@ package com.app.fandirect.entities;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 /**
  * Created by saeedhyder on 3/13/2018.
  */
 
 public class ServiceHistoryEnt {
-
 
     @SerializedName("id")
     @Expose
@@ -43,6 +44,9 @@ public class ServiceHistoryEnt {
     @SerializedName("created_at")
     @Expose
     private String createdAt;
+    @SerializedName("is_rate")
+    @Expose
+    private String isRate;
     @SerializedName("service_detail")
     @Expose
     private ServiceDetail serviceDetail;
@@ -52,6 +56,14 @@ public class ServiceHistoryEnt {
     @SerializedName("receiver_detail")
     @Expose
     private ReceiverDetail receiverDetail;
+
+    public String getIsRate() {
+        return isRate;
+    }
+
+    public void setIsRate(String isRate) {
+        this.isRate = isRate;
+    }
 
     public ReceiverDetail getReceiverDetail() {
         return receiverDetail;

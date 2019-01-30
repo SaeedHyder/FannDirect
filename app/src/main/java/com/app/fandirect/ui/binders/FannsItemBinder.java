@@ -6,6 +6,7 @@ import android.widget.LinearLayout;
 
 import com.app.fandirect.R;
 import com.app.fandirect.activities.DockActivity;
+import com.app.fandirect.entities.FannListEnt;
 import com.app.fandirect.entities.GetMyFannsEnt;
 import com.app.fandirect.fragments.SpProfileFragment;
 import com.app.fandirect.fragments.UserProfileFragment;
@@ -25,7 +26,7 @@ import static com.app.fandirect.global.AppConstants.UserRoleId;
  * Created by saeedhyder on 3/5/2018.
  */
 
-public class FannsItemBinder extends ViewBinder<GetMyFannsEnt> {
+public class FannsItemBinder extends ViewBinder<FannListEnt> {
 
     private DockActivity dockActivity;
     private BasePreferenceHelper prefHelper;
@@ -49,13 +50,20 @@ public class FannsItemBinder extends ViewBinder<GetMyFannsEnt> {
     }
 
     @Override
-    public void bindView(final GetMyFannsEnt entity, final int position, int grpPosition, View view, Activity activity) {
+    public void bindView(final FannListEnt entity, final int position, int grpPosition, View view, Activity activity) {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
         viewHolder.ivImage.setImageResource(R.drawable.placeholder);
 
-        if (entity.getSenderDetail().getId().equals(String.valueOf(prefHelper.getUser().getId()))) {
+        if (entity != null) {
+            if (entity.getImage() != null)
+                imageLoader.displayImage(entity.getImage(), viewHolder.ivImage);
+            if (entity.getName() != null)
+                viewHolder.txtName.setText(entity.getName() + "");
+        }
+
+      /*  if (entity.getSenderDetail().getId().equals(String.valueOf(prefHelper.getUser().getId()))) {
             if (entity.getReceiverDetail() != null) {
                 if (entity.getReceiverDetail().getImageUrl() != null)
                     imageLoader.displayImage(entity.getReceiverDetail().getImageUrl(), viewHolder.ivImage);
@@ -68,7 +76,7 @@ public class FannsItemBinder extends ViewBinder<GetMyFannsEnt> {
                 viewHolder.txtName.setText(entity.getSenderDetail().getUserName() + "");
 
 
-        }
+        }*/
   /*viewHolder.ivImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -55,14 +55,14 @@ public class FriendRequestBinder extends ViewBinder<AllRequestEnt> {
 
         viewHolder.ivImage.setImageResource(R.drawable.placeholder);
 
-        if (entity.getSenderId().equals(String.valueOf(prefHelper.getUser().getId()))) {
+        if (entity.getSenderId() != null && entity.getSenderId().equals(String.valueOf(prefHelper.getUser().getId()))) {
             viewHolder.txtName.setText(entity.getReceiverDetail().getUserName() + "");
-            if (entity.getReceiverDetail().getImageUrl() != null) {
+            if (entity.getReceiverDetail() != null && entity.getReceiverDetail().getImageUrl() != null) {
                 imageLoader.displayImage(entity.getReceiverDetail().getImageUrl(), viewHolder.ivImage);
             }
         } else {
             viewHolder.txtName.setText(entity.getSenderDetail().getUserName() + "");
-            if (entity.getSenderDetail().getImageUrl() != null)
+            if (entity.getSenderDetail() != null && entity.getSenderDetail().getImageUrl() != null)
                 imageLoader.displayImage(entity.getSenderDetail().getImageUrl(), viewHolder.ivImage);
 
         }

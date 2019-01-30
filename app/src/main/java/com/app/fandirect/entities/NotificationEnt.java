@@ -23,12 +23,34 @@ public class NotificationEnt {
     @SerializedName("message")
     @Expose
     private String message;
+    @SerializedName("action_id")
+    @Expose
+    private String action_id;
+    @SerializedName("type")
+    @Expose
+    private String type;
     @SerializedName("sender_detail")
     @Expose
     private SenderDetail senderDetail;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
+
+    public String getAction_id() {
+        return action_id;
+    }
+
+    public void setAction_id(String action_id) {
+        this.action_id = action_id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getCreatedAt() {
         return createdAt;

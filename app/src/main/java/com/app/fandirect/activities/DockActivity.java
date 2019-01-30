@@ -85,14 +85,9 @@ public abstract class DockActivity extends AppCompatActivity implements
 
     public void replaceDockableFragment(BaseFragment frag, String Tag) {
 
-        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager()
-                .beginTransaction();
-
+        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(getDockFrameLayoutId(), frag);
-        transaction
-                .addToBackStack(
-                        getSupportFragmentManager().getBackStackEntryCount() == 0 ? KEY_FRAG_FIRST
-                                : null).commit();
+        transaction.addToBackStack(getSupportFragmentManager().getBackStackEntryCount() == 0 ? KEY_FRAG_FIRST : null).commitAllowingStateLoss();
 
 
     }
@@ -121,10 +116,7 @@ public abstract class DockActivity extends AppCompatActivity implements
                 .beginTransaction();
 
         transaction.add(getDockFrameLayoutId(), frag);
-        transaction
-                .addToBackStack(
-                        getSupportFragmentManager().getBackStackEntryCount() == 0 ? KEY_FRAG_FIRST
-                                : null).commit();
+        transaction.addToBackStack(getSupportFragmentManager().getBackStackEntryCount() == 0 ? KEY_FRAG_FIRST : null).commitAllowingStateLoss();
 
 
     }
@@ -192,6 +184,7 @@ public abstract class DockActivity extends AppCompatActivity implements
      *                   first fragment will have a index 0;
      */
     public void popBackStackTillEntry(int entryIndex) {
+        try {
         if (getSupportFragmentManager() == null)
             return;
         if (getSupportFragmentManager().getBackStackEntryCount() <= entryIndex)
@@ -199,20 +192,39 @@ public abstract class DockActivity extends AppCompatActivity implements
         BackStackEntry entry = getSupportFragmentManager().getBackStackEntryAt(
                 entryIndex);
         if (entry != null) {
-            getSupportFragmentManager().popBackStack(entry.getId(),
-                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                getSupportFragmentManager().popBackStack(entry.getId(),
+                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        //No call for super(). Bug on API Level > 11.
-    }
+
 
     public void popFragment() {
         if (getSupportFragmentManager() == null)
             return;
+        try {
+            getSupportFragmentManager().popBackStack();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void removeFragment(){
+        // remove the current fragment from the stack.
         getSupportFragmentManager().popBackStack();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        // get fragment that is to be shown (in our case fragment1).
+        Fragment currentFragment = getDockActivity().getSupportFragmentManager().findFragmentById(getDockActivity().getDockFrameLayoutId());
+        // This time I set an animation with no fade in, so the user doesn't wait for the animation in back press
+        transaction.setCustomAnimations(R.anim.fragment_enter, R.anim.fragment_exit);
+        // We must use the show() method.
+        transaction.show(currentFragment);
+        transaction.commit();
     }
 
     public abstract void onMenuItemActionCalled(int actionId, String data);

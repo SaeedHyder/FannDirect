@@ -1,23 +1,34 @@
 package com.app.fandirect.activities;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -33,15 +44,23 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.app.fandirect.R;
+import com.app.fandirect.entities.LocationModel;
+import com.app.fandirect.fragments.CommentFragment;
 import com.app.fandirect.fragments.FannsFragment;
 import com.app.fandirect.fragments.FavoriteFragment;
+import com.app.fandirect.fragments.FeedFragment;
 import com.app.fandirect.fragments.FriendRequestFragment;
 import com.app.fandirect.fragments.HomeFragment;
 import com.app.fandirect.fragments.HomeSearchFragment;
 import com.app.fandirect.fragments.InboxChatFragment;
 import com.app.fandirect.fragments.LoginFragment;
 import com.app.fandirect.fragments.MessageFragment;
+import com.app.fandirect.fragments.NotificationFragment;
 import com.app.fandirect.fragments.NotificationsFragment;
+import com.app.fandirect.fragments.PostDetailFragment;
+import com.app.fandirect.fragments.PromotionsFragment;
+import com.app.fandirect.fragments.ServiceHistoryMainSpFragment;
+import com.app.fandirect.fragments.ServiceHistoryMainUserFragment;
 import com.app.fandirect.fragments.ServiceHistorySpFragment;
 import com.app.fandirect.fragments.ServiceHistoryUserFragment;
 import com.app.fandirect.fragments.SideMenuFragment;
@@ -52,9 +71,12 @@ import com.app.fandirect.global.AppConstants;
 import com.app.fandirect.global.SideMenuChooser;
 import com.app.fandirect.global.SideMenuDirection;
 import com.app.fandirect.global.WebServiceConstants;
+import com.app.fandirect.helpers.CameraHelper;
 import com.app.fandirect.helpers.DialogHelper;
+import com.app.fandirect.helpers.InternetHelper;
 import com.app.fandirect.helpers.ScreenHelper;
 import com.app.fandirect.helpers.ServiceHelper;
+import com.app.fandirect.helpers.TokenUpdater;
 import com.app.fandirect.helpers.UIHelper;
 import com.app.fandirect.interfaces.ImageSetter;
 import com.app.fandirect.interfaces.webServiceResponseLisener;
@@ -63,6 +85,8 @@ import com.app.fandirect.retrofit.WebService;
 import com.app.fandirect.retrofit.WebServiceFactory;
 import com.app.fandirect.ui.views.TitleBar;
 import com.facebook.FacebookSdk;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -75,11 +99,25 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
 import com.kbeanie.imagechooser.api.ChosenImages;
 import com.kbeanie.imagechooser.api.ImageChooserListener;
 import com.kbeanie.imagechooser.api.ImageChooserManager;
+
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -89,11 +127,16 @@ import static com.app.fandirect.global.AppConstants.Accept_Request;
 import static com.app.fandirect.global.AppConstants.Complete_Request;
 import static com.app.fandirect.global.AppConstants.New_Request;
 import static com.app.fandirect.global.AppConstants.Rejected_Request;
+import static com.app.fandirect.global.AppConstants.UserRoleId;
 import static com.app.fandirect.global.AppConstants.accept_request;
+import static com.app.fandirect.global.AppConstants.admin;
 import static com.app.fandirect.global.AppConstants.block_user;
+import static com.app.fandirect.global.AppConstants.comment;
 import static com.app.fandirect.global.AppConstants.delete_user;
 import static com.app.fandirect.global.AppConstants.friend_request;
 import static com.app.fandirect.global.AppConstants.messagePush;
+import static com.app.fandirect.global.AppConstants.post;
+import static com.app.fandirect.global.AppConstants.promotion;
 import static com.app.fandirect.global.WebServiceConstants.feedback;
 
 
@@ -133,9 +176,13 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
     RelativeLayout contentFrame;
     @BindView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
+    @BindView(R.id.adView)
+    AdView adView;
+    @BindView(R.id.ll_adView)
+    LinearLayout llAdView;
+
     private MainActivity mContext;
     private boolean loading;
-
     private ImageChooserManager imageChooserManager;
     private int chooserType;
     private String filePath;
@@ -161,6 +208,10 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
     protected BroadcastReceiver broadcastReceiver;
     protected WebService webService;
     protected WebService headerWebService;
+    private LocationManager locationManager;
+    private String address = "";
+    private String country = "";
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -173,6 +224,14 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
         // setBehindContentView(R.layout.fragment_frame);
         mContext = this;
         Log.i("Screen Density", ScreenHelper.getDensity(this) + "");
+
+        printHashKey(getDockActivity());
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+
+        AdRequest adRequest = new AdRequest.Builder()
+                .build();
+        adView.loadAd(adRequest);
 
         sideMenuType = SideMenuChooser.DRAWER.getValue();
         sideMenuDirection = SideMenuDirection.LEFT.getValue();
@@ -218,8 +277,9 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
                     UIHelper.showLongToastInCenter(getApplicationContext(),
                             R.string.message_wait);
                 } else {
-
-                    popFragment();
+                    //  popFragment();
+                    onBackPressed();
+                    //updateUserProfileOnBackStack();
                     UIHelper.hideSoftKeyboard(getApplicationContext(),
                             titleBar);
                 }
@@ -229,14 +289,19 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
         titleBar.setNotificationButtonListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                replaceDockableFragment(NotificationsFragment.newInstance(), "NotificationsFragment");
+                replaceDockableFragment(NotificationFragment.newInstance(), "NotificationFragment");
             }
         });
 
-        if (savedInstanceState == null)
-            initFragment();
+        // if (savedInstanceState == null)
+        initFragment();
 
 
+    }
+
+
+    public AdView getAdView() {
+        return adView;
     }
 
     @Override
@@ -254,10 +319,16 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
         LocalBroadcastManager.getInstance(getDockActivity()).registerReceiver(broadcastReceiver,
                 new IntentFilter(AppConstants.PUSH_NOTIFICATION));
 
-        if (!prefHelper.isLogin()) {
+       /* if(prefHelper.isBeforeLogin()){
+            adView.setVisibility(View.GONE);
+        }else{
+            adView.setVisibility(View.VISIBLE);
+        }*/
+
+        if (!prefHelper.isLogin() && !prefHelper.isBeforeLogin()) {
             replaceDockableFragment(LoginFragment.newInstance(), "LoginFragment");
         }
-      //  initFragment();
+        //  initFragment();
 
     }
 
@@ -277,19 +348,20 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
                         final String RequestId = bundle.getString("request_id");
                         final String SenderId = bundle.getString("sender_id");
                         final String ReceiverId = bundle.getString("receiver_id");
-                        if (Type != null && Type.equals(New_Request)) {
+                       /* if (Type != null && Type.equals(New_Request)) {
                             replaceDockableFragment(ServiceHistorySpFragment.newInstance(), "ServiceHistorySpFragment");
                         } else if (Type != null && Type.equals(Rejected_Request)) {
                             replaceDockableFragment(ServiceHistoryUserFragment.newInstance(), "ServiceHistoryUserFragment");
                         } else if (Type != null && Type.equals(Accept_Request)) {
                             replaceDockableFragment(ServiceHistoryUserFragment.newInstance(), "ServiceHistoryUserFragment");
-                        } else if (Type != null && Type.equals(friend_request)) {
+                        }*//* else if (Type != null && Type.equals(friend_request)) {
                             replaceDockableFragment(FriendRequestFragment.newInstance(), "FriendRequestFragment");
-                        }/*else if (Type != null && Type.equals(accept_request)) {
+                        }*//*else if (Type != null && Type.equals(accept_request)) {
                             replaceDockableFragment(FannsFragment.newInstance(), "FannsFragment");
                         }else if (Type != null && Type.equals(messagePush)) {
                             replaceDockableFragment(InboxChatFragment.newInstance(), "InboxChatFragment");
-                        }*/ else if (Type != null && Type.equals(Complete_Request)) {
+                        }*/
+                        if (Type != null && Type.equals(Complete_Request)) {
                             final DialogHelper dialogHelper = new DialogHelper(getDockActivity());
                             dialogHelper.initRating(R.layout.submit_rating_dialoge, new OnClickListener() {
                                 @Override
@@ -348,7 +420,7 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
             userId = senderId;
         }
 
-        if (text != null && !text.equals("")) {
+        if (text != null && !text.trim().equals("")) {
             dialogHelper.hideDialog();
             serviceHelper.enqueueCall(headerWebService.feedback(userId, requestId, String.valueOf(Math.round(ratingScore)), text), feedback);
         } else {
@@ -363,7 +435,7 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
         switch (Tag) {
 
             case feedback:
-                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                UIHelper.showShortToastInCenter(getDockActivity(), "Rating submitted successfully");
                 getDockActivity().popBackStackTillEntry(0);
                 getDockActivity().replaceDockableFragment(HomeFragment.newInstance(), "HomeFragment");
                 break;
@@ -457,8 +529,16 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
     public void initFragment() {
         getSupportFragmentManager().addOnBackStackChangedListener(getListener());
         if (prefHelper.isLogin()) {
+
+            if (InternetHelper.CheckInternetConectivityandShowToast(getDockActivity())) {
+                TokenUpdater.getInstance().UpdateToken(getDockActivity(),
+                        AppConstants.Device_Type,
+                        FirebaseInstanceId.getInstance().getToken());
+            }
+
             getDockActivity().popBackStackTillEntry(0);
             replaceDockableFragment(HomeFragment.newInstance(), "HomeFragment");
+
         } else {
             replaceDockableFragment(LoginFragment.newInstance(), "LoginFragment");
         }
@@ -470,28 +550,55 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
             final String SenderId = bundle.getString("sender_id");
             final String ReceiverId = bundle.getString("receiver_id");
 
-            if (Type != null && Type.equals(messagePush)) {
-                inboxChat(SenderId, ReceiverId);
-            } else if (Type != null && Type.equals(New_Request)) {
-                replaceDockableFragment(ServiceHistorySpFragment.newInstance(), "ServiceHistorySpFragment");
-            } else if (Type != null && Type.equals(Rejected_Request)) {
-                replaceDockableFragment(HomeFragment.newInstance(), "HomeMapFragment");
-            } else if (Type != null && Type.equals(Accept_Request)) {
-                replaceDockableFragment(ServiceHistoryUserFragment.newInstance(), "ServiceHistoryUserFragment");
-            } else if (Type != null && Type.equals(friend_request)) {
-                replaceDockableFragment(FriendRequestFragment.newInstance(), "FriendRequestFragment");
-            } else if (Type != null && Type.equals(accept_request)) {
-                replaceDockableFragment(FannsFragment.newInstance(), "FannsFragment");
-            } else if (Type != null && Type.equals(Complete_Request)) {
-                final DialogHelper dialogHelper = new DialogHelper(getDockActivity());
-                dialogHelper.initRating(R.layout.submit_rating_dialoge, new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialogHelper.hideDialog();
+            String userId = "";
+
+            if (SenderId.equals(String.valueOf(prefHelper.getUser().getId()))) {
+                userId = ReceiverId;
+            } else {
+                userId = SenderId;
+            }
+
+
+            if (prefHelper.isLogin()) {
+                if (Type != null && Type.equals(messagePush)) {
+                    inboxChat(SenderId, ReceiverId);
+                } else if (Type != null && Type.equals(post)) {
+                    replaceDockableFragment(FeedFragment.newInstance(), "FeedFragment");
+                } else if (Type != null && Type.equals(admin)) {
+                    replaceDockableFragment(NotificationFragment.newInstance(), "NotificationFragment");
+                } else if (Type != null && Type.equals(promotion)) {
+                    replaceDockableFragment(PromotionsFragment.newInstance(), "PromotionsFragment");
+                } else if (Type != null && Type.equals(New_Request)) {
+                    replaceDockableFragment(ServiceHistoryMainSpFragment.newInstance(), "ServiceHistoryMainSpFragment");
+                } else if (Type != null && Type.equals(Rejected_Request)) {
+                    replaceDockableFragment(HomeFragment.newInstance(), "HomeMapFragment");
+                } else if (Type != null && Type.equals(Accept_Request)) {
+                    replaceDockableFragment(ServiceHistoryMainUserFragment.newInstance(), "ServiceHistoryMainUserFragment");
+                } else if (Type != null && Type.equals(friend_request)) {
+                    if (RequestId != null && RequestId.equals(UserRoleId)) {
+                        getDockActivity().replaceDockableFragment(UserProfileFragment.newInstance(userId), "UserProfileFragment");
+                    } else {
+                        getDockActivity().replaceDockableFragment(SpProfileFragment.newInstance(userId), "SpProfileFragment");
                     }
-                });
-                dialogHelper.showDialog();
-            } else if (Type != null && Type.equals(block_user)) {
+                } else if (Type != null && Type.equals(accept_request)) {
+                    if (RequestId != null && RequestId.equals(UserRoleId)) {
+                        getDockActivity().replaceDockableFragment(UserProfileFragment.newInstance(userId), "UserProfileFragment");
+                    } else {
+                        getDockActivity().replaceDockableFragment(SpProfileFragment.newInstance(userId), "SpProfileFragment");
+                    }
+                    //    replaceDockableFragment(FannsFragment.newInstance(), "FannsFragment");
+                } else if (Type != null && Type.equals(comment)) {
+                    getDockActivity().replaceDockableFragment(PostDetailFragment.newInstance(RequestId), "CommentFragment");
+                } else if (Type != null && Type.equals(Complete_Request)) {
+                    final DialogHelper dialogHelper = new DialogHelper(getDockActivity());
+                    dialogHelper.initRating(R.layout.submit_rating_dialoge, new OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            feedbackService(RequestId, SenderId, ReceiverId, dialogHelper.getRatingTextView().getText().toString(), dialogHelper.getRatingScore(), dialogHelper);
+                        }
+                    });
+                    dialogHelper.showDialog();
+                } else if (Type != null && Type.equals(block_user)) {
 
                /* final DialogHelper dialogHelper=new DialogHelper(getDockActivity());
                 dialogHelper.alertDialoge(R.layout.alert_dialoge, new View.OnClickListener() {
@@ -502,11 +609,11 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
                 },getDockActivity().getResources().getString(R.string.blocked_by_admin));
 
                 dialogHelper.showDialog();*/
-                prefHelper.setLoginStatus(false);
-                getDockActivity().popBackStackTillEntry(0);
-                replaceDockableFragment(LoginFragment.newInstance(), "LoginFragment");
+                    prefHelper.setLoginStatus(false);
+                    getDockActivity().popBackStackTillEntry(0);
+                    replaceDockableFragment(LoginFragment.newInstance(), "LoginFragment");
 
-            } else if (Type != null && Type.equals(delete_user)) {
+                } else if (Type != null && Type.equals(delete_user)) {
               /*  final DialogHelper dialogHelper=new DialogHelper(getDockActivity());
                 dialogHelper.alertDialoge(R.layout.alert_dialoge, new View.OnClickListener() {
                     @Override
@@ -516,9 +623,10 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
                 },"Account has been deleted by admin");
 
                 dialogHelper.showDialog();*/
-                prefHelper.setLoginStatus(false);
-                getDockActivity().popBackStackTillEntry(0);
-                replaceDockableFragment(LoginFragment.newInstance(), "LoginFragment");
+                    prefHelper.setLoginStatus(false);
+                    getDockActivity().popBackStackTillEntry(0);
+                    replaceDockableFragment(LoginFragment.newInstance(), "LoginFragment");
+                }
             }
         }
     }
@@ -544,6 +652,11 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
                     BaseFragment currFrag = (BaseFragment) manager.findFragmentById(getDockFrameLayoutId());
                     if (currFrag != null) {
                         currFrag.fragmentResume();
+                    }
+                    if (currFrag instanceof InboxChatFragment) {
+                        prefHelper.setChatScreen(true);
+                    } else {
+                        prefHelper.setChatScreen(false);
                     }
                 }
             }
@@ -616,9 +729,25 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
         if (loading) {
             UIHelper.showLongToastInCenter(getApplicationContext(),
                     R.string.message_wait);
-        } else
+        } else {
             super.onBackPressed();
+            updateUserProfileOnBackStack();
 
+        }
+    }
+
+    private void updateUserProfileOnBackStack() {
+        FragmentManager manager = getDockActivity().getSupportFragmentManager();
+        if (manager != null) {
+            Fragment currFrag = manager.findFragmentById(getDockActivity().getDockFrameLayoutId());
+            if (currFrag != null) {
+                if (currFrag instanceof UserProfileFragment) {
+                    ((UserProfileFragment) currFrag).updateOnBackStack();
+                } else if (currFrag instanceof SpProfileFragment) {
+                    ((SpProfileFragment) currFrag).updateOnBackStack();
+                }
+            }
+        }
     }
 
     @Override
@@ -661,7 +790,7 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
         imageChooserManager = new ImageChooserManager(this,
                 ChooserType.REQUEST_PICK_PICTURE, true);
         Bundle bundle = new Bundle();
-        bundle.putBoolean(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        bundle.putBoolean(Intent.EXTRA_ALLOW_MULTIPLE, false);
         imageChooserManager.setExtras(bundle);
         imageChooserManager.setImageChooserListener(this);
         imageChooserManager.clearOldFiles();
@@ -873,7 +1002,7 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
             final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                 turnLocationOn(null);
-                buildAlertMessageNoGps(R.string.gps_question, Settings.ACTION_LOCATION_SOURCE_SETTINGS, LocationResultCode);
+                //buildAlertMessageNoGps(R.string.gps_question, Settings.ACTION_LOCATION_SOURCE_SETTINGS, LocationResultCode);
                 return false;
             } else {
                 return true;
@@ -1035,4 +1164,118 @@ public class MainActivity extends DockActivity implements webServiceResponseLise
     public void ResponseFailure(String tag) {
 
     }
+
+    public LocationModel getMyCurrentLocation() {
+
+
+        String address = "";
+        LocationModel locationObj = new LocationModel(address, 0.0, 0.0);
+        //  LocationModel locationObj = new LocationModel(address,24.829759,67.073822);
+
+
+// instantiate the location manager, note you will need to request permissions in your manifest
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+
+// get the last know location from your location manager.
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
+// now get the lat/lon from the location and do something with it.
+        Location gpslocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        Location networklocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        Location passivelocation = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
+        Location locationchangelocation = locationManager.getLastKnownLocation(LocationManager.KEY_LOCATION_CHANGED);
+
+
+        if (gpslocation != null) {
+
+            Log.d("Location", "GPS::" + gpslocation.getLatitude() + "," + gpslocation.getLongitude());
+            address = getCurrentAddress(gpslocation.getLatitude(), gpslocation.getLongitude());
+            locationObj = new LocationModel(address, gpslocation.getLatitude(), gpslocation.getLongitude());
+
+            return locationObj;
+
+        } else if (networklocation != null) {
+
+            Log.d("Location", "NETWORK::" + networklocation.getLatitude() + "," + networklocation.getLongitude());
+            address = getCurrentAddress(networklocation.getLatitude(), networklocation.getLongitude());
+            locationObj = new LocationModel(address, networklocation.getLatitude(), networklocation.getLongitude());
+
+            return locationObj;
+        } else if (passivelocation != null) {
+
+            Log.d("Location", "PASSIVE::" + passivelocation.getLatitude() + "," + passivelocation.getLongitude());
+            address = getCurrentAddress(passivelocation.getLatitude(), passivelocation.getLongitude());
+            locationObj = new LocationModel(address, passivelocation.getLatitude(), passivelocation.getLongitude());
+
+            return locationObj;
+        } else if (locationchangelocation != null) {
+
+            Log.d("Location", "CHAGELOCATION::" + locationchangelocation.getLatitude() + "," + locationchangelocation.getLongitude());
+            address = getCurrentAddress(locationchangelocation.getLatitude(), locationchangelocation.getLongitude());
+            locationObj = new LocationModel(address, locationchangelocation.getLatitude(), locationchangelocation.getLongitude());
+
+            return locationObj;
+        }
+
+        return locationObj;
+
+
+    }
+
+    private String getCurrentAddress(double lat, double lng) {
+        try {
+
+
+            Geocoder geocoder;
+            List<Address> addresses;
+            geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+            addresses = geocoder.getFromLocation(lat, lng, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            if (addresses.size() > 0) {
+                address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            }
+// String city = addresses.get(0).getLocality();
+// String state = addresses.get(0).getAdminArea();
+            if (addresses.size() > 0) {
+                country = addresses.get(0).getCountryName();
+            }
+// String postalCode = addresses.get(0).getPostalCode();
+// String knownName = addresses.get(0).getFeatureName(); // Only if available else return NULL
+            return address + ", " + country;
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public void printHashKey(Context pContext) {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String hashKey = new String(Base64.encode(md.digest(), 0));
+                Log.i(TAG, "printHashKey() Hash Key: " + hashKey);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            Log.e(TAG, "printHashKey()", e);
+        } catch (Exception e) {
+            Log.e(TAG, "printHashKey()", e);
+        }
+    }
+
+    public void showAdds(){
+        llAdView.setVisibility(View.VISIBLE);
+    }
+
+    public void hideAdds(){
+        llAdView.setVisibility(View.GONE);
+    }
+
+
 }
+
+

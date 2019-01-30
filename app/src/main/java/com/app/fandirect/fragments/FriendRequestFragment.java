@@ -175,7 +175,7 @@ public class FriendRequestFragment extends BaseFragment implements FannRequestIn
 
             case confirmRequest:
 
-                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                UIHelper.showShortToastInCenter(getDockActivity(), "Confirmed successfully");
                 serviceHelper.enqueueCall(headerWebService.getAllFannRequests(), AlRequests);
 
 
@@ -183,7 +183,7 @@ public class FriendRequestFragment extends BaseFragment implements FannRequestIn
 
             case deleteRequest:
 
-                UIHelper.showShortToastInCenter(getDockActivity(), message);
+                UIHelper.showShortToastInCenter(getDockActivity(), "Deleted successfully");
                 serviceHelper.enqueueCall(headerWebService.getAllFannRequests(), AlRequests);
 
                 break;
@@ -203,13 +203,13 @@ public class FriendRequestFragment extends BaseFragment implements FannRequestIn
     @Override
     public void confirmRequest(AllRequestEnt entity, int position) {
 
-        serviceHelper.enqueueCall(headerWebService.markFannRequset(entity.getId() + "", accepted), confirmRequest);
+        serviceHelper.enqueueCall(headerWebService.markFannRequset(entity.getId() + "", accepted,prefHelper.getUser().getRoleId() + ""), confirmRequest);
     }
 
     @Override
     public void deleteRequest(AllRequestEnt entity, int position) {
 
-        serviceHelper.enqueueCall(headerWebService.markFannRequset(entity.getId() + "", declined), deleteRequest);
+        serviceHelper.enqueueCall(headerWebService.markFannRequset(entity.getId() + "", declined,prefHelper.getUser().getRoleId() + ""), deleteRequest);
 
     }
 

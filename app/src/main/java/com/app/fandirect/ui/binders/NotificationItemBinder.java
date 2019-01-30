@@ -2,6 +2,7 @@ package com.app.fandirect.ui.binders;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.app.fandirect.R;
 import com.app.fandirect.activities.DockActivity;
@@ -43,14 +44,32 @@ public class NotificationItemBinder extends ViewBinder<NotificationEnt> {
     }
 
     @Override
-    public void bindView(NotificationEnt entity, int position, int grpPosition, View view, Activity activity) {
+    public void bindView(final NotificationEnt entity, final int position, int grpPosition, View view, Activity activity) {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
 
-        imageLoader.displayImage(entity.getSenderDetail().getImageUrl(), viewHolder.ivImage);
-        viewHolder.txtName.setText(entity.getSenderDetail().getUserName() + "");
-        viewHolder.txtDescription.setText(entity.getMessage() + "");
-        viewHolder.txtTimeDate.setText(DateHelper.getLocalDateTime2(entity.getCreatedAt()));
+        if (entity != null) {
+            if (entity != null && entity.getSenderDetail() != null && entity.getSenderDetail().getImageUrl() != null && !entity.getSenderDetail().getImageUrl().equals("")) {
+                imageLoader.displayImage(entity.getSenderDetail().getImageUrl(), viewHolder.ivImage);
+            } else if (entity != null && entity.getSenderDetail() != null && entity.getSenderDetail().getUserName().equals("Admin")) {
+                viewHolder.ivImage.setImageResource(R.drawable.app_icon);
+            }
+            if (entity.getSenderDetail() != null && entity.getSenderDetail().getUserName() != null) {
+                viewHolder.txtName.setText(entity.getSenderDetail().getUserName() + "");
+            }
+            if (entity.getSenderDetail() != null && entity.getMessage() != null) {
+                viewHolder.txtDescription.setText(entity.getMessage() + "");
+            }
+            viewHolder.txtTimeDate.setText(DateHelper.getLocalDateTime2(entity.getCreatedAt()));
+
+            viewHolder.mainFrameLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickListner.onRecyclerItemClicked(entity, position);
+                }
+            });
+
+        }
 
     }
 
@@ -63,6 +82,9 @@ public class NotificationItemBinder extends ViewBinder<NotificationEnt> {
         AnyTextView txtDescription;
         @BindView(R.id.txt_time_date)
         AnyTextView txtTimeDate;
+        @BindView(R.id.mainFrameLayout)
+        LinearLayout mainFrameLayout;
+
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

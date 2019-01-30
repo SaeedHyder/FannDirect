@@ -21,6 +21,12 @@ public class MessageThreadsEnt {
     @SerializedName("message")
     @Expose
     private String message;
+    @SerializedName("sender_delete")
+    @Expose
+    private String senderDelete;
+    @SerializedName("receiver_delete")
+    @Expose
+    private String receiverDelete;
     @SerializedName("is_read")
     @Expose
     private String isRead;
@@ -33,6 +39,9 @@ public class MessageThreadsEnt {
     @SerializedName("updated_at")
     @Expose
     private String updatedAt;
+    @SerializedName("unread_messages")
+    @Expose
+    private Integer unread_messages;
     @SerializedName("deleted_at")
     @Expose
     private String deletedAt;
@@ -42,6 +51,30 @@ public class MessageThreadsEnt {
     @SerializedName("receiver_detail")
     @Expose
     private ReceiverDetail receiverDetail;
+
+    public Integer getUnread_messages() {
+        return unread_messages;
+    }
+
+    public void setUnread_messages(Integer unread_messages) {
+        this.unread_messages = unread_messages;
+    }
+
+    public String getSenderDelete() {
+        return senderDelete;
+    }
+
+    public void setSenderDelete(String senderDelete) {
+        this.senderDelete = senderDelete;
+    }
+
+    public String getReceiverDelete() {
+        return receiverDelete;
+    }
+
+    public void setReceiverDelete(String receiverDelete) {
+        this.receiverDelete = receiverDelete;
+    }
 
     public Integer getId() {
         return id;

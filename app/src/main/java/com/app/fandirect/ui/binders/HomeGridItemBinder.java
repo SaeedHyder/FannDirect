@@ -12,6 +12,19 @@ import com.app.fandirect.R;
 import com.app.fandirect.activities.DockActivity;
 import com.app.fandirect.activities.MainActivity;
 import com.app.fandirect.entities.HomeGridEnt;
+import com.app.fandirect.entities.TilesCountEnt;
+import com.app.fandirect.fragments.FannsFragment;
+import com.app.fandirect.fragments.FeedFragment;
+import com.app.fandirect.fragments.FriendRequestFragment;
+import com.app.fandirect.fragments.MessageFragment;
+import com.app.fandirect.fragments.PromotionsFragment;
+import com.app.fandirect.fragments.ServiceHistorySpFragment;
+import com.app.fandirect.fragments.ServiceHistoryUserFragment;
+import com.app.fandirect.fragments.SettingFragment;
+import com.app.fandirect.fragments.SpProfileFragment;
+import com.app.fandirect.fragments.SpPromotionsPostFragment;
+import com.app.fandirect.fragments.UserProfileFragment;
+import com.app.fandirect.fragments.WallPostsFragment;
 import com.app.fandirect.helpers.BasePreferenceHelper;
 import com.app.fandirect.interfaces.RecyclerViewItemListener;
 import com.app.fandirect.ui.viewbinders.abstracts.ViewBinder;
@@ -34,15 +47,17 @@ public class HomeGridItemBinder extends ViewBinder<HomeGridEnt> {
     private ImageLoader imageLoader;
     private RecyclerViewItemListener clickListner;
     private Picasso picasso;
+    private TilesCountEnt data;
 
 
-    public HomeGridItemBinder(DockActivity dockActivity, BasePreferenceHelper prefHelper, RecyclerViewItemListener clickListner) {
+    public HomeGridItemBinder(DockActivity dockActivity, BasePreferenceHelper prefHelper, RecyclerViewItemListener clickListner, TilesCountEnt data) {
         super(R.layout.row_item_home_grid);
         this.dockActivity = dockActivity;
         this.prefHelper = prefHelper;
         this.imageLoader = ImageLoader.getInstance();
         this.clickListner = clickListner;
         picasso = Picasso.with(dockActivity);
+        this.data = data;
     }
 
     @Override
@@ -58,17 +73,48 @@ public class HomeGridItemBinder extends ViewBinder<HomeGridEnt> {
         gridView.setLayoutParams(layoutParams);
 
         final ViewHolder viewHolder = (ViewHolder) view.getTag();
-     //   imageLoader.displayImage(entity.getImage(), viewHolder.ivImage);
-        picasso.load(entity.getImage()).into(viewHolder.ivImage);
+        viewHolder.ivImage.setImageResource(entity.getImage());
+       // imageLoader.displayImage(entity.getImage(), viewHolder.ivImage);
+       // picasso.load(entity.getImage()).into(viewHolder.ivImage);
         viewHolder.txtCategory.setText(entity.getText() + "");
 
-        //
-/*        viewHolder.llItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onUserProfileClick(View v) {
-                clickListner.onRecyclerItemClicked(entity, position);
+        if (data != null) {
+            if (position == 1) {
+                if (data.getFeeds() != null && data.getFeeds() > 0) {
+                    viewHolder.txtBadge.setVisibility(View.VISIBLE);
+                    viewHolder.txtBadge.setText(data.getFeeds() + "");
+                } else {
+                    viewHolder.txtBadge.setVisibility(View.GONE);
+                }
+
+            } else if (position == 2) {
+                if (data.getMessages() != null && data.getMessages() > 0) {
+                    viewHolder.txtBadge.setVisibility(View.VISIBLE);
+                    viewHolder.txtBadge.setText(data.getMessages() + "");
+                } else {
+                    viewHolder.txtBadge.setVisibility(View.GONE);
+                }
+
+            } else if (position == 4) {
+                if (data.getFriendRequest() != null && data.getFriendRequest() > 0) {
+                    viewHolder.txtBadge.setVisibility(View.VISIBLE);
+                    viewHolder.txtBadge.setText(data.getFriendRequest() + "");
+                } else {
+                    viewHolder.txtBadge.setVisibility(View.GONE);
+                }
+
+            } else if (position == 5) {
+                if (data.getPromotions() != null && data.getPromotions() > 0) {
+                    viewHolder.txtBadge.setVisibility(View.VISIBLE);
+                    viewHolder.txtBadge.setText(data.getPromotions() + "");
+                } else {
+                    viewHolder.txtBadge.setVisibility(View.GONE);
+                }
+
+            } else {
+                viewHolder.txtBadge.setVisibility(View.GONE);
             }
-        });*/
+        }
 
 
     }
@@ -90,6 +136,8 @@ public class HomeGridItemBinder extends ViewBinder<HomeGridEnt> {
         AnyTextView txtCategory;
         @BindView(R.id.ll_item)
         LinearLayout llItem;
+        @BindView(R.id.txtBadge)
+        AnyTextView txtBadge;
 
 
         ViewHolder(View view) {

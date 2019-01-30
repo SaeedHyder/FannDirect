@@ -6,6 +6,22 @@
     android:orientation="vertical">
 
     <com.app.fandirect.ui.views.AnyTextView
+        android:id="@+id/txt_deleteAccount"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x60"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/x15"
+        android:text="@string/delete_account"
+        android:textColor="@color/app_dark_gray_2"
+        android:textSize="@dimen/x15"
+        app:typeface="@string/font_normal" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/x1"
+        android:background="@color/view_color" />
+
+    <com.app.fandirect.ui.views.AnyTextView
         android:id="@+id/txt_changePassword"
         android:layout_width="match_parent"
         android:layout_height="@dimen/x60"
@@ -14,6 +30,7 @@
         android:text="@string/change_password"
         android:textColor="@color/app_dark_gray_2"
         android:textSize="@dimen/x15"
+
         app:typeface="@string/font_normal" />
 
     <View
@@ -41,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/x60"
         android:orientation="horizontal"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <com.app.fandirect.ui.views.AnyTextView
             android:layout_width="0dp"
@@ -74,7 +91,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/x1"
         android:background="@color/view_color"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
 
     <com.app.fandirect.ui.views.AnyTextView

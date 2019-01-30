@@ -3,8 +3,13 @@ package com.app.fandirect;
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 
 
+import com.crashlytics.android.Crashlytics;
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.FirebaseApp;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -13,14 +18,20 @@ import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 import com.nostra13.universalimageloader.utils.L;
 
-public class BaseApplication extends Application {
+import io.fabric.sdk.android.Fabric;
+
+public class BaseApplication extends MultiDexApplication {
 	
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		super.onCreate();
 		MultiDex.install(this);
+		MobileAds.initialize(this, getResources().getString(R.string.adMobId));
+		FacebookSdk.sdkInitialize(this);
+		FirebaseApp.initializeApp(this);
 		initImageLoader();
+		Fabric.with(this, new Crashlytics());
 
 	}
 	

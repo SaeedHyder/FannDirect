@@ -22,9 +22,9 @@
     <style name="AppTheme" parent="AppBaseTheme">
 
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="colorAccent">@color/app_blue</item>
-        <item name="colorPrimaryDark">@color/app_blue</item>
+        <item name="colorAccent">@color/app_blue</item><item name="colorPrimaryDark">@color/app_blue</item>
         <item name="colorPrimary">@color/app_blue</item>
+
         <item name="android:windowNoTitle">true</item>
 
         <item name="android:popupMenuStyle">@style/PopupMenu</item>
@@ -39,6 +39,18 @@
 
     <style name="PopupMenu" parent="Widget.AppCompat.PopupMenu">
         <item name="android:popupBackground">@android:color/white</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
     </style>
 
 </resources>

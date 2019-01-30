@@ -1,10 +1,13 @@
-package com.app.wewash.helpers;
+package com.app.fandirect.helpers;
+
+import android.os.SystemClock;
 
 /**
  * Created on 9/26/2017.
  */
 
 public class Utils {
+    private static long lastClickTime;
     public static String getTAG(Object o) {
         StackTraceElement[] elements = Thread.currentThread().getStackTrace();
 
@@ -20,5 +23,20 @@ public class Utils {
         StackTraceElement element = elements[position];
         String className = element.getFileName().replace(".java", "");
         return "[" + className + "](" + element.getMethodName() + ":" + element.getLineNumber() + ")";
+    }
+
+    public static boolean doubleClickCheck() {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 1000) {
+            return false;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
+        return true;
+    }
+    public static boolean doubleClickCheck2Seconds() {
+        if (SystemClock.elapsedRealtime() - lastClickTime < 3000) {
+            return false;
+        }
+        lastClickTime = SystemClock.elapsedRealtime();
+        return true;
     }
 }

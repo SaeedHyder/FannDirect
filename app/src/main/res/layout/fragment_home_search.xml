@@ -58,7 +58,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.8"
                 android:background="@color/transparent"
-                android:hint="Search..."
+                android:hint="@string/search_fann"
                 android:inputType="text"
                 android:imeOptions="actionSearch"
                 android:maxLines="1"
@@ -105,7 +105,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingEnd="@dimen/x15"
-        android:layout_marginTop="@dimen/x25"
+        android:layout_marginTop="@dimen/x15"
         android:scrollbars="none"
         android:numColumns="1" />
 

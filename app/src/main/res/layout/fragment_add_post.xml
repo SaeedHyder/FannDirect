@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:onClick="onClick"
         android:orientation="vertical">
 
         <LinearLayout
@@ -33,6 +34,7 @@
                 android:layout_marginEnd="@dimen/x5"
                 android:layout_marginStart="@dimen/x15"
                 android:imeOptions="actionDone"
+                 android:gravity="center_vertical"
                 android:layout_toEndOf="@+id/iv_image"
                 android:layout_weight="0.9"
                 android:background="@color/transparent"
@@ -45,7 +47,7 @@
                 android:id="@+id/iv_upload_photo"
                 android:layout_width="@dimen/x70"
                 android:layout_height="@dimen/x60"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 android:visibility="gone"
                 android:src="@drawable/image3" />
 

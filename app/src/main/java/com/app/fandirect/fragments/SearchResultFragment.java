@@ -1,9 +1,15 @@
 package com.app.fandirect.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
@@ -123,12 +129,12 @@ public class SearchResultFragment extends BaseFragment implements RecyclerViewIt
         titleBar.hideButtons();
         titleBar.showBackButton();
         titleBar.showTitleLogo();
-        titleBar.showNotificationBell(new View.OnClickListener() {
+       /* titleBar.showNotificationBell(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getDockActivity().replaceDockableFragment(NotificationFragment.newInstance(), "NotificationFragment");
             }
-        });
+        },prefHelper.getNotificationCount());*/
     }
 
 
@@ -172,4 +178,7 @@ public class SearchResultFragment extends BaseFragment implements RecyclerViewIt
     public void onSendRequestBtn(Object Ent, int position) {
 
     }
+
+
+
 }

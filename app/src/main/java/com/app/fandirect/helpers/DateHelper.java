@@ -9,11 +9,10 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import org.apache.commons.lang3.time.DateUtils;
-
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Log;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -741,6 +740,7 @@ public class DateHelper {
 		return timeFormat.format( mDate );
 	}
 
+/*
 	public static String getParsedDateTime( String mDate  , boolean getTimeOnly) {
 
 		try {
@@ -768,6 +768,7 @@ public class DateHelper {
 
 		return null;
 	}
+*/
 
 	public static int getTimeZone() {
 		TimeZone tz = TimeZone.getDefault();
@@ -863,7 +864,7 @@ public class DateHelper {
 			formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 			Date value = formatter.parse(OurDate);
 
-			SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MM-yy hh:mm a"); //this format changeable
+			SimpleDateFormat dateFormatter = new SimpleDateFormat("MM-dd-yy hh:mm a"); //this format changeable
 			dateFormatter.setTimeZone(TimeZone.getDefault());
 			OurDate = dateFormatter.format(value);
 
@@ -889,6 +890,23 @@ public class DateHelper {
 			OurDate = dateFormatter.format(value);
 
 			//Log.d("OurDate", OurDate);
+		}
+		catch (Exception e)
+		{
+			OurDate = "00-00-0000 00:00";
+		}
+		return OurDate;
+	}
+
+	public static String getLocalDateTime3(String OurDate)
+	{
+		try
+		{
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date value = formatter.parse(OurDate);
+
+			SimpleDateFormat dateFormatter = new SimpleDateFormat("EEEE,MMM dd,yyyy hh:mm a"); //this format changeable
+			OurDate = dateFormatter.format(value);
 		}
 		catch (Exception e)
 		{

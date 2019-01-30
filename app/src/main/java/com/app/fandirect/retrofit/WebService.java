@@ -7,13 +7,19 @@ import com.app.fandirect.entities.FanStatus;
 import com.app.fandirect.entities.GetMyFannsEnt;
 import com.app.fandirect.entities.GetProfileEnt;
 import com.app.fandirect.entities.GetServicesEnt;
+import com.app.fandirect.entities.LikeDetailEnt;
 import com.app.fandirect.entities.MessageThreadsEnt;
+import com.app.fandirect.entities.NotificationCount;
 import com.app.fandirect.entities.NotificationEnt;
 import com.app.fandirect.entities.Post;
 import com.app.fandirect.entities.ResponseWrapper;
+import com.app.fandirect.entities.ReviewsEnt;
 import com.app.fandirect.entities.ServiceHistoryEnt;
+import com.app.fandirect.entities.ServiceHistoryMainEnt;
+import com.app.fandirect.entities.TilesCountEnt;
 import com.app.fandirect.entities.UserEnt;
 import com.app.fandirect.entities.commentEnt;
+import com.app.fandirect.entities.PushNotification;
 
 import java.util.ArrayList;
 
@@ -42,6 +48,26 @@ public interface WebService {
     );
 
     @FormUrlEncoded
+    @POST("socialLogin")
+    Call<ResponseWrapper<UserEnt>> socialLoginSp(@Field("socialmedia_id") String socialmedia_id,
+                                                 @Field("socialmedia_type") String socialmedia_type,
+                                                 @Field("device_type") String device_type,
+                                                 @Field("device_token") String device_token,
+                                                 @Field("role_id") String role_id
+    );
+
+    @FormUrlEncoded
+    @POST("socialLogin")
+    Call<ResponseWrapper<UserEnt>> socialLoginUser(@Field("user_name") String user_name,
+                                                   @Field("email") String email,
+                                                   @Field("role_id") String role_id,
+                                                   @Field("socialmedia_id") String socialmedia_id,
+                                                   @Field("socialmedia_type") String socialmedia_type,
+                                                   @Field("device_type") String device_type,
+                                                   @Field("device_token") String device_token
+    );
+
+    @FormUrlEncoded
     @POST("register")
     Call<ResponseWrapper<UserEnt>> registerUser(@Field("user_name") String user_name,
                                                 @Field("email") String email,
@@ -54,6 +80,22 @@ public interface WebService {
 
     @FormUrlEncoded
     @POST("registersp")
+    Call<ResponseWrapper<UserEnt>> socialRegisterSp(@Field("user_name") String user_name,
+                                                    @Field("email") String email,
+                                                    @Field("phone") String phone,
+                                                    @Field("city") String city,
+                                                    @Field("state") String state,
+                                                    @Field("latitude") String latitude,
+                                                    @Field("longitude") String longitude,
+                                                    @Field("location") String location,
+                                                    @Field("service_ids") String service_ids,
+                                                    @Field("device_type") String device_type,
+                                                    @Field("device_token") String device_token,
+                                                    @Field("socialmedia_id") String socialmedia_id,
+                                                    @Field("socialmedia_type") String socialmedia_type);
+
+    @FormUrlEncoded
+    @POST("registersp")
     Call<ResponseWrapper<UserEnt>> registerSp(@Field("user_name") String user_name,
                                               @Field("email") String email,
                                               @Field("phone") String phone,
@@ -63,7 +105,9 @@ public interface WebService {
                                               @Field("latitude") String latitude,
                                               @Field("longitude") String longitude,
                                               @Field("location") String location,
-                                              @Field("service_ids") String service_ids);
+                                              @Field("service_ids") String service_ids,
+                                              @Field("device_type") String device_type,
+                                              @Field("device_token") String device_token);
 
 
     @FormUrlEncoded
@@ -90,6 +134,24 @@ public interface WebService {
                                                      @Part("work_at") RequestBody work_at,
                                                      @Part("hobbies") RequestBody hobbies,
                                                      @Part("about") RequestBody about,
+                                                     @Part("education") RequestBody education,
+                                                     @Part MultipartBody.Part avatar
+
+    );
+
+    @Multipart
+    @POST("updateProfile")
+    Call<ResponseWrapper<UserEnt>> updateUserProfile(@Part("user_name") RequestBody user_name,
+                                                     @Part("email") RequestBody email,
+                                                     @Part("phone") RequestBody phone,
+                                                     @Part("gender") RequestBody gender,
+                                                     @Part("location") RequestBody location,
+                                                     @Part("latitude") RequestBody latitude,
+                                                     @Part("longitude") RequestBody longitude,
+                                                     @Part("profession") RequestBody profession,
+                                                     @Part("work_at") RequestBody work_at,
+                                                     @Part("hobbies") RequestBody hobbies,
+                                                     @Part("about") RequestBody about,
                                                      @Part MultipartBody.Part avatar
 
     );
@@ -104,6 +166,28 @@ public interface WebService {
                                                    @Part("latitude") RequestBody latitude,
                                                    @Part("longitude") RequestBody longitude,
                                                    @Part("dob") RequestBody dob,
+                                                   @Part("service_ids") RequestBody service_ids,
+                                                   @Part("certificate_license") RequestBody certificate_license,
+                                                   @Part("license_type") RequestBody license_type,
+                                                   @Part("company_name") RequestBody company_name,
+                                                   @Part("company_category") RequestBody company_category,
+                                                   @Part("insurance_available") RequestBody insurance_available,
+                                                   @Part("insurance_information") RequestBody insurance_information,
+                                                   @Part("about") RequestBody about,
+                                                   @Part("education") RequestBody education,
+                                                   @Part MultipartBody.Part avatar
+
+    );
+
+    @Multipart
+    @POST("updateSpProfile")
+    Call<ResponseWrapper<UserEnt>> updateSpProfile(@Part("user_name") RequestBody user_name,
+                                                   @Part("email") RequestBody email,
+                                                   @Part("phone") RequestBody phone,
+                                                   @Part("gender") RequestBody gender,
+                                                   @Part("location") RequestBody location,
+                                                   @Part("latitude") RequestBody latitude,
+                                                   @Part("longitude") RequestBody longitude,
                                                    @Part("service_ids") RequestBody service_ids,
                                                    @Part("certificate_license") RequestBody certificate_license,
                                                    @Part("license_type") RequestBody license_type,
@@ -144,7 +228,7 @@ public interface WebService {
 
     @FormUrlEncoded
     @POST("pushOnOff")
-    Call<ResponseWrapper> pushOnOff(@Field("notify_status") int notify_status);
+    Call<ResponseWrapper<PushNotification>> pushOnOff(@Field("notify_status") int notify_status);
 
     @GET("getUserProfile")
     Call<ResponseWrapper<GetProfileEnt>> getProfile(@Query("profiler_id") String profiler_id);
@@ -160,21 +244,38 @@ public interface WebService {
 
     @GET("homeSearch")
     Call<ResponseWrapper<ArrayList<UserEnt>>> SearchPeople(@Query("role_id") String role_id,
-                                                           @Query("search_title") String search_title);
+                                                           @Query("search_title") String search_title,
+                                                           @Query("latitude") String latitude,
+                                                           @Query("longitude") String longitude);
 
     @FormUrlEncoded
     @POST("sendFanRequest")
     Call<ResponseWrapper<FanStatus>> addFann(
-            @Field("fan_id") String fan_id);
+            @Field("fan_id") String fan_id,
+            @Field("role_id") String role_id);
+
 
     @GET("getAllFanRequest")
     Call<ResponseWrapper<ArrayList<AllRequestEnt>>> getAllFannRequests();
 
+    @GET("getReviews")
+    Call<ResponseWrapper<ArrayList<ReviewsEnt>>> getReviews(@Query("profiler_id") String profiler_id);
+
+
     @FormUrlEncoded
     @POST("markFanRequestStatus")
-    Call<ResponseWrapper> markFannRequset(
+    Call<ResponseWrapper<FanStatus>> markFannRequset(
             @Field("request_id") String request_id,
-            @Field("status") String status);
+            @Field("status") String status,
+            @Field("role_id") String role_id,
+            @Field("profiler_id") String profiler_id);
+
+    @FormUrlEncoded
+    @POST("markFanRequestStatus")
+    Call<ResponseWrapper<FanStatus>> markFannRequset(
+            @Field("request_id") String request_id,
+            @Field("status") String status,
+            @Field("role_id") String role_id);
 
     @FormUrlEncoded
     @POST("createPost")
@@ -183,7 +284,8 @@ public interface WebService {
             @Field("feed_type") String feed_type,
             @Field("location") String location,
             @Field("latitude") String latitude,
-            @Field("longitude") String longitude);
+            @Field("longitude") String longitude,
+            @Field("tag_user_ids") String tag_user_ids);
 
     @FormUrlEncoded
     @POST("createPromotion")
@@ -193,7 +295,8 @@ public interface WebService {
             @Field("location") String location,
             @Field("latitude") String latitude,
             @Field("longitude") String longitude,
-            @Field("service_ids") String service_ids);
+            @Field("service_ids") String service_ids,
+            @Field("tag_user_ids") String tag_user_ids);
 
 
     @Multipart
@@ -203,7 +306,8 @@ public interface WebService {
                                          @Part("location") RequestBody location,
                                          @Part("latitude") RequestBody latitude,
                                          @Part("longitude") RequestBody longitude,
-                                         @Part MultipartBody.Part image
+                                         @Part MultipartBody.Part image,
+                                         @Part("tag_user_ids") RequestBody tag_user_ids
     );
 
     @Multipart
@@ -214,7 +318,8 @@ public interface WebService {
                                               @Part("latitude") RequestBody latitude,
                                               @Part("longitude") RequestBody longitude,
                                               @Part("service_ids") RequestBody service_ids,
-                                              @Part MultipartBody.Part image
+                                              @Part MultipartBody.Part image,
+                                              @Part("tag_user_ids") RequestBody tag_user_ids
     );
 
 
@@ -265,9 +370,18 @@ public interface WebService {
     @FormUrlEncoded
     @POST("postComment")
     Call<ResponseWrapper<commentEnt>> postComment(
-            @Field("selected_comment") String comment,
-            @Field("post_id") String post_id
+            @Field("comment") String comment,
+            @Field("post_id") String post_id,
+            @Field("tag_user_ids") String tag_user_ids
     );
+
+    @FormUrlEncoded
+    @POST("updateLatlong")
+    Call<ResponseWrapper> updateLatlong(
+            @Field("latitude") String latitude,
+            @Field("longitude") String longitude
+    );
+
 
     @GET("getComments")
     Call<ResponseWrapper<ArrayList<commentEnt>>> getComments(@Query("post_id") String post_id);
@@ -279,7 +393,9 @@ public interface WebService {
     Call<ResponseWrapper<ArrayList<GetServicesEnt>>> getMyServices(@Query("sp_id") String sp_id);
 
     @GET("getServiceProvider")
-    Call<ResponseWrapper<ArrayList<UserEnt>>> getServiceProvider(@Query("service_id") String service_id);
+    Call<ResponseWrapper<ArrayList<UserEnt>>> getServiceProvider(@Query("service_id") String service_id,
+                                                                 @Query("latitude") String latitude,
+                                                                 @Query("longitude") String longitude);
 
     @FormUrlEncoded
     @POST("serviceRequest")
@@ -295,12 +411,12 @@ public interface WebService {
     );
 
     @GET("spServiceRequestHistory")
-    Call<ResponseWrapper<ArrayList<ServiceHistoryEnt>>> getServiceRequestHistory(@Query("from_date") String from_date,
-                                                                                 @Query("to_date") String to_date);
+    Call<ResponseWrapper<ServiceHistoryMainEnt>> getServiceRequestHistory(@Query("from_date") String from_date,
+                                                                          @Query("to_date") String to_date);
 
     @GET("userServiceRequestHistory")
-    Call<ResponseWrapper<ArrayList<ServiceHistoryEnt>>> getUserServiceRequestHistory(@Query("from_date") String from_date,
-                                                                                     @Query("to_date") String to_date);
+    Call<ResponseWrapper<ServiceHistoryMainEnt>> getUserServiceRequestHistory(@Query("from_date") String from_date,
+                                                                              @Query("to_date") String to_date);
 
 
     @FormUrlEncoded
@@ -354,6 +470,49 @@ public interface WebService {
     Call<ResponseWrapper> deletePost(
             @Path("post_id") Integer post_id
     );
+
+    @DELETE("deletePostComment/{comment_id}")
+    Call<ResponseWrapper> deleteComment(
+            @Path("comment_id") Integer comment_id
+    );
+
+    @GET("getPostDetail")
+    Call<ResponseWrapper<Post>> getPostDetail(
+            @Query("post_id") String post_id
+    );
+
+    @FormUrlEncoded
+    @POST("deleteMessage")
+    Call<ResponseWrapper> deleteMessage(
+            @Field("message_id") String message_id
+    );
+
+    @FormUrlEncoded
+    @POST("deleteThread")
+    Call<ResponseWrapper> deleteThread(
+            @Field("thread_id") String thread_id
+    );
+
+    @GET("getLikedPostUsers")
+    Call<ResponseWrapper<ArrayList<LikeDetailEnt>>> getLikesDetail(
+            @Query("post_id") String post_id
+    );
+
+    @GET("getTilesUnreadCount")
+    Call<ResponseWrapper<TilesCountEnt>> getHomeCount();
+
+    @GET("getNotificationCount")
+    Call<ResponseWrapper<NotificationCount>> getNotificaitonCount();
+
+
+    @FormUrlEncoded
+    @POST("suggestedService")
+    Call<ResponseWrapper> suggestService(
+            @Field("name") String name
+    );
+
+    @GET("deleteProfile")
+    Call<ResponseWrapper> deleteProfile();
 
 
 }

@@ -9,6 +9,8 @@
         android:id="@+id/ll_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/x4"
+        android:paddingBottom="@dimen/x4"
         android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -47,6 +49,20 @@
                 android:gravity="center_vertical"
                 android:maxLines="1"
                 android:text="Las Vegas"
+                android:textColor="@color/text_color"
+                android:textSize="@dimen/x12"
+                app:typeface="@string/font_normal"
+               />
+
+            <com.app.fandirect.ui.views.AnyTextView
+                android:id="@+id/txt_distance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/x5"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:maxLines="1"
+                android:text="0 Km"
                 android:textColor="@color/text_color"
                 android:textSize="@dimen/x12"
                 app:typeface="@string/font_normal" />

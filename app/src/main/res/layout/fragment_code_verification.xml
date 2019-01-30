@@ -63,13 +63,13 @@
             android:cursorVisible="false"
             android:digits="1234567890"
             android:imeOptions="actionDone"
-            app:pinLineColors="@color/text_black_color"
             android:inputType="number"
             android:maxLength="5"
             android:textColor="@color/black"
             android:textIsSelectable="false"
             android:textSize="@dimen/x25"
             android:visibility="visible"
+            app:pinLineColors="@color/text_black_color"
             app:pinTextBottomPadding="12dp" />
 
 
@@ -77,7 +77,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="@dimen/x10"
             android:layout_marginEnd="@dimen/x15"
             android:layout_marginStart="@dimen/x15"
             android:layout_marginTop="@dimen/x15"
@@ -88,53 +87,74 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="Didn't get a code yet? Wait for"
+                android:text="Didn't get a code yet? "
                 android:textColor="@color/app_dark_gray_2"
                 android:textSize="@dimen/x13"
                 app:typeface="OpenSans-Regular.ttf" />
 
             <com.app.fandirect.ui.views.AnyTextView
-                android:id="@+id/tv_counter"
+                android:id="@+id/resend_code_btn"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="@dimen/x2"
-                android:layout_marginStart="@dimen/x3"
-                android:gravity="center_vertical"
-                android:text="03:45"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Resend Code"
                 android:textColor="@color/app_dark_gray_2"
                 android:textSize="@dimen/x13"
-                app:typeface="@string/font_normal" />
-
-            <com.app.fandirect.ui.views.AnyTextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text=" seconds"
-                android:textColor="@color/app_dark_gray_2"
-                android:textSize="@dimen/x13"
+                android:visibility="gone"
                 app:typeface="OpenSans-Regular.ttf" />
+
+            <LinearLayout
+                android:id="@+id/ll_timer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="visible">
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text=" Wait for"
+                    android:textColor="@color/app_dark_gray_2"
+                    android:textSize="@dimen/x13"
+                    app:typeface="OpenSans-Regular.ttf" />
+
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:id="@+id/tv_counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/x2"
+                    android:layout_marginStart="@dimen/x1"
+                    android:gravity="center_vertical"
+                    android:text="03:45"
+                    android:textColor="@color/app_dark_gray_2"
+                    android:textSize="@dimen/x13"
+                    app:typeface="@string/font_normal" />
+
+                <com.app.fandirect.ui.views.AnyTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text=" minutes"
+                    android:textColor="@color/app_dark_gray_2"
+                    android:textSize="@dimen/x13"
+                    android:visibility="visible"
+                    app:typeface="OpenSans-Regular.ttf" />
+
+            </LinearLayout>
 
         </LinearLayout>
-
-        <com.app.fandirect.ui.views.AnyTextView
-            android:id="@+id/resend_code_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="Resend Code"
-            android:textColor="@color/app_dark_gray_2"
-            android:textSize="@dimen/x13"
-            app:typeface="OpenSans-Regular.ttf" />
-
 
 
         <Button
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="@dimen/x45"
+            android:layout_marginBottom="@dimen/x25"
             android:layout_marginEnd="@dimen/x30"
             android:layout_marginStart="@dimen/x30"
-            android:layout_marginTop="@dimen/x25"
+            android:layout_marginTop="@dimen/x20"
             android:background="@drawable/rounded_button"
             android:text="@string/submit"
             android:textAllCaps="false"

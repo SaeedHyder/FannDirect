@@ -1,8 +1,12 @@
 package com.app.fandirect.fragments;
 
+import android.Manifest;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,7 +31,15 @@ import com.app.fandirect.ui.views.TitleBar;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.squareup.picasso.Picasso;
 import com.xw.repo.XEditText;
 
 import java.io.File;
@@ -35,6 +47,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,6 +98,8 @@ public class UserEditProfile extends BaseFragment implements ImageSetter {
     AnyTextView txtBirthday;
     @BindView(R.id.txt_autoComplete)
     AutoCompleteLocation txtAutoComplete;
+    @BindView(R.id.txt_Education)
+    AnyEditTextView txtEducation;
     private String gender = AppConstants.male;
     ;
 
@@ -141,8 +156,8 @@ public class UserEditProfile extends BaseFragment implements ImageSetter {
         getMainActivity().setImageSetter(this);
         setListners();
         getMainActivity().hideBottomBar();
-        setData();
         autoCompleteLocationListner();
+        setData();
     }
 
     private void autoCompleteLocationListner() {
@@ -167,23 +182,39 @@ public class UserEditProfile extends BaseFragment implements ImageSetter {
 
             if (getProfileEnt.getImageUrl() != null)
                 imageLoader.displayImage(getProfileEnt.getImageUrl() + "", ivProfileImage);
-            txtName.setText(getProfileEnt.getUserName());
-            txtEmail.setText(getProfileEnt.getEmail());
-            if (getProfileEnt.getPhone() != null)
+            if (getProfileEnt.getUserName() != null && !getProfileEnt.getUserName().equals("") && !getProfileEnt.getUserName().equals("null")) {
+                txtName.setText(getProfileEnt.getUserName() + "");
+            }
+            if (getProfileEnt.getEmail() != null && !getProfileEnt.getEmail().equals("") && !getProfileEnt.getEmail().equals("null")) {
+                txtEmail.setText(getProfileEnt.getEmail());
+            }
+            if (getProfileEnt.getPhone() != null && !getProfileEnt.getPhone().equals("") && !getProfileEnt.getPhone().equals("null")) {
                 txtPhone.setText(getProfileEnt.getPhone() + "");
+            }
 
-
-            if (getProfileEnt.getDob() != null)
+            if (getProfileEnt.getDob() != null && !getProfileEnt.getDob().equals("") && !getProfileEnt.getDob().equals("null")) {
                 txtBirthday.setText(getProfileEnt.getDob() + "");
-            txtAutoComplete.setText(getProfileEnt.getLocation() + "");
-            txtProfession.setText(getProfileEnt.getProfession() + "");
-            txtHobbies.setText(getProfileEnt.getHobbies() + "");
-            txtWorksAt.setText(getProfileEnt.getWorkAt() + "");
-            if (getProfileEnt.getAbout() != null)
+            }
+            if (getProfileEnt.getLocation() != null && !getProfileEnt.getLocation().equals("") && !getProfileEnt.getLocation().equals("null")) {
+                txtAutoComplete.setText(getProfileEnt.getLocation() + "");
+            }
+            if (getProfileEnt.getProfession() != null && !getProfileEnt.getProfession().equals("") && !getProfileEnt.getProfession().equals("null")) {
+                txtProfession.setText(getProfileEnt.getProfession() + "");
+            }
+            if (getProfileEnt.getHobbies() != null && !getProfileEnt.getHobbies().equals("") && !getProfileEnt.getHobbies().equals("null")) {
+                txtHobbies.setText(getProfileEnt.getHobbies() + "");
+            }
+            if (getProfileEnt.getWorkAt() != null && !getProfileEnt.getWorkAt().equals("") && !getProfileEnt.getWorkAt().equals("null")) {
+                txtWorksAt.setText(getProfileEnt.getWorkAt() + "");
+            }
+            if (getProfileEnt.getAbout() != null && !getProfileEnt.getAbout().equals("") && !getProfileEnt.getAbout().equals("null")) {
                 txtAboutUs.setText(getProfileEnt.getAbout() + "");
-
-            if (locationLatLng == null) {
+            }
+            if (locationLatLng == null && !getProfileEnt.getLatitude().equals("")) {
                 locationLatLng = new LatLng(Double.parseDouble(getProfileEnt.getLatitude()), Double.parseDouble(getProfileEnt.getLongitude()));
+            }
+            if (getProfileEnt.getEducation() != null && !getProfileEnt.getEducation().equals("") && !getProfileEnt.getEducation().equals("null")) {
+                txtEducation.setText(getProfileEnt.getEducation() != null ? getProfileEnt.getEducation() : "");
             }
 
             if (getProfileEnt.getGender() != null) {
@@ -224,31 +255,9 @@ public class UserEditProfile extends BaseFragment implements ImageSetter {
             }
             txtName.setError(getString(R.string.enter_FullName));
             return false;
-        } /*else if (txtEmail.getText() == null || (txtEmail.getText().toString().isEmpty()) ||
-                (!Patterns.EMAIL_ADDRESS.matcher(txtEmail.getText().toString()).matches())) {
-
-            txtEmail.setError(getString(R.string.enter_email));
-            return false;
-        } else if (txtPhone.getText() == null || (txtPhone.getText().toString().isEmpty())) {
-            if (txtPhone.requestFocus()) {
-                setEditTextFocus(txtPhone);
-            }
-            txtPhone.setError(getString(R.string.enter_MobileNum));
-            return false;
-        }*/ else if (txtBirthday.getText() == null || (txtBirthday.getText().toString().isEmpty())) {
-            UIHelper.showShortToastInCenter(getDockActivity(),"Date of birth cannot be Empty");
-           // txtBirthday.setError("Date of birth cannot be Empty");
-            return false;
         } else if (txtAutoComplete.getText() == null || (txtAutoComplete.getText().toString().isEmpty())) {
 
             txtAutoComplete.setError("Location cannot be Empty");
-            return false;
-        } else if (txtProfession.getText() == null || (txtProfession.getText().toString().isEmpty())) {
-
-            if (txtProfession.requestFocus()) {
-                setEditTextFocus(txtProfession);
-            }
-            txtProfession.setError("Profession cannot be Empty");
             return false;
         } else if (txtWorksAt.getText() == null || (txtWorksAt.getText().toString().isEmpty())) {
 
@@ -257,21 +266,38 @@ public class UserEditProfile extends BaseFragment implements ImageSetter {
             }
             txtWorksAt.setError("Workat cannot be Empty");
             return false;
-        } else if (txtHobbies.getText() == null || (txtHobbies.getText().toString().isEmpty())) {
+        } /*else if (txtPhone.getText() == null || (txtPhone.getText().toString().isEmpty())) {
+            if (txtPhone.requestFocus()) {
+                setEditTextFocus(txtPhone);
+            }
+            txtPhone.setError(getString(R.string.enter_MobileNum));
+            return false;
+        } else if (txtBirthday.getText() == null || (txtBirthday.getText().toString().isEmpty())) {
+            UIHelper.showShortToastInCenter(getDockActivity(),"Date of birth cannot be Empty");
+           // txtBirthday.setError("Date of birth cannot be Empty");
+            return false;
+        }else if (txtProfession.getText() == null || (txtProfession.getText().toString().isEmpty())) {
+
+            if (txtProfession.requestFocus()) {
+                setEditTextFocus(txtProfession);
+            }
+            txtProfession.setError("Profession cannot be Empty");
+            return false;
+        }  else if (txtHobbies.getText() == null || (txtHobbies.getText().toString().isEmpty())) {
 
             if (txtHobbies.requestFocus()) {
                 setEditTextFocus(txtHobbies);
             }
             txtHobbies.setError("Hobbies cannot be Empty");
             return false;
-        } /*else if (txtAboutUs.getText() == null || (txtAboutUs.getText().toString().isEmpty())) {
-           *//* if (txtAboutUs.requestFocus()) {
+        } else if (txtAboutUs.getText() == null || (txtAboutUs.getText().toString().isEmpty())) {
+          if (txtAboutUs.requestFocus()) {
                 setEditTextFocus(txtAboutUs);
-            }*//*
+            }
             txtAboutUs.setError("Aboutus cannot be Empty");
             return false;
         }*/ else {
-         // txtBirthday.setError(null);
+            // txtBirthday.setError(null);
             return true;
         }
 
@@ -290,7 +316,8 @@ public class UserEditProfile extends BaseFragment implements ImageSetter {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btn_UploadProfile:
-                CameraHelper.uploadPhotoDialog(getMainActivity());
+                requestCameraPermission();
+
                 break;
             case R.id.btn_update:
                 if (isValidated()) {
@@ -362,7 +389,7 @@ public class UserEditProfile extends BaseFragment implements ImageSetter {
             filePart = MultipartBody.Part.createFormData("avatar", "",
                     RequestBody.create(MediaType.parse("*/*"), ""));
         }
-        serviceHelper.enqueueCall(headerWebService.updateUserProfile(
+      /*  serviceHelper.enqueueCall(headerWebService.updateUserProfile(
                 RequestBody.create(MediaType.parse("text/plain"), txtName.getText().toString()),
                 RequestBody.create(MediaType.parse("text/plain"), txtEmail.getText().toString()),
                 RequestBody.create(MediaType.parse("text/plain"), txtPhone.getText().toString()),
@@ -371,6 +398,21 @@ public class UserEditProfile extends BaseFragment implements ImageSetter {
                 RequestBody.create(MediaType.parse("text/plain"), (String.valueOf(locationLatLng.latitude))),
                 RequestBody.create(MediaType.parse("text/plain"), String.valueOf(locationLatLng.longitude)),
                 RequestBody.create(MediaType.parse("text/plain"), txtBirthday.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtProfession.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtWorksAt.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtHobbies.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtAboutUs.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtEducation.getText().toString()),
+                filePart
+        ), UpdateUserProfile);*/
+        serviceHelper.enqueueCall(headerWebService.updateUserProfile(
+                RequestBody.create(MediaType.parse("text/plain"), txtName.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtEmail.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), txtPhone.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), gender),
+                RequestBody.create(MediaType.parse("text/plain"), (locationName != null) ? locationName : txtAutoComplete.getText().toString()),
+                RequestBody.create(MediaType.parse("text/plain"), (String.valueOf(locationLatLng.latitude))),
+                RequestBody.create(MediaType.parse("text/plain"), String.valueOf(locationLatLng.longitude)),
                 RequestBody.create(MediaType.parse("text/plain"), txtProfession.getText().toString()),
                 RequestBody.create(MediaType.parse("text/plain"), txtWorksAt.getText().toString()),
                 RequestBody.create(MediaType.parse("text/plain"), txtHobbies.getText().toString()),
@@ -391,10 +433,11 @@ public class UserEditProfile extends BaseFragment implements ImageSetter {
             }
             // profilePic = new File(imagePath);
             profilePath = imagePath;
-          /*  Picasso.with(getDockActivity())
+
+            Picasso.with(getDockActivity())
                     .load("file:///" + imagePath)
-                    .into(ivProfileImage);*/
-            imageLoader.displayImage("file:///" + imagePath, ivProfileImage);
+                    .into(ivProfileImage);
+            //   imageLoader.displayImage("file:///" + imagePath, ivProfileImage);
 
         }
     }
@@ -419,13 +462,69 @@ public class UserEditProfile extends BaseFragment implements ImageSetter {
                 prefHelper.putUser(entity);
                 prefHelper.setUserType(getString(R.string.user));
                 prefHelper.set_TOKEN(entity.getToken());
-
-                getDockActivity().popBackStackTillEntry(1);
-                getDockActivity().replaceDockableFragment(UserProfileFragment.newInstance(), "UserProfileFragment");
+                UIHelper.showShortToastInCenter(getDockActivity(),"Profile updated successfully");
+                //getDockActivity().popBackStackTillEntry(1);
+               // getDockActivity().replaceDockableFragment(UserProfileFragment.newInstance(), "UserProfileFragment");
+                getDockActivity().popFragment();
 
                 break;
         }
     }
+
+    private void requestCameraPermission() {
+        Dexter.withActivity(getDockActivity())
+                .withPermissions(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+
+                        if (report.areAllPermissionsGranted()) {
+                            CameraHelper.uploadPhotoDialog(getMainActivity());
+                        }
+
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            requestCameraPermission();
+
+                        } else if (report.getDeniedPermissionResponses().size() > 0) {
+                            requestCameraPermission();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).
+                withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        UIHelper.showShortToastInCenter(getDockActivity(), "Grant Camera And Storage Permission to processed");
+                        openSettings();
+                    }
+                })
+
+                .onSameThread()
+                .check();
+
+
+    }
+
+    private void openSettings() {
+
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        Uri uri = Uri.fromParts("package", getDockActivity().getPackageName(), null);
+        intent.setData(uri);
+        startActivity(intent);
+    }
+
 
 
 }
